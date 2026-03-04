@@ -1,7 +1,7 @@
 ---
 layout: page
 title: "장비 소개"
-permalink: /pages/equipment/
+permalink: /equipment/
 ---
 
 ### 보유 장비 목록
