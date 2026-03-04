@@ -50,7 +50,7 @@ exclude:
 collections:
   pages:
     output: true
-    permalink: /:path/
+    permalink: /:path.html
 
 ordered_collections:
   - pages
