@@ -323,13 +323,13 @@ export default function AboutPage({ nav, adminMode, showLogin, adminPw, onAdminP
           <div>
             <SectionHeader title="오시는 길" adminMode={adminMode} onEdit={() => setEditing("location")} />
             <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 28 }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, alignItems: "center" }}>
                 <iframe src={location.mapSrc} style={{ width: "100%", height: 200, borderRadius: 8, border: "none" }} allowFullScreen />
-                <div style={{ display: "grid", gridTemplateColumns: "18px max-content 1fr", columnGap: 10, rowGap: 14, alignItems: "start", textAlign: "left" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "18px max-content 1fr", columnGap: 10, rowGap: 22, alignItems: "start", textAlign: "left", paddingLeft: 16 }}>
                   {[[<MapPin size={15} key="pin" />, "주소", location.address], [<Mail size={15} key="mail" />, "이메일", location.email], [<Globe size={15} key="globe" />, "웹사이트", location.website]].flatMap(([icon, label, val], i) => [
-                    <span key={`icon-${i}`} style={{ color: "#3b82f6", paddingTop: 2 }}>{icon}</span>,
-                    <span key={`label-${i}`} style={{ fontSize: 12, color: "#64748b", fontWeight: 600, whiteSpace: "nowrap" }}>{label}</span>,
-                    <span key={`val-${i}`} style={{ fontSize: 13, color: "#334155", whiteSpace: "pre-line", lineHeight: 1.6 }}>{val}</span>,
+                    <span key={`icon-${i}`} style={{ color: "#3b82f6", lineHeight: "20px", display: "flex", alignItems: "center" }}>{icon}</span>,
+                    <span key={`label-${i}`} style={{ fontSize: 12, color: "#64748b", fontWeight: 600, whiteSpace: "nowrap", lineHeight: "20px" }}>{label}</span>,
+                    <span key={`val-${i}`} style={{ fontSize: 13, color: "#334155", whiteSpace: "pre-line", lineHeight: "20px" }}>{val}</span>,
                   ])}
                 </div>
               </div>
