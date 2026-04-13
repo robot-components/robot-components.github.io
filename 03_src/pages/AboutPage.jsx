@@ -53,7 +53,7 @@ function SupportEditor({ support, onSave, onCancel }) {
     <EditSection title="지원구조 수정" onSave={() => onSave(items)} onCancel={onCancel}>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {items.map((s, i) => (
-          <div key={s.id} style={{ background: "#fff", borderRadius: 8, border: "0.5px solid #e2e8f0", padding: 14 }}>
+          <div key={s.id} style={{ background: "#fff", borderRadius: 8, border: "1px solid #e2e8f0", padding: 14 }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: 8, marginBottom: 10, alignItems: "center" }}>
               <input value={s.title} onChange={(e) => update(i, "title", e.target.value)} style={inp()} />
               <div style={{ display: "flex", gap: 4 }}>
@@ -90,7 +90,7 @@ function WorksEditor({ works, onSave, onCancel }) {
     <EditSection title="주요 업무 수정" onSave={() => onSave(items)} onCancel={onCancel}>
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         {items.map((w, i) => (
-          <div key={w.id} style={{ background: "#fff", borderRadius: 8, border: "0.5px solid #e2e8f0", padding: 14 }}>
+          <div key={w.id} style={{ background: "#fff", borderRadius: 8, border: "1px solid #e2e8f0", padding: 14 }}>
             <div style={{ display: "grid", gridTemplateColumns: "60px 1fr auto", gap: 8, marginBottom: 10, alignItems: "center" }}>
               <input value={w.num} onChange={(e) => updateField(i, "num", e.target.value)} style={inp()} />
               <input value={w.title} onChange={(e) => updateField(i, "title", e.target.value)} style={inp()} />
@@ -133,7 +133,7 @@ function ProcessEditor({ process, onSave, onCancel }) {
     <EditSection title="프로세스 수정" onSave={() => onSave(items)} onCancel={onCancel}>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {items.map((s, i) => (
-          <div key={s.id} style={{ display: "grid", gridTemplateColumns: "60px 1fr 1fr auto", gap: 8, alignItems: "start", background: "#fff", borderRadius: 8, border: "0.5px solid #e2e8f0", padding: 10 }}>
+          <div key={s.id} style={{ display: "grid", gridTemplateColumns: "60px 1fr 1fr auto", gap: 8, alignItems: "start", background: "#fff", borderRadius: 8, border: "1px solid #e2e8f0", padding: 10 }}>
             <input value={s.step} onChange={(e) => update(i, "step", e.target.value)} style={inp()} />
             <input value={s.title} onChange={(e) => update(i, "title", e.target.value)} style={inp()} />
             <textarea value={s.desc} onChange={(e) => update(i, "desc", e.target.value)} style={ta(2)} />
@@ -198,7 +198,7 @@ export default function AboutPage({ nav, adminMode, showLogin, adminPw, onAdminP
         <div style={{ marginBottom: 16 }}>
           {editing === "site"
             ? <SiteEditFull site={site} onSave={(v) => { setSite(v); setEditing(null); }} onCancel={() => setEditing(null)} />
-            : <button onClick={() => setEditing("site")} style={{ ...btn("#f8fafc", "#475569"), border: "0.5px solid #cbd5e1", fontSize: 12 }}><Edit2 size={12} />헤더·푸터 센터명 수정</button>
+            : <button onClick={() => setEditing("site")} style={{ ...btn("#f8fafc", "#475569"), border: "1px solid #e2e8f0", fontSize: 12 }}><Edit2 size={12} />헤더·푸터 센터명 수정</button>
           }
         </div>
       )}
@@ -223,7 +223,7 @@ export default function AboutPage({ nav, adminMode, showLogin, adminPw, onAdminP
               <h1 style={{ fontSize: 34, fontWeight: 700, margin: "0 0 12px", lineHeight: 1.3, color: "#fff", textAlign: "left" }}>{hero.title}</h1>
               <p style={{ color: "#93c5fd", fontSize: 16, margin: "0 0 28px", textAlign: "left" }}>{hero.sub}</p>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                <button onClick={() => nav(hero.btn1Page)} style={{ background: "#3b82f6", color: "#fff", border: "none", padding: "12px 24px", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 14, fontWeight: 500 }}>{hero.btn1Label}</button>
+                <button onClick={() => nav(hero.btn1Page)} style={{ background: "#3b82f6", color: "#fff", border: "none", padding: "12px 24px", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 14, fontWeight: 700 }}>{hero.btn1Label}</button>
                 <button onClick={() => nav(hero.btn2Page)} style={{ background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.35)", padding: "12px 24px", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 14 }}>{hero.btn2Label}</button>
               </div>
             </div>
@@ -270,21 +270,21 @@ export default function AboutPage({ nav, adminMode, showLogin, adminPw, onAdminP
             <SectionHeader title="주요 업무" adminMode={adminMode} onEdit={() => setEditing("works")} />
             <div style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))" }}>
               {works.map((item, i) => (
-                <div key={item.id || i} style={{ background: "#fff", borderRadius: 12, border: "0.5px solid #e2e8f0", padding: 24, display: "flex", flexDirection: "column", textAlign: "left" }}>
+                <div key={item.id || i} style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 24, display: "flex", flexDirection: "column", textAlign: "left" }}>
                   <div style={{ fontSize: 28, fontWeight: 700, color: "#dbeafe", marginBottom: 8 }}>{item.num}</div>
                   <h3 style={{ fontSize: 15, fontWeight: 700, color: "#1e3a5f", marginBottom: 12, lineHeight: 1.5 }}>{item.title}</h3>
-                  <div style={{ fontSize: 13, color: "#475569", lineHeight: 1.9, marginBottom: 16, flex: 1 }}>
+                  <div style={{ fontSize: 13, lineHeight: 1.8, marginBottom: 16, flex: 1 }}>
                     {item.blocks.map((b, bi) => {
                       const isSec = b.type === "section";
                       return (
-                        <div key={bi} style={{ display: "flex", alignItems: "flex-start", paddingLeft: isSec ? 10 : 0, borderLeft: isSec ? "3px solid #dbeafe" : "none", marginTop: isSec ? 10 : 0, fontWeight: isSec ? 600 : 400, color: isSec ? "#1e3a5f" : "#475569", lineHeight: 1.9, textAlign: "left" }}>
-                          {b.type === "bullet" && <span style={{ flexShrink: 0, marginRight: 4 }}>·</span>}
+                        <div key={bi} style={{ display: "flex", alignItems: "flex-start", paddingLeft: 10, borderLeft: isSec ? "3px solid #dbeafe" : "3px solid transparent", marginTop: isSec ? 10 : 2, fontWeight: isSec ? 600 : 400, color: isSec ? "#1e3a5f" : "#475569", lineHeight: 1.8 }}>
+                          {!isSec && <span style={{ flexShrink: 0, marginRight: 4, color: "#94a3b8" }}>·</span>}
                           <span>{b.text}</span>
                         </div>
                       );
                     })}
                   </div>
-                  <button onClick={() => nav(item.page)} style={{ background: "none", border: "0.5px solid #3b82f6", color: "#3b82f6", padding: "7px 14px", borderRadius: 6, cursor: "pointer", fontSize: 13, fontFamily: "inherit" }}>{item.pageLabel}</button>
+                  <button onClick={() => nav(item.page)} style={{ background: "none", border: "1px solid #3b82f6", color: "#3b82f6", padding: "7px 14px", borderRadius: 8, cursor: "pointer", fontSize: 13, fontFamily: "inherit", fontWeight: 600 }}>{item.pageLabel}</button>
                 </div>
               ))}
             </div>
@@ -298,7 +298,7 @@ export default function AboutPage({ nav, adminMode, showLogin, adminPw, onAdminP
         : (
           <div style={{ marginBottom: 40 }}>
             <SectionHeader title="시험평가지원 프로세스" adminMode={adminMode} onEdit={() => setEditing("process")} />
-            <div style={{ background: "#fff", borderRadius: 12, border: "0.5px solid #e2e8f0", padding: "28px 24px" }}>
+            <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: "28px 24px" }}>
               <div style={{ display: "flex", alignItems: "stretch" }}>
                 {process.map((s, i) => (
                   <div key={s.id || i} style={{ display: "flex", alignItems: "center", flex: 1 }}>
@@ -322,19 +322,15 @@ export default function AboutPage({ nav, adminMode, showLogin, adminPw, onAdminP
         : (
           <div>
             <SectionHeader title="오시는 길" adminMode={adminMode} onEdit={() => setEditing("location")} />
-            <div style={{ background: "#fff", borderRadius: 12, border: "0.5px solid #e2e8f0", padding: 28 }}>
+            <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 28 }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
                 <iframe src={location.mapSrc} style={{ width: "100%", height: 200, borderRadius: 8, border: "none" }} allowFullScreen />
-                <div style={{ display: "flex", flexDirection: "column", gap: 16, justifyContent: "center" }}>
-                  {[[<MapPin size={15} key="pin" />, "주소", location.address], [<Mail size={15} key="mail" />, "이메일", location.email], [<Globe size={15} key="globe" />, "웹사이트", location.website]].map(([icon, label, val], i) => (
-                    <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                      <span style={{ color: "#3b82f6", marginTop: 1, flexShrink: 0 }}>{icon}</span>
-                      <div>
-                        <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 2 }}>{label}</div>
-                        <div style={{ fontSize: 13, color: "#334155", whiteSpace: "pre-line", lineHeight: 1.6 }}>{val}</div>
-                      </div>
-                    </div>
-                  ))}
+                <div style={{ display: "grid", gridTemplateColumns: "18px max-content 1fr", columnGap: 10, rowGap: 14, alignItems: "start", textAlign: "left" }}>
+                  {[[<MapPin size={15} key="pin" />, "주소", location.address], [<Mail size={15} key="mail" />, "이메일", location.email], [<Globe size={15} key="globe" />, "웹사이트", location.website]].flatMap(([icon, label, val], i) => [
+                    <span key={`icon-${i}`} style={{ color: "#3b82f6", paddingTop: 2 }}>{icon}</span>,
+                    <span key={`label-${i}`} style={{ fontSize: 12, color: "#64748b", fontWeight: 600, whiteSpace: "nowrap" }}>{label}</span>,
+                    <span key={`val-${i}`} style={{ fontSize: 13, color: "#334155", whiteSpace: "pre-line", lineHeight: 1.6 }}>{val}</span>,
+                  ])}
                 </div>
               </div>
             </div>

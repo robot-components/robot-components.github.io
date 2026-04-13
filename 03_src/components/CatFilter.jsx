@@ -5,7 +5,17 @@ export default function CatFilter({ cats, active, setActive }) {
         <button
           key={c}
           onClick={() => setActive(c)}
-          style={{ background: active === c ? "#1e3a5f" : "#fff", color: active === c ? "#fff" : "#475569", border: "0.5px solid #cbd5e1", padding: "7px 16px", borderRadius: 20, cursor: "pointer", fontSize: 13, fontFamily: "inherit" }}
+          style={{
+            background: active === c ? "#1e3a5f" : "#fff",
+            color: active === c ? "#fff" : "#475569",
+            border: `1px solid ${active === c ? "#1e3a5f" : "#e2e8f0"}`,
+            padding: "7px 16px",
+            borderRadius: 20,
+            cursor: "pointer",
+            fontSize: 13,
+            fontFamily: "inherit",
+            fontWeight: active === c ? 600 : 400,
+          }}
         >
           {c}
         </button>

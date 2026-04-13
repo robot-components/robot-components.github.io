@@ -49,12 +49,12 @@ export default function App() {
   };
 
   return (
-    <div ref={topRef} style={{ fontFamily: "'Noto Sans KR', sans-serif", minHeight: "100vh", background: "#f8fafc" }}>
+    <div ref={topRef} style={{ fontFamily: "'Noto Sans KR', sans-serif", minHeight: "100vh", background: "#f8fafc", display: "flex", flexDirection: "column" }}>
       <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
 
       {/* 헤더 */}
       <header style={{ background: "#1e3a5f", position: "sticky", top: 0, zIndex: 50, boxShadow: "0 1px 8px rgba(0,0,0,0.15)" }}>
-        <div style={{ width: "100%", boxSizing: "border-box", padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 62, gap: 16 }}>
+        <div style={{ maxWidth: 1126, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 62, gap: 16 }}>
           <div onClick={() => nav(0)} style={{ cursor: "pointer", flexShrink: 0 }}>
             <div style={{ color: "#fff", fontWeight: 700, fontSize: 15, textAlign: "left" }}>{site.centerName}</div>
             <div style={{ color: "#93c5fd", fontSize: 11, textAlign: "left" }}>{site.centerNameEn}</div>
@@ -77,7 +77,8 @@ export default function App() {
       </header>
 
       {/* 메인 컨텐츠 */}
-      <main style={{ width: "100%", boxSizing: "border-box", padding: "40px 32px 80px" }}>
+      <main style={{ flex: 1, width: "100%" }}>
+        <div id="content-wrapper" style={{ maxWidth: 1126, margin: "0 auto", boxSizing: "border-box", padding: "40px 32px 80px" }}>
         <PageWrapper pageKey={pageIdx}>
           {pageIdx === 0 && (
             <AboutPage
@@ -120,11 +121,12 @@ export default function App() {
             />
           )}
         </PageWrapper>
+        </div>
       </main>
 
       {/* 푸터 */}
-      <footer style={{ background: "#1e3a5f", padding: "32px 24px" }}>
-        <div style={{ width: "100%", boxSizing: "border-box", padding: "0 32px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16 }}>
+      <footer style={{ background: "#1e3a5f", padding: "32px 0" }}>
+        <div style={{ maxWidth: 1126, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: "0 32px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16 }}>
           <div>
             <div style={{ color: "#fff", fontWeight: 700, fontSize: 15, marginBottom: 8 }}>{site.centerName} (RTAC)</div>
             <div style={{ fontSize: 12, lineHeight: 2, color: "#93c5fd" }}>
@@ -137,11 +139,14 @@ export default function App() {
       </footer>
 
       <style>{`
-        @media(max-width:700px){nav{display:none!important}}
         body { margin: 0; }
-        p, span, td, li { text-align: left !important; }
-        h1, h2, h3 { text-align: left !important; }
-        .process-center { text-align: center !important; }
+        * { box-sizing: border-box; }
+        input, select, textarea { font-family: inherit; }
+        .process-center { text-align: center; }
+        @media (max-width: 700px) {
+          nav { display: none !important; }
+          #content-wrapper { padding: 24px 16px 60px !important; }
+        }
       `}</style>
     </div>
   );

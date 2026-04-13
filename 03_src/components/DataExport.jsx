@@ -13,7 +13,7 @@ export default function DataExport() {
   };
   return (
     <div style={{ marginBottom: 16 }}>
-      <button onClick={load} style={{ ...btn("#f8fafc", "#1e3a5f"), border: "0.5px solid #cbd5e1", marginBottom: 8 }}>
+      <button onClick={load} style={{ ...btn("#f8fafc", "#1e3a5f"), border: "1px solid #e2e8f0", marginBottom: 8 }}>
         📋 장비 데이터 내보내기
       </button>
       {data && (
@@ -23,7 +23,7 @@ export default function DataExport() {
             readOnly
             value={data}
             onClick={(e) => e.target.select()}
-            style={{ width: "100%", height: 200, fontSize: 11, fontFamily: "monospace", padding: 8, borderRadius: 6, border: "0.5px solid #cbd5e1", boxSizing: "border-box", resize: "vertical" }}
+            style={{ width: "100%", height: 200, fontSize: 11, fontFamily: "monospace", padding: 8, borderRadius: 6, border: "1px solid #e2e8f0", boxSizing: "border-box", resize: "vertical" }}
           />
         </div>
       )}
