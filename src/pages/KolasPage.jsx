@@ -2,7 +2,7 @@ import { Mail } from "lucide-react";
 import { DEFAULT_KOLAS, DEFAULT_SITE } from "../data/defaults";
 import PageHeader from "../components/PageHeader";
 
-const KOLAS_HEADER = { label: "KOLAS", title: "KOLAS 인정 규격 안내", sub: "로봇융합부품지원센터는 KOLAS 공인시험기관으로서 아래 규격에 따른 공인 시험성적서를 발급합니다." };
+const KOLAS_HEADER = { label: "KOLAS", title: "KOLAS 인정 규격 안내", sub: "" };
 const KOLAS_CONTACT = { title: "문의하기", desc: "공인 시험성적서 발급 및 시험평가 관련 문의사항은 아래 이메일로 문의해 주시기 바랍니다." };
 const KOLAS_SUMMARY = DEFAULT_SITE.kolasSummary;
 

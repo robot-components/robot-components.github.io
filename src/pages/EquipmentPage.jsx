@@ -5,7 +5,7 @@ import { btn } from "../components/styles";
 import PageHeader from "../components/PageHeader";
 import SpecsTable from "../components/SpecsTable";
 
-const EQ_HEADER = { label: "보유 장비", title: "보유 장비 목록", sub: "로봇융합부품지원센터는 다양한 시험평가 장비를 구축하여 기업의 제품 개발 및 성능 검증을 지원하고 있으며, 주요 보유 장비를 소개합니다." };
+const EQ_HEADER = { label: "보유 장비", title: "보유 장비 목록", sub: "" };
 const EQ_CONTACT = { title: "문의하기", desc: "장비 이용 및 시험평가 관련 문의 사항은 아래 이메일로 연락해 주세요." };
 
 const renderName = (n) =>
