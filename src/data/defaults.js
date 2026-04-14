@@ -170,25 +170,12 @@ export const DEFAULT_ROOMS = [
   { id: 1, name: "중회의실", capacity: 10, facilities: "모니터, 화상회의 시스템" },
 ];
 
-export const DEFAULT_NOTICE_CATS = ["공지","장비안내","사업안내"];
+export const DEFAULT_NOTICE_CATS = [];
 
-export const DEFAULT_NOTICES = [
-  { id: 1, cat: "공지", title: "2025년 로봇융합부품지원센터 장비 활용 지원사업 안내", date: "2025-03-10", body: "2025년도 장비 활용 지원사업을 안내드립니다." },
-  { id: 2, cat: "장비안내", title: "800 N·m 급 로봇 액추에이터 성능 분석기 신규 도입 완료", date: "2025-02-28", body: "800 N·m 급 로봇 액추에이터 성능 분석기가 신규 도입되었습니다." },
-  { id: 3, cat: "사업안내", title: "KOLAS 인정 규격 확대 추진 안내", date: "2025-02-10", body: "로봇융합부품지원센터는 기존 KOLAS 인정 규격 외 추가 규격 확대를 추진 중입니다." },
-];
+export const DEFAULT_NOTICES = [];
 
-export const DEFAULT_FAQ_CATS = ["이용 안내","장비 시험","인증","비용 및 일정"];
+export const DEFAULT_FAQ_CATS = [];
 
-export const DEFAULT_FAQS = [
-  { id: 1, cat: "이용 안내", q: "장비를 이용하려면 어떻게 해야 하나요?", a: "이메일(helprobot@keti.re.kr)로 시험 가능 여부, 일정, 비용 등을 문의하신 후 시험의뢰서를 작성하시면 됩니다." },
-  { id: 2, cat: "이용 안내", q: "이용 비용은 어떻게 되나요?", a: "장비 사용 비용은 시험 항목 및 시간에 따라 달라집니다." },
-  { id: 3, cat: "장비 시험", q: "시험 소요 기간은 얼마나 걸리나요?", a: "단순 성능 측정의 경우 1~3일, 복합 시험의 경우 1~2주가 소요됩니다." },
-  { id: 4, cat: "장비 시험", q: "시험 후 성적서를 발급받을 수 있나요?", a: "KOLAS 인정 규격에 따른 공인 시험성적서를 발급해 드립니다. 시험 완료 후 약 5~7 영업일이 소요됩니다." },
-  { id: 5, cat: "인증", q: "KOLAS 인정기관이란 무엇인가요?", a: "한국인정기구가 운영하는 국가 공인 시험·교정 기관 인정 제도입니다." },
-  { id: 6, cat: "인증", q: "어떤 인정 규격을 지원하나요?", a: "KS B ISO 9283, KS C IEC 60034-1, KS C IEC 60034-2-1 규격을 지원합니다." },
-  { id: 7, cat: "비용 및 일정", q: "회의실 예약은 어떻게 하나요?", a: "홈페이지 '회의실 예약' 메뉴에서 온라인으로 신청하실 수 있습니다." },
-  { id: 8, cat: "비용 및 일정", q: "회의실 사용 비용이 있나요?", a: "센터 이용 기업 및 관련 기관에 한해 무료로 제공됩니다." },
-];
+export const DEFAULT_FAQS = [];
 
 export const DEFAULT_EQ_CATS = ["액추에이터","감속기","로봇","테스트베드"];
