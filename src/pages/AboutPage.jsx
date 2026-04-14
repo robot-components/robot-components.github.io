@@ -102,10 +102,15 @@ export default function AboutPage({ nav, site, location }) {
         <SectionHeader title="오시는 길" />
         <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 28 }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, alignItems: "center" }}>
-            <div style={{ width: "100%", height: 220, borderRadius: 8, background: "#f1f5f9", border: "1px solid #e2e8f0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14, flexShrink: 0 }}>
-              <MapPin size={32} color="#94a3b8" />
-              <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>아래 버튼을 눌러 지도를 확인하세요.</p>
-              <a href={location.mapLink} target="_blank" rel="noopener noreferrer" style={{ background: "#FEE500", color: "#191919", padding: "9px 20px", borderRadius: 8, fontSize: 13, fontWeight: 700, textDecoration: "none" }}>카카오맵에서 보기</a>
+            <div style={{ width: "100%", borderRadius: 8, overflow: "hidden", flexShrink: 0, position: "relative" }}>
+              {location.mapImage
+                ? <img src={location.mapImage} alt="오시는 길 약도" style={{ width: "100%", height: 300, objectFit: "cover", display: "block" }} onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }} />
+                : null}
+              <div style={{ display: location.mapImage ? "none" : "flex", height: 300, background: "#f1f5f9", border: "1px solid #e2e8f0", borderRadius: 8, flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14 }}>
+                <MapPin size={32} color="#94a3b8" />
+                <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>아래 버튼을 눌러 지도를 확인하세요.</p>
+              </div>
+              <a href={location.mapLink} target="_blank" rel="noopener noreferrer" style={{ display: "block", background: "#FEE500", color: "#191919", padding: "10px 0", textAlign: "center", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>카카오맵에서 보기</a>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "18px max-content 1fr", columnGap: 10, rowGap: 22, alignItems: "start", textAlign: "left", paddingLeft: 16 }}>
               {[[<MapPin size={15} key="pin" />, "주소", location.address], [<Mail size={15} key="mail" />, "이메일", location.email], [<Globe size={15} key="globe" />, "웹사이트", location.website]].flatMap(([icon, label, val], i) => [
