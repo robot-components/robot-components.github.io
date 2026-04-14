@@ -25,7 +25,7 @@ export const DEFAULT_WORKS = [
     id: 1, num: "01", title: "신뢰성 평가 인증을 통한 로봇부품 상용화 지원", page: 1, pageLabel: "KOLAS 인정 규격 안내 →",
     blocks: [
       { type: "section", text: "KOLAS 인정기관 구축" },
-      { type: "bullet", text: "로봇 부품의 신뢰성 확보를 위해 기업에 요구되는 관련 규격(KS, IEC, ISO 등)을 지원하는 구동기 분야 및 머니퓰레이팅 로봇 성능 시험 분야 KOLAS 인정기관 구축" },
+      { type: "bullet", text: "로봇부품의 신뢰성 확보를 위해 기업에 요구되는 관련 규격(KS, IEC, ISO 등)을 지원하는 구동기 분야 및 머니퓰레이팅 로봇 성능 시험 분야 KOLAS 인정기관 구축" },
       { type: "section", text: "기술 개발 컨설팅" },
       { type: "bullet", text: "기업의 기술 개발 시 애로 기술 해결을 위한 기술 자문" },
       { type: "section", text: "시험성적서 발급" },
@@ -52,7 +52,7 @@ export const DEFAULT_PROCESS = [
   { id: 1, step: "01", title: "시험 의뢰 문의", desc: "시험 가능 여부, 일정, 비용 등\n담당자 상담 후 시험의뢰서 작성" },
   { id: 2, step: "02", title: "장비 사용", desc: "시험의뢰서 승인에 따라\n장비 사용 및 장비사용대장 작성" },
   { id: 3, step: "03", title: "장비사용결과서 작성", desc: "장비 사용 완료 후\n장비사용결과서 작성" },
-  { id: 4, step: "04", title: "시험성적서 발급", desc: "시험성적서 발급 요청 시\n시험성적서 파일링 또는 종료" },
+  { id: 4, step: "04", title: "시험성적서 발급", desc: "시험성적서 발급 요청 시\n시험성적서 파일링" },
   { id: 5, step: "05", title: "견적서 발행 및 종료", desc: "최종 견적서 및 세금계산서\n발행 후 시험 절차 종료" },
 ];
 
