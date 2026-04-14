@@ -60,7 +60,7 @@ export const DEFAULT_LOCATION = {
   address: "경기도 부천시 원미구 평천로 655 (약대동)\n부천테크노파크 4단지 401동 1402-1호",
   email: "helprobot@keti.re.kr",
   website: "www.helprobot.re.kr",
-  mapSrc: "https://kko.to/iNy0mjO5wM",
+  mapSrc: "https://kko.to/TFXVT1mqpj",
 };
 
 export const DEFAULT_SITE = {
