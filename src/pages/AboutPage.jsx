@@ -102,7 +102,9 @@ export default function AboutPage({ nav, site, location }) {
         <SectionHeader title="오시는 길" />
         <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 28 }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, alignItems: "center" }}>
-            <iframe src={location.mapSrc} style={{ width: "100%", height: 200, borderRadius: 8, border: "none" }} allowFullScreen />
+            <div style={{ width: "100%", height: 320, borderRadius: 8, overflow: "hidden", flexShrink: 0 }}>
+              <iframe src={location.mapSrc} style={{ width: "100%", height: "100%", border: "none", display: "block" }} allowFullScreen loading="lazy" />
+            </div>
             <div style={{ display: "grid", gridTemplateColumns: "18px max-content 1fr", columnGap: 10, rowGap: 22, alignItems: "start", textAlign: "left", paddingLeft: 16 }}>
               {[[<MapPin size={15} key="pin" />, "주소", location.address], [<Mail size={15} key="mail" />, "이메일", location.email], [<Globe size={15} key="globe" />, "웹사이트", location.website]].flatMap(([icon, label, val], i) => [
                 <span key={`icon-${i}`} style={{ color: "#3b82f6", lineHeight: "20px", display: "flex", alignItems: "center" }}>{icon}</span>,
