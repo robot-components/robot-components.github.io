@@ -6,7 +6,7 @@ import PageHeader from "../components/PageHeader";
 import SpecsTable from "../components/SpecsTable";
 
 const EQ_HEADER = { label: "보유 장비", title: "보유 장비 목록", sub: "" };
-const EQ_CONTACT = { title: "문의하기", desc: "장비 이용 및 시험평가 관련 문의 사항은 아래 이메일로 연락해 주세요." };
+const EQ_CONTACT = { title: "문의하기", desc: "장비 이용 및 시험평가 관련 문의사항은 아래 이메일로 문의해 주시기 바랍니다." };
 
 const renderName = (n) =>
   n.split("//").map((p, i, a) => <span key={i}>{p}{i < a.length - 1 && <br />}</span>);
