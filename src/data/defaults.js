@@ -123,35 +123,37 @@ export const DEFAULT_EQUIPMENT = [
     uses: "히스테리시스곡선을 이용한 백래시, 로스트모션, 토크 강성 측정\n각도 전달 오차 및 속도비(감속비) 측정\n무부하 러닝 토크 및 기동·증속기동 토크 측정\n효율 측정",
   },
   {
-    id: 7, cat: "로봇", name: "6자유도 로봇 머니플레이터//성능 측정 시스템", image: "/images/equipment/robot-6dof-manipulator.jpg", youtube: "",
+    id: 7, cat: "로봇", name: "6자유도 로봇 머니플레이터 성능 측정 시스템", image: "/images/equipment/robot-6dof-manipulator.jpg", youtube: "",
     specs: [
-      { section: "Laser Tracker (AT960-MR)", rows: [{ label: "Angle accuracy", value: "±15 μm + 6 μm/m" },{ label: "Distance accuracy", value: "0.5 μm/m" },{ label: "데이터 출력", value: "1,000 point/sec" },{ label: "측정 거리", value: "40 m (Red Ring Reflector 사용 시)" },{ label: "측정 범위", value: "수평각 360°, 수직각 ±145°" }] },
+      { section: "Laser Tracker (AT960-MR)", rows: [{ label: "Angle Accuracy", value: "±15 μm + 6 μm/m" },{ label: "Distance Accuracy", value: "0.5 μm/m" },{ label: "데이터 출력", value: "1,000 point/sec" },{ label: "측정 거리", value: "40 m (Red Ring Reflector 사용 시)" },{ label: "측정 범위", value: "수평각 360°, 수직각 ±145°" }] },
+      { section: "Red Ring Reflector (3축; X, Y, Z)", rows: [{ label: "크기", value: "지름 1.5 inch, 0.5 inch" },{ label: "Acceptance Angle", value: "±30 °" }] },
       { section: "T-MAC (6축; X, Y, Z, Yaw, Pitch, Roll)", rows: [{ label: "위치 정밀도", value: "±15 μm + 6 μm/m" },{ label: "일반 회전 정밀도", value: "±0.01°" }] },
     ],
     uses: "KS B ISO 9283 분석 SW 지원\n포즈/거리 정확도 및 반복 정밀도 측정\n측정 Point(X,Y,Z) 간 거리 및 다양한 로봇의 Tool 변위 측정\n로봇 Tool 위치 캘리브레이션",
   },
   {
-    id: 8, cat: "로봇", name: "모바일 로봇의 구동부품//진동 측정 장비", image: "/images/equipment/robot-mobile-vibration.jpg", youtube: "",
+    id: 8, cat: "로봇", name: "모바일 로봇의 구동부품 진동 측정 장비", image: "/images/equipment/robot-mobile-vibration.jpg", youtube: "",
     specs: [
-      { section: "고속 카메라", rows: [{ label: "Frame Rate", value: "기본 120 fps (최대 1,300 fps, 최소 해상도 조건)" },{ label: "주파수 범위", value: "기본 60 Hz, 최대 650 Hz" },{ label: "최소 측정 범위", value: "0.25 μm @ 1 m (50 mm 렌즈 사용 시, 최대 밝기 조건)" },{ label: "통신 인터페이스", value: "USB 3.0" }] },
+      { section: "고속 카메라 및 듀얼 고속 카메라", rows: [{ label: "Frame Rate", value: "기본 120 fps (최대 1,300 fps, 최소 해상도 조건)" },{ label: "주파수 범위", value: "기본 60 Hz, 최대 650 Hz" },{ label: "최소 측정 범위", value: "0.25 μm @ 1 m (50 mm 렌즈 사용 시, 최대 밝기 조건)" },{ label: "XY-axis", value: "0.25 μm @ 1 m (50 mm 렌즈 사용 시)//0.125 μm (근거리 초점 시)" },{ label: "Z-axis", value: "15.24 μm @ 1 m (50 mm 렌즈 사용 시)" },{ label: "통신 인터페이스", value: "USB 3.0" }] },
       { section: "렌즈", rows: [{ label: "초점 거리", value: "6 / 12.5 / 25 / 50 / 100 mm" }] },
       { section: "조명 장치", rows: [{ label: "LED 투광 조명", value: "최대 20,000 Lux" }] },
     ],
     uses: "로봇 구동부, 샤프트, 베어링, 감속기 등 회전체의 진동 분석\n구조물(프레임, 링크 등) 변형 및 거동 모드 분석\n시험 장비의 정합성 검증 및 실증 환경 진동 특성 평가",
   },
   {
-    id: 9, cat: "테스트베드", name: "자율주행센서 성능평가용//주행 환경 테스트베드", image: "/images/equipment/testbed-autonomous-driving.jpg", youtube: "",
+    id: 9, cat: "테스트베드", name: "자율주행센서 성능평가용 주행 환경 테스트베드", image: "/images/equipment/testbed-autonomous-driving.jpg", youtube: "",
     specs: [
       { section: "카메라", rows: [{ label: "구성", value: "모션캡처 카메라 16대" },{ label: "Sampling Rate", value: "200 Hz 이상" },{ label: "추적 대상", value: "최대 2대의 이동 로봇 동시 위치 자세(6DoF) 추적 가능" }] },
       { section: "환경", rows: [{ label: "시험 구역 크기", value: "가로 6 m, 세로 12 m" },{ label: "조도 조건", value: "50 ~ 1,000 Lux" },{ label: "온도 조건", value: "20 ± 2 ℃" },{ label: "바닥 환경", value: "무광 타일 마감 (광반사 최소화 및 센서 오차 저감 설계)" }] },
+      { section: "장애물", rows: [{ label: "장애물 형상", value: "벽체, 테이블, 소형 및 대형 원통 등" },{ label: "제어 방식", value: "3축 겐트리 로봇을 이용한 정밀 이동 가능" }] },
     ],
     uses: "다양한 환경 조건을 재현하여 자율주행 로봇의 성능 평가\n정적·동적 장애물 회피 시나리오를 통해 센서 인식 및 제어 알고리즘 성능 검증",
   },
   {
-    id: 10, cat: "테스트베드", name: "생활지원 서비스로봇//테스트베드 (구축예정)", image: "/images/equipment/testbed-service-robot.jpg", youtube: "",
+    id: 10, cat: "테스트베드", name: "생활지원 서비스로봇 테스트베드", image: "/images/equipment/testbed-service-robot.jpg", youtube: "",
     specs: [
-      { section: "환경", rows: [{ label: "면적", value: "약 24평 (약 80 m²)" },{ label: "조도", value: "10 ~ 1,000 Lux" },{ label: "온습도", value: "실내 환경 조건 유지" }] },
-      { section: "구성요소", rows: [{ label: "실 구획", value: "거실, 부엌, 안방, 서재, 현관,//화장실, 팬트리, 세탁실, 드레스룸 총 9개" },{ label: "비품 배치", value: "각 공간 용도에 맞는 가구, 가전, 생활소품 등" },{ label: "카메라", value: "천정 고정식 고정밀 로봇 위치//추적 카메라 16대,//사각지대 보완용 이동식//영상 데이터 수집 카메라 20대" },{ label: "데이터 수집 인프라", value: "영상, 위치, 음성, 환경 센서//데이터 동기화 수집 및 저장 가능 구조" }] },
+      { section: "환경", rows: [{ label: "면적", value: "약 24평 (약 80 m²)" },{ label: "조도", value: "10 ~ 1,000 Lux" },{ label: "온습도", value: "실내 환경 조건 유지" },{ label: "공간", value: "실제 가정집과 유사한 인테리어 및 동선 설계" }] },
+      { section: "구성요소", rows: [{ label: "실 구획", value: "거실, 부엌, 안방, 서재, 현관, 화장실, 팬트리, 세탁실, 드레스룸//총 9개" },{ label: "비품 배치", value: "각 공간 용도에 맞는 가구, 가전, 생활소품 등" },{ label: "카메라", value: "천정 고정식 고정밀 로봇 위치 추적 카메라 16대,//사각지대 보완용 이동식 영상 데이터 수집 카메라 20대" },{ label: "데이터 수집 인프라", value: "영상, 위치, 음성, 환경 센서 데이터 동기화 수집 및//저장 가능 구조" }] },
     ],
     uses: "실제 가정 환경과 동일한 구조를 구현하여 생활지원 로봇 실사용 성능 평가\n이동, 인식, 조작 등 다양한 서비스 동작을 실환경에서 검증",
   },
