@@ -9,7 +9,7 @@ import PageHeader from "../components/PageHeader";
 const RES_HEADER = {
   label: "회의실 예약",
   title: "회의실 예약",
-  sub: "회의실을 선택하고 원하는 날짜와 시간을 예약하세요.",
+  sub: "",
 };
 
 const StepLabel = ({ num, label }) => (

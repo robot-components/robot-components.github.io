@@ -2,7 +2,7 @@ import { useState } from "react";
 import { DEFAULT_NOTICES, DEFAULT_NOTICE_CATS } from "../data/defaults";
 import PageHeader from "../components/PageHeader";
 
-const NOTICE_HEADER = { label: "공지사항", title: "공지사항", sub: "센터 운영 관련 공지 및 사업 안내를 확인하세요." };
+const NOTICE_HEADER = { label: "공지사항", title: "공지사항", sub: "" };
 
 const noticeCatStyle = (cat, cats = []) => {
   const colors = ["#dbeafe,#1d4ed8","#dcfce7,#166534","#f3e8ff,#7e22ce","#fef3c7,#92400e","#fee2e2,#991b1b","#f1f5f9,#475569"];
