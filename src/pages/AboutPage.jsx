@@ -104,9 +104,9 @@ export default function AboutPage({ nav, site, location }) {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, alignItems: "center" }}>
             <div style={{ width: "100%", borderRadius: 8, overflow: "hidden", flexShrink: 0, position: "relative" }}>
               {location.mapImage
-                ? <img src={location.mapImage} alt="오시는 길 약도" style={{ width: "100%", height: 300, objectFit: "cover", display: "block" }} onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }} />
+                ? <img src={location.mapImage} alt="오시는 길 약도" style={{ width: "100%", height: 200, objectFit: "cover", display: "block" }} onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }} />
                 : null}
-              <div style={{ display: location.mapImage ? "none" : "flex", height: 300, background: "#f1f5f9", border: "1px solid #e2e8f0", borderRadius: 8, flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14 }}>
+              <div style={{ display: location.mapImage ? "none" : "flex", height: 200, background: "#f1f5f9", border: "1px solid #e2e8f0", borderRadius: 8, flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14 }}>
                 <MapPin size={32} color="#94a3b8" />
                 <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>아래 버튼을 눌러 지도를 확인하세요.</p>
               </div>
