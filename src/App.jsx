@@ -1,9 +1,7 @@
 import { useState, useRef } from "react";
 import { PAGES } from "./data/pages";
 import { DEFAULT_SITE, DEFAULT_LOCATION } from "./data/defaults";
-import { useStorage } from "./hooks/useStorage";
 import PageWrapper from "./components/PageWrapper";
-import AdminBtn from "./components/AdminBtn";
 import AboutPage from "./pages/AboutPage";
 import KolasPage from "./pages/KolasPage";
 import EquipmentPage from "./pages/EquipmentPage";
@@ -13,39 +11,13 @@ import FaqPage from "./pages/FaqPage";
 
 export default function App() {
   const [pageIdx, setPageIdx] = useState(0);
-  const [adminMode, setAdminMode] = useState(false);
-  const [adminPw, setAdminPw] = useState("");
-  const [showLogin, setShowLogin] = useState(false);
-
-  const [site, setSite] = useStorage("rtac_site", DEFAULT_SITE);
-  const [location, setLocation] = useStorage("rtac_location", DEFAULT_LOCATION);
-
   const topRef = useRef(null);
 
   const nav = (i) => {
     setPageIdx(i);
-    setShowLogin(false);
-    document.title = `${PAGES[i].label} | ${site.centerName}`;
+    document.title = `${PAGES[i].label} | ${DEFAULT_SITE.centerName}`;
     try { window.history.pushState({}, "", `/${PAGES[i].slug}`); } catch {}
     topRef.current?.scrollIntoView({ behavior: "instant" });
-  };
-
-  const login = () => {
-    if (adminPw === "2840") { setAdminMode(true); setShowLogin(false); setAdminPw(""); }
-    else alert("비밀번호가 틀렸습니다.");
-  };
-  const logout = () => { setAdminMode(false); };
-
-  // 각 페이지에 전달하는 공통 관리자 props
-  const adminProps = {
-    adminMode,
-    showLogin,
-    adminPw,
-    onAdminPwChange: setAdminPw,
-    onLogin: login,
-    onLoginClose: () => setShowLogin(false),
-    onLogout: logout,
-    onAdminToggle: adminMode ? logout : () => setShowLogin((v) => !v),
   };
 
   return (
@@ -56,8 +28,8 @@ export default function App() {
       <header style={{ background: "#1e3a5f", position: "sticky", top: 0, zIndex: 50, boxShadow: "0 1px 8px rgba(0,0,0,0.15)" }}>
         <div style={{ maxWidth: 1126, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 62, gap: 16 }}>
           <div onClick={() => nav(0)} style={{ cursor: "pointer", flexShrink: 0 }}>
-            <div style={{ color: "#fff", fontWeight: 700, fontSize: 15, textAlign: "left" }}>{site.centerName}</div>
-            <div style={{ color: "#93c5fd", fontSize: 11, textAlign: "left" }}>{site.centerNameEn}</div>
+            <div style={{ color: "#fff", fontWeight: 700, fontSize: 15, textAlign: "left" }}>{DEFAULT_SITE.centerName}</div>
+            <div style={{ color: "#93c5fd", fontSize: 11, textAlign: "left" }}>{DEFAULT_SITE.centerNameEn}</div>
           </div>
           <nav style={{ display: "flex", gap: 2 }}>
             {PAGES.map((p, i) => (
@@ -70,9 +42,7 @@ export default function App() {
               </button>
             ))}
           </nav>
-          <div style={{ flexShrink: 0 }}>
-            <AdminBtn adminMode={adminMode} onToggle={adminMode ? logout : () => setShowLogin((v) => !v)} />
-          </div>
+          <div style={{ flexShrink: 0, width: 40 }} />
         </div>
       </header>
 
@@ -83,41 +53,29 @@ export default function App() {
           {pageIdx === 0 && (
             <AboutPage
               nav={nav}
-              {...adminProps}
-              site={site}
-              setSite={setSite}
-              location={location}
-              setLocation={setLocation}
+              site={DEFAULT_SITE}
+              location={DEFAULT_LOCATION}
             />
           )}
           {pageIdx === 1 && (
             <KolasPage
-              {...adminProps}
-              site={site}
-              setSite={setSite}
-              location={location}
+              location={DEFAULT_LOCATION}
             />
           )}
           {pageIdx === 2 && (
             <EquipmentPage
-              {...adminProps}
-              location={location}
+              location={DEFAULT_LOCATION}
             />
           )}
           {pageIdx === 3 && (
-            <ReservationPage
-              {...adminProps}
-            />
+            <ReservationPage />
           )}
           {pageIdx === 4 && (
-            <NoticePage
-              {...adminProps}
-            />
+            <NoticePage />
           )}
           {pageIdx === 5 && (
             <FaqPage
-              {...adminProps}
-              location={location}
+              location={DEFAULT_LOCATION}
             />
           )}
         </PageWrapper>
@@ -128,10 +86,10 @@ export default function App() {
       <footer style={{ background: "#1e3a5f", padding: "32px 0" }}>
         <div style={{ maxWidth: 1126, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: "0 32px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16 }}>
           <div>
-            <div style={{ color: "#fff", fontWeight: 700, fontSize: 15, marginBottom: 8 }}>{site.centerName} (RTAC)</div>
+            <div style={{ color: "#fff", fontWeight: 700, fontSize: 15, marginBottom: 8 }}>{DEFAULT_SITE.centerName} (RTAC)</div>
             <div style={{ fontSize: 12, lineHeight: 2, color: "#93c5fd" }}>
-              {location.address.replace("\n", " ")}<br />
-              {location.email} · {location.website}
+              {DEFAULT_LOCATION.address.replace("\n", " ")}<br />
+              {DEFAULT_LOCATION.email} · {DEFAULT_LOCATION.website}
             </div>
           </div>
           <div style={{ fontSize: 12, color: "#60a5fa", alignSelf: "flex-end" }}>Korea Electronics Technology Institute (KETI)</div>

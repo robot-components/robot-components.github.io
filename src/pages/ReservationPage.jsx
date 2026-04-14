@@ -1,33 +1,16 @@
 import { useState } from "react";
-import { Building2, CheckCircle, Edit2, Plus, Trash2 } from "lucide-react";
+import { Building2, CheckCircle } from "lucide-react";
 import { useStorage } from "../hooks/useStorage";
 import { DEFAULT_ROOMS } from "../data/defaults";
 import { HALF_SLOTS, slotLabel } from "../utils/slotUtils";
 import { inp, ta, btn } from "../components/styles";
 import PageHeader from "../components/PageHeader";
-import EditSection from "../components/EditSection";
-import AdminBadge from "../components/AdminBadge";
-import AdminBtn from "../components/AdminBtn";
-import LoginBox from "../components/LoginBox";
 
-const DEFAULT_RES_HEADER = {
+const RES_HEADER = {
   label: "회의실 예약",
   title: "회의실 예약",
   sub: "회의실을 선택하고 원하는 날짜와 시간을 예약하세요.",
 };
-
-function ReservationHeaderEditor({ resHeader, onSave, onCancel }) {
-  const [f, setF] = useState({ ...resHeader });
-  return (
-    <EditSection title="페이지 헤더 수정" onSave={() => onSave(f)} onCancel={onCancel}>
-      <div style={{ display: "grid", gap: 10 }}>
-        <div><label style={{ fontSize: 12, color: "#64748b", display: "block", marginBottom: 4 }}>분류명 (상단 작은 글씨)</label><input value={f.label} onChange={(e) => setF({ ...f, label: e.target.value })} style={inp()} /></div>
-        <div><label style={{ fontSize: 12, color: "#64748b", display: "block", marginBottom: 4 }}>제목</label><input value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} style={inp()} /></div>
-        <div><label style={{ fontSize: 12, color: "#64748b", display: "block", marginBottom: 4 }}>부제</label><input value={f.sub} onChange={(e) => setF({ ...f, sub: e.target.value })} style={inp()} /></div>
-      </div>
-    </EditSection>
-  );
-}
 
 const StepLabel = ({ num, label }) => (
   <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
@@ -77,14 +60,10 @@ function ReservationLookup({ reservations, setReservations }) {
   );
 }
 
-export default function ReservationPage({ adminMode, showLogin, adminPw, onAdminPwChange, onLogin, onLoginClose, onLogout, onAdminToggle }) {
-  const [rooms, setRooms] = useStorage("rtac_rooms", DEFAULT_ROOMS);
+export default function ReservationPage() {
+  const rooms = DEFAULT_ROOMS;
   const [reservations, setReservations] = useStorage("rtac_res", []);
-  const [resHeader, setResHeader] = useStorage("rtac_res_header", DEFAULT_RES_HEADER);
 
-  const [editingHeader, setEditingHeader] = useState(false);
-  const [roomEdit, setRoomEdit] = useState(null);
-  const [roomForm, setRoomForm] = useState({ name: "", capacity: "", facilities: "" });
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [calMonth, setCalMonth] = useState(new Date(2025, 2, 1));
   const [selectedDate, setSelectedDate] = useState(null);
@@ -105,98 +84,13 @@ export default function ReservationPage({ adminMode, showLogin, adminPw, onAdmin
     setResSuccess(true);
   };
 
-  const RoomFormFields = () => (
-    <div style={{ display: "grid", gap: 10 }}>
-      <div><label style={{ fontSize: 12, color: "#64748b", display: "block", marginBottom: 4 }}>회의실명</label><input value={roomForm.name} onChange={(e) => setRoomForm({ ...roomForm, name: e.target.value })} style={inp()} /></div>
-      <div><label style={{ fontSize: 12, color: "#64748b", display: "block", marginBottom: 4 }}>수용 인원</label><input type="number" value={roomForm.capacity} onChange={(e) => setRoomForm({ ...roomForm, capacity: e.target.value })} style={inp()} /></div>
-      <div><label style={{ fontSize: 12, color: "#64748b", display: "block", marginBottom: 4 }}>시설</label><input value={roomForm.facilities} onChange={(e) => setRoomForm({ ...roomForm, facilities: e.target.value })} style={inp()} /></div>
-    </div>
-  );
-
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-        <PageHeader label={resHeader.label} title={resHeader.title} sub={resHeader.sub} />
-        <AdminBtn adminMode={adminMode} onToggle={onAdminToggle} />
-      </div>
-      <LoginBox showLogin={showLogin} adminMode={adminMode} adminPw={adminPw} onAdminPwChange={onAdminPwChange} onLogin={onLogin} onClose={onLoginClose} />
-      {adminMode && <AdminBadge onLogout={onLogout} />}
+      <PageHeader label={RES_HEADER.label} title={RES_HEADER.title} sub={RES_HEADER.sub} />
 
-      {/* 헤더 수정 버튼 */}
-      {adminMode && !editingHeader && (
-        <div style={{ marginBottom: 12 }}>
-          <button onClick={() => setEditingHeader(true)} style={{ ...btn("#f8fafc", "#1e3a5f"), border: "1px solid #e2e8f0", fontSize: 12 }}><Edit2 size={13} />헤더 수정</button>
-        </div>
-      )}
+      <ReservationLookup reservations={reservations} setReservations={setReservations} />
 
-      {/* 헤더 수정 폼 */}
-      {adminMode && editingHeader && (
-        <ReservationHeaderEditor
-          resHeader={resHeader}
-          onSave={(v) => { setResHeader(v); setEditingHeader(false); }}
-          onCancel={() => setEditingHeader(false)}
-        />
-      )}
-
-      {/* 관리자: 예약 목록 + 회의실 관리 */}
-      {adminMode && (
-        <div style={{ marginBottom: 24 }}>
-          <div style={{ fontWeight: 700, fontSize: 15, color: "#1e3a5f", marginBottom: 12 }}>예약 목록</div>
-          {reservations.length === 0
-            ? <div style={{ color: "#94a3b8", fontSize: 13, padding: 20, background: "#fff", borderRadius: 10, border: "0.5px solid #e2e8f0" }}>예약 내역이 없습니다.</div>
-            : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 24 }}>
-                {reservations.map((r) => (
-                  <div key={r.id} style={{ background: "#fff", borderRadius: 10, border: "1px solid #e2e8f0", padding: "14px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
-                    <div>
-                      <div style={{ fontWeight: 700, fontSize: 14 }}>{r.roomName}<span style={{ fontWeight: 400, color: "#64748b", fontSize: 13 }}> {r.date} {slotLabel(r.startHour)}~{slotLabel(r.endHour)}</span></div>
-                      <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>{r.name} ({r.org}) · {r.purpose}</div>
-                    </div>
-                    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                      <span style={{ fontSize: 12, padding: "3px 10px", borderRadius: 12, fontWeight: 500, background: r.status === "승인" ? "#dcfce7" : r.status === "취소" ? "#fee2e2" : "#fef3c7", color: r.status === "승인" ? "#166534" : r.status === "취소" ? "#991b1b" : "#92400e" }}>{r.status}</span>
-                      {r.status === "대기" && <button onClick={() => setReservations(reservations.map((x) => x.id === r.id ? { ...x, status: "승인" } : x))} style={btn()}>승인</button>}
-                      {r.status !== "취소" && <button onClick={() => setReservations(reservations.map((x) => x.id === r.id ? { ...x, status: "취소" } : x))} style={btn("#fee2e2", "#991b1b")}>취소</button>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )
-          }
-          <div style={{ fontWeight: 700, fontSize: 15, color: "#1e3a5f", marginBottom: 12 }}>회의실 관리</div>
-          {roomEdit === "new" && (
-            <EditSection title="회의실 추가" onSave={() => { setRooms([...rooms, { id: Date.now(), ...roomForm, capacity: Number(roomForm.capacity) }]); setRoomEdit(null); }} onCancel={() => setRoomEdit(null)}>
-              <RoomFormFields />
-            </EditSection>
-          )}
-          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
-            {rooms.map((r) => (
-              <div key={r.id}>
-                {roomEdit === r.id
-                  ? (
-                    <EditSection title="회의실 수정" onSave={() => { setRooms(rooms.map((x) => x.id === r.id ? { ...x, ...roomForm, capacity: Number(roomForm.capacity) } : x)); setRoomEdit(null); }} onCancel={() => setRoomEdit(null)}>
-                      <RoomFormFields />
-                    </EditSection>
-                  )
-                  : (
-                    <div style={{ background: "#fff", borderRadius: 8, border: "1px solid #e2e8f0", padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <div><span style={{ fontWeight: 600, fontSize: 14 }}>{r.name}</span><span style={{ fontSize: 13, color: "#64748b", marginLeft: 10 }}>{r.capacity}명 · {r.facilities}</span></div>
-                      <div style={{ display: "flex", gap: 6 }}>
-                        <button onClick={() => { setRoomForm({ name: r.name, capacity: r.capacity, facilities: r.facilities }); setRoomEdit(r.id); }} style={{ ...btn("#f1f5f9", "#475569"), padding: "5px 8px" }}><Edit2 size={13} /></button>
-                        <button onClick={() => { if (confirm("삭제하시겠습니까?")) setRooms(rooms.filter((x) => x.id !== r.id)); }} style={{ ...btn("#fee2e2", "#991b1b"), padding: "5px 8px" }}><Trash2 size={13} /></button>
-                      </div>
-                    </div>
-                  )
-                }
-              </div>
-            ))}
-          </div>
-          <button onClick={() => { setRoomForm({ name: "", capacity: "", facilities: "" }); setRoomEdit("new"); }} style={btn()}><Plus size={14} />회의실 추가</button>
-        </div>
-      )}
-
-      {!adminMode && <ReservationLookup reservations={reservations} setReservations={setReservations} />}
-
-      {!adminMode && (resSuccess
+      {resSuccess
         ? (
           <div style={{ textAlign: "center", padding: "60px 24px", background: "#fff", borderRadius: 16, border: "0.5px solid #e2e8f0" }}>
             <CheckCircle size={52} color="#22c55e" style={{ margin: "0 auto 16px" }} />
@@ -364,7 +258,7 @@ export default function ReservationPage({ adminMode, showLogin, adminPw, onAdmin
             )}
           </div>
         )
-      )}
+      }
     </div>
   );
 }
