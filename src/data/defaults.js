@@ -166,9 +166,7 @@ export const DEFAULT_KOLAS = [
 ];
 
 export const DEFAULT_ROOMS = [
-  { id: 1, name: "제1회의실", capacity: 10, facilities: "빔프로젝터, 화이트보드, 모니터, 화상회의 시스템" },
-  { id: 2, name: "제2회의실", capacity: 6, facilities: "모니터, 화이트보드, 노트북 연결 포트" },
-  { id: 3, name: "제3회의실", capacity: 20, facilities: "대형 스크린, 빔프로젝터, 마이크 시스템, 화이트보드" },
+  { id: 1, name: "중회의실", capacity: 10, facilities: "모니터, 화상회의 시스템" },
 ];
 
 export const DEFAULT_NOTICE_CATS = ["공지","장비안내","사업안내"];

@@ -5,7 +5,7 @@ import PageHeader from "../components/PageHeader";
 import CatFilter from "../components/CatFilter";
 
 const FAQ_HEADER = { label: "FAQ", title: "자주 묻는 질문 (FAQ)", sub: "" };
-const FAQ_CONTACT = { title: "문의하기", desc: "답변을 찾지 못하셨다면 아래 이메일로 문의해 주세요." };
+const FAQ_CONTACT = { title: "문의하기", desc: "기타 문의사항은 아래 이메일로 문의해 주시기 바랍니다." };
 
 export default function FaqPage({ location }) {
   const faqs = DEFAULT_FAQS;
