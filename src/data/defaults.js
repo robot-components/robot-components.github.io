@@ -77,7 +77,7 @@ export const DEFAULT_EQUIPMENT = [
       { section: "저속축", rows: [{ label: "모터 용량", value: "5.1 kW" },{ label: "모터 회전 속도 범위", value: "10 ~ 250 min⁻¹" },{ label: "토크센서 토크 범위", value: "10 N·m" },{ label: "토크센서 정확도", value: "0.05 % F.S." }] },
       { section: "온습도 챔버", rows: [{ label: "온도 범위", value: "-40 ~ 150 ℃" },{ label: "습도 범위", value: "30 ~ 95 % R.H." }] },
     ],
-    uses: "전압, 전류, 토크, 회전속도 등 기본 성능 측정\n구동 응답 및 위치 제어 성능 측정\n제동 토크, 응답 시간 측정 및 브레이크 제어 특성 평가\n실제 운용 환경 재현 및 환경 변화에 따른 성능 변화 시험",
+    uses: "전압, 전류, 토크, 회전속도 등 기본 성능 측정 및 데이터 분석\n구동 응답 및 위치 제어 성능 측정\n제동 토크, 응답 시간 측정 및 브레이크 제어 특성 평가\n실제 운용 환경 재현 및 환경 변화에 따른 성능 변화 시험",
   },
   {
     id: 2, cat: "액추에이터", name: "50 N·m 급 로봇 액추에이터 성능 분석기", image: "/images/equipment/actuator-50nm.jpg", youtube: "",
@@ -86,7 +86,7 @@ export const DEFAULT_EQUIPMENT = [
       { section: "저속축", rows: [{ label: "모터 용량", value: "2.1 kW" },{ label: "모터 회전 속도 범위", value: "10 ~ 250 min⁻¹" },{ label: "토크센서 토크 범위", value: "100 N·m" },{ label: "토크센서 정확도", value: "0.05 % F.S." }] },
       { section: "온습도 챔버", rows: [{ label: "온도 범위", value: "-40 ~ 150 ℃" },{ label: "습도 범위", value: "30 ~ 95 % R.H." }] },
     ],
-    uses: "전압, 전류, 토크, 회전속도 등 기본 성능 측정\n구동 응답 및 위치 제어 성능 측정\n제동 토크, 응답 시간 측정 및 브레이크 제어 특성 평가\n실제 운용 환경 재현 및 환경 변화에 따른 성능 변화 시험",
+    uses: "전압, 전류, 토크, 회전속도 등 기본 성능 측정 및 데이터 분석\n구동 응답 및 위치 제어 성능 측정\n제동 토크, 응답 시간 측정 및 브레이크 제어 특성 평가\n실제 운용 환경 재현 및 환경 변화에 따른 성능 변화 시험",
   },
   {
     id: 3, cat: "액추에이터", name: "150 N·m 급 로봇 액추에이터 성능 분석기", image: "/images/equipment/actuator-150nm.jpg", youtube: "",
@@ -95,7 +95,7 @@ export const DEFAULT_EQUIPMENT = [
       { section: "저속축", rows: [{ label: "모터 용량", value: "4.1 kW" },{ label: "모터 회전 속도 범위", value: "10 ~ 250 min⁻¹" },{ label: "토크센서 토크 범위", value: "200 N·m" },{ label: "토크센서 정확도", value: "0.05 % F.S." }] },
       { section: "온습도 챔버", rows: [{ label: "온도 범위", value: "-40 ~ 150 ℃" },{ label: "습도 범위", value: "30 ~ 95 % R.H." }] },
     ],
-    uses: "전압, 전류, 토크, 회전속도 등 기본 성능 측정\n구동 응답 및 위치 제어 성능 측정\n제동 토크, 응답 시간 측정 및 브레이크 제어 특성 평가\n실제 운용 환경 재현 및 환경 변화에 따른 성능 변화 시험",
+    uses: "전압, 전류, 토크, 회전속도 등 기본 성능 측정 및 데이터 분석\n구동 응답 및 위치 제어 성능 측정\n제동 토크, 응답 시간 측정 및 브레이크 제어 특성 평가\n실제 운용 환경 재현 및 환경 변화에 따른 성능 변화 시험",
   },
   {
     id: 4, cat: "액추에이터", name: "800 N·m 급 로봇 액추에이터 성능 분석기", image: "/images/equipment/actuator-800nm.jpg", youtube: "",
@@ -103,7 +103,7 @@ export const DEFAULT_EQUIPMENT = [
       { section: "저속축", rows: [{ label: "모터 용량", value: "31.1 kW" },{ label: "모터 회전 속도 범위", value: "10 ~ 200 min⁻¹" },{ label: "토크센서 토크 범위", value: "800 N·m" },{ label: "토크센서 정확도", value: "0.05 % F.S." }] },
       { section: "온습도 챔버", rows: [{ label: "온도 범위", value: "-40 ~ 150 ℃" },{ label: "습도 범위", value: "30 ~ 95 % R.H." }] },
     ],
-    uses: "전압, 전류, 토크, 회전속도 등 기본 성능 측정\n구동 응답 및 위치 제어 성능 측정\n제동 토크, 응답 시간 측정 및 브레이크 제어 특성 평가\n실제 운용 환경 재현 및 환경 변화에 따른 성능 변화 시험",
+    uses: "전압, 전류, 토크, 회전속도 등 기본 성능 측정 및 데이터 분석\n구동 응답 및 위치 제어 성능 측정\n제동 토크, 응답 시간 측정 및 브레이크 제어 특성 평가\n실제 운용 환경 재현 및 환경 변화에 따른 성능 변화 시험",
   },
   {
     id: 5, cat: "감속기", name: "500 N·m 급 로봇 감속기 성능 시험기", image: "/images/equipment/reducer-500nm.jpg", youtube: "",
@@ -112,7 +112,7 @@ export const DEFAULT_EQUIPMENT = [
       { section: "출력축", rows: [{ label: "모터 회전 속도 범위", value: "10 ~ 400 min⁻¹" },{ label: "토크센서 토크 범위", value: "500 N·m" },{ label: "토크센서 정확도", value: "0.05 % F.S." },{ label: "엔코더 분해능", value: "0.08 arc.sec" },{ label: "엔코더 시스템 정확도", value: "±1.7 arc.sec" }] },
       { section: "온습도 챔버", rows: [{ label: "온도 범위", value: "-20 ~ 120 ℃" },{ label: "습도 범위", value: "0 ~ 100 % R.H." }] },
     ],
-    uses: "히스테리시스곡선을 이용한 백래시, 로스트모션, 토크 강성 측정\n각도 전달 오차 및 속도비(감속비) 측정\n무부하 러닝 토크 측정\n효율 측정 및 환경시험",
+    uses: "히스테리시스곡선을 이용한 백래시, 로스트모션, 토크 강성 측정\n각도 전달 오차 및 속도비(감속비) 측정\n무부하 러닝 토크 측정\n효율 측정 및 환경 시험",
   },
   {
     id: 6, cat: "감속기", name: "로봇용 고정밀 감속기 성능 시험기", image: "/images/equipment/reducer-fixed.jpg", youtube: "",
@@ -125,7 +125,7 @@ export const DEFAULT_EQUIPMENT = [
   {
     id: 7, cat: "로봇", name: "6자유도 로봇 머니플레이터//성능 측정 시스템", image: "/images/equipment/robot-6dof-manipulator.jpg", youtube: "",
     specs: [
-      { section: "Laser Tracker (AT960-MR)", rows: [{ label: "Angle accuracy", value: "±15 μm + 6 μm/m" },{ label: "Distance accuracy", value: "0.5 μm/m" },{ label: "데이터 출력", value: "1,000 point/sec" },{ label: "측정 거리", value: "40 m (Red Ring Reflector 사용시)" },{ label: "측정 범위", value: "수평각 360°, 수직각 ±145°" }] },
+      { section: "Laser Tracker (AT960-MR)", rows: [{ label: "Angle accuracy", value: "±15 μm + 6 μm/m" },{ label: "Distance accuracy", value: "0.5 μm/m" },{ label: "데이터 출력", value: "1,000 point/sec" },{ label: "측정 거리", value: "40 m (Red Ring Reflector 사용 시)" },{ label: "측정 범위", value: "수평각 360°, 수직각 ±145°" }] },
       { section: "T-MAC (6축; X, Y, Z, Yaw, Pitch, Roll)", rows: [{ label: "위치 정밀도", value: "±15 μm + 6 μm/m" },{ label: "일반 회전 정밀도", value: "±0.01°" }] },
     ],
     uses: "KS B ISO 9283 분석 SW 지원\n포즈/거리 정확도 및 반복 정밀도 측정\n측정 Point(X,Y,Z) 간 거리 및 다양한 로봇의 Tool 변위 측정\n로봇 Tool 위치 캘리브레이션",
@@ -133,7 +133,7 @@ export const DEFAULT_EQUIPMENT = [
   {
     id: 8, cat: "로봇", name: "모바일 로봇의 구동부품//진동 측정 장비", image: "/images/equipment/robot-mobile-vibration.jpg", youtube: "",
     specs: [
-      { section: "고속 카메라 (IRIS M)", rows: [{ label: "Frame Rate", value: "기본 120 fps (최대 1,300 fps)" },{ label: "주파수 범위", value: "기본 60 Hz, 최대 650 Hz" },{ label: "최소 측정 범위", value: "0.25 μm @ 1 m (50 mm 렌즈)" },{ label: "통신 인터페이스", value: "USB 3.0" }] },
+      { section: "고속 카메라", rows: [{ label: "Frame Rate", value: "기본 120 fps (최대 1,300 fps, 최소 해상도 조건)" },{ label: "주파수 범위", value: "기본 60 Hz, 최대 650 Hz" },{ label: "최소 측정 범위", value: "0.25 μm @ 1 m (50 mm 렌즈 사용 시, 최대 밝기 조건)" },{ label: "통신 인터페이스", value: "USB 3.0" }] },
       { section: "렌즈", rows: [{ label: "초점 거리", value: "6 / 12.5 / 25 / 50 / 100 mm" }] },
       { section: "조명 장치", rows: [{ label: "LED 투광 조명", value: "최대 20,000 Lux" }] },
     ],
@@ -142,8 +142,8 @@ export const DEFAULT_EQUIPMENT = [
   {
     id: 9, cat: "테스트베드", name: "자율주행센서 성능평가용//주행 환경 테스트베드", image: "/images/equipment/testbed-autonomous-driving.jpg", youtube: "",
     specs: [
-      { section: "카메라", rows: [{ label: "구성", value: "모션캡처 카메라 16대" },{ label: "Sampling Rate", value: "200 Hz 이상" },{ label: "추적 대상", value: "최대 2대의 이동 로봇 동시 위치 자세" }] },
-      { section: "환경", rows: [{ label: "시험 구역 크기", value: "가로 6 m, 세로 12 m" },{ label: "조도 조건", value: "50 ~ 1,000 Lux" },{ label: "온도 조건", value: "20 ± 2 ℃" },{ label: "바닥 환경", value: "무광 타일 마감" }] },
+      { section: "카메라", rows: [{ label: "구성", value: "모션캡처 카메라 16대" },{ label: "Sampling Rate", value: "200 Hz 이상" },{ label: "추적 대상", value: "최대 2대의 이동 로봇 동시 위치 자세(6DoF) 추적 가능" }] },
+      { section: "환경", rows: [{ label: "시험 구역 크기", value: "가로 6 m, 세로 12 m" },{ label: "조도 조건", value: "50 ~ 1,000 Lux" },{ label: "온도 조건", value: "20 ± 2 ℃" },{ label: "바닥 환경", value: "무광 타일 마감 (광반사 최소화 및 센서 오차 저감 설계)" }] },
     ],
     uses: "다양한 환경 조건을 재현하여 자율주행 로봇의 성능 평가\n정적·동적 장애물 회피 시나리오를 통해 센서 인식 및 제어 알고리즘 성능 검증",
   },
