@@ -71,7 +71,7 @@ export const DEFAULT_SITE = {
 
 export const DEFAULT_EQUIPMENT = [
   {
-    id: 1, cat: "액추에이터", name: "10 N·m 이하급 로봇 액추에이터 성능 분석기", image: "/images/equipment/actuator-10nm.jpg", youtube: "",
+    id: 1, cat: "액추에이터", name: "10 N·m 이하급 로봇 액추에이터 성능 분석기", image: "/images/equipment/actuator-10nm.jpg", youtube: "", itube: "https://www.itube.or.kr/aplct/equipSrch/sharingView.do?g_menu_id=MNID210100&equip_root=use&equip_no=EPN0148978&search_value=10Nm&search_etube_no=&search_equip_class_cd_1=&search_equip_class_cd_2=&search_equip_class_cd_3=&search_purpose_cd_1=&search_purpose_cd_2=&search_idle_cd=&search_postlist=%EA%B2%BD%EA%B8%B0%EB%8F%84&search_postlist_2=&search_cpny_nm=%ED%95%9C%EA%B5%AD%EC%A0%84%EC%9E%90%EA%B8%B0%EC%88%A0%EC%97%B0%EA%B5%AC%EC%9B%90&search_cpny_id=00008805&pageIndex=1&is_recent_equip_list=E",
     specs: [
       { section: "고속축", rows: [{ label: "모터 용량", value: "1.41 kW" },{ label: "모터 회전 속도 범위", value: "10 ~ 4,200 min⁻¹" },{ label: "토크센서 토크 범위", value: "1 N·m" },{ label: "토크센서 정확도", value: "0.1 % F.S." }] },
       { section: "저속축", rows: [{ label: "모터 용량", value: "5.1 kW" },{ label: "모터 회전 속도 범위", value: "10 ~ 250 min⁻¹" },{ label: "토크센서 토크 범위", value: "10 N·m" },{ label: "토크센서 정확도", value: "0.05 % F.S." }] },
@@ -80,7 +80,7 @@ export const DEFAULT_EQUIPMENT = [
     uses: "전압, 전류, 토크, 회전속도 등 기본 성능 측정 및 데이터 분석\n구동 응답 및 위치 제어 성능 측정\n제동 토크, 응답 시간 측정 및 브레이크 제어 특성 평가\n실제 운용 환경 재현 및 환경 변화에 따른 성능 변화 시험",
   },
   {
-    id: 2, cat: "액추에이터", name: "50 N·m 급 로봇 액추에이터 성능 분석기", image: "/images/equipment/actuator-50nm.jpg", youtube: "",
+    id: 2, cat: "액추에이터", name: "50 N·m 급 로봇 액추에이터 성능 분석기", image: "/images/equipment/actuator-50nm.jpg", youtube: "", itube: "https://www.itube.or.kr/aplct/equipSrch/sharingView.do?g_menu_id=MNID210100&equip_root=use&equip_no=EPN0034005&search_value=50Nm&search_etube_no=&search_equip_class_cd_1=&search_equip_class_cd_2=&search_equip_class_cd_3=&search_purpose_cd_1=&search_purpose_cd_2=&search_idle_cd=&search_postlist=%EA%B2%BD%EA%B8%B0%EB%8F%84&search_postlist_2=&search_cpny_nm=%ED%95%9C%EA%B5%AD%EC%A0%84%EC%9E%90%EA%B8%B0%EC%88%A0%EC%97%B0%EA%B5%AC%EC%9B%90&search_cpny_id=00008805&pageIndex=1&is_recent_equip_list=E",
     specs: [
       { section: "고속축", rows: [{ label: "모터 용량", value: "1.7 kW" },{ label: "모터 회전 속도 범위", value: "10 ~ 4,200 min⁻¹" },{ label: "토크센서 토크 범위", value: "5 N·m" },{ label: "토크센서 정확도", value: "0.05 % F.S." }] },
       { section: "저속축", rows: [{ label: "모터 용량", value: "2.1 kW" },{ label: "모터 회전 속도 범위", value: "10 ~ 250 min⁻¹" },{ label: "토크센서 토크 범위", value: "100 N·m" },{ label: "토크센서 정확도", value: "0.05 % F.S." }] },
@@ -89,7 +89,7 @@ export const DEFAULT_EQUIPMENT = [
     uses: "전압, 전류, 토크, 회전속도 등 기본 성능 측정 및 데이터 분석\n구동 응답 및 위치 제어 성능 측정\n제동 토크, 응답 시간 측정 및 브레이크 제어 특성 평가\n실제 운용 환경 재현 및 환경 변화에 따른 성능 변화 시험",
   },
   {
-    id: 3, cat: "액추에이터", name: "150 N·m 급 로봇 액추에이터 성능 분석기", image: "/images/equipment/actuator-150nm.jpg", youtube: "",
+    id: 3, cat: "액추에이터", name: "150 N·m 급 로봇 액추에이터 성능 분석기", image: "/images/equipment/actuator-150nm.jpg", youtube: "", itube: "https://www.itube.or.kr/aplct/equipSrch/sharingView.do?g_menu_id=MNID210100&equip_root=use&equip_no=EPN0067977&search_value=50Nm&search_etube_no=&search_equip_class_cd_1=&search_equip_class_cd_2=&search_equip_class_cd_3=&search_purpose_cd_1=&search_purpose_cd_2=&search_idle_cd=&search_postlist=%EA%B2%BD%EA%B8%B0%EB%8F%84&search_postlist_2=&search_cpny_nm=%ED%95%9C%EA%B5%AD%EC%A0%84%EC%9E%90%EA%B8%B0%EC%88%A0%EC%97%B0%EA%B5%AC%EC%9B%90&search_cpny_id=00008805&pageIndex=1&is_recent_equip_list=E",
     specs: [
       { section: "고속축", rows: [{ label: "모터 용량", value: "4.9 kW" },{ label: "모터 회전 속도 범위", value: "10 ~ 4,200 min⁻¹" },{ label: "토크센서 토크 범위", value: "50 N·m" },{ label: "토크센서 정확도", value: "0.05 % F.S." }] },
       { section: "저속축", rows: [{ label: "모터 용량", value: "4.1 kW" },{ label: "모터 회전 속도 범위", value: "10 ~ 250 min⁻¹" },{ label: "토크센서 토크 범위", value: "200 N·m" },{ label: "토크센서 정확도", value: "0.05 % F.S." }] },
@@ -98,7 +98,7 @@ export const DEFAULT_EQUIPMENT = [
     uses: "전압, 전류, 토크, 회전속도 등 기본 성능 측정 및 데이터 분석\n구동 응답 및 위치 제어 성능 측정\n제동 토크, 응답 시간 측정 및 브레이크 제어 특성 평가\n실제 운용 환경 재현 및 환경 변화에 따른 성능 변화 시험",
   },
   {
-    id: 4, cat: "액추에이터", name: "800 N·m 급 로봇 액추에이터 성능 분석기", image: "/images/equipment/actuator-800nm.jpg", youtube: "",
+    id: 4, cat: "액추에이터", name: "800 N·m 급 로봇 액추에이터 성능 분석기", image: "/images/equipment/actuator-800nm.jpg", youtube: "", itube: "https://www.itube.or.kr/aplct/equipSrch/sharingView.do?g_menu_id=MNID210100&equip_root=use&equip_no=EPN0148977&search_value=800Nm&search_etube_no=&search_equip_class_cd_1=&search_equip_class_cd_2=&search_equip_class_cd_3=&search_purpose_cd_1=&search_purpose_cd_2=&search_idle_cd=&search_postlist=%EA%B2%BD%EA%B8%B0%EB%8F%84&search_postlist_2=&search_cpny_nm=%ED%95%9C%EA%B5%AD%EC%A0%84%EC%9E%90%EA%B8%B0%EC%88%A0%EC%97%B0%EA%B5%AC%EC%9B%90&search_cpny_id=00008805&pageIndex=1&is_recent_equip_list=E",
     specs: [
       { section: "저속축", rows: [{ label: "모터 용량", value: "31.1 kW" },{ label: "모터 회전 속도 범위", value: "10 ~ 200 min⁻¹" },{ label: "토크센서 토크 범위", value: "800 N·m" },{ label: "토크센서 정확도", value: "0.05 % F.S." }] },
       { section: "온습도 챔버", rows: [{ label: "온도 범위", value: "-40 ~ 150 ℃" },{ label: "습도 범위", value: "30 ~ 95 % R.H." }] },
@@ -106,7 +106,7 @@ export const DEFAULT_EQUIPMENT = [
     uses: "전압, 전류, 토크, 회전속도 등 기본 성능 측정 및 데이터 분석\n구동 응답 및 위치 제어 성능 측정\n제동 토크, 응답 시간 측정 및 브레이크 제어 특성 평가\n실제 운용 환경 재현 및 환경 변화에 따른 성능 변화 시험",
   },
   {
-    id: 5, cat: "감속기", name: "500 N·m 급 로봇 감속기 성능 시험기", image: "/images/equipment/reducer-500nm.jpg", youtube: "",
+    id: 5, cat: "감속기", name: "500 N·m 급 로봇 감속기 성능 시험기", image: "/images/equipment/reducer-500nm.jpg", youtube: "", itube: "https://www.itube.or.kr/aplct/equipSrch/sharingView.do?g_menu_id=MNID210100&equip_root=use&equip_no=EPN0190303&search_value=500Nm&search_etube_no=&search_equip_class_cd_1=&search_equip_class_cd_2=&search_equip_class_cd_3=&search_purpose_cd_1=&search_purpose_cd_2=&search_idle_cd=&search_postlist=%EA%B2%BD%EA%B8%B0%EB%8F%84&search_postlist_2=&search_cpny_nm=%ED%95%9C%EA%B5%AD%EC%A0%84%EC%9E%90%EA%B8%B0%EC%88%A0%EC%97%B0%EA%B5%AC%EC%9B%90&search_cpny_id=00008805&pageIndex=1&is_recent_equip_list=E",
     specs: [
       { section: "입력축", rows: [{ label: "모터 회전 속도 범위", value: "10 ~ 4,200 min⁻¹" },{ label: "토크센서 토크 범위", value: "50 N·m" },{ label: "토크센서 정확도", value: "0.05 % F.S." },{ label: "엔코더 분해능", value: "0.82 arc.sec" },{ label: "엔코더 시스템 정확도", value: "±1.7 arc.sec" }] },
       { section: "출력축", rows: [{ label: "모터 회전 속도 범위", value: "10 ~ 400 min⁻¹" },{ label: "토크센서 토크 범위", value: "500 N·m" },{ label: "토크센서 정확도", value: "0.05 % F.S." },{ label: "엔코더 분해능", value: "0.08 arc.sec" },{ label: "엔코더 시스템 정확도", value: "±1.7 arc.sec" }] },
@@ -115,7 +115,7 @@ export const DEFAULT_EQUIPMENT = [
     uses: "히스테리시스곡선을 이용한 백래시, 로스트모션, 토크 강성 측정\n각도 전달 오차 및 속도비(감속비) 측정\n무부하 러닝 토크 측정\n효율 측정 및 환경 시험",
   },
   {
-    id: 6, cat: "감속기", name: "로봇용 고정밀 감속기 성능 시험기", image: "/images/equipment/reducer-fixed.jpg", youtube: "",
+    id: 6, cat: "감속기", name: "로봇용 고정밀 감속기 성능 시험기", image: "/images/equipment/reducer-fixed.jpg", youtube: "", itube: "https://www.itube.or.kr/aplct/equipSrch/sharingView.do?g_menu_id=MNID210100&equip_root=use&equip_no=EPN0148975&search_value=%EA%B3%A0%EC%A0%95%EB%B0%80&search_etube_no=&search_equip_class_cd_1=&search_equip_class_cd_2=&search_equip_class_cd_3=&search_purpose_cd_1=&search_purpose_cd_2=&search_idle_cd=&search_postlist=%EA%B2%BD%EA%B8%B0%EB%8F%84&search_postlist_2=&search_cpny_nm=%ED%95%9C%EA%B5%AD%EC%A0%84%EC%9E%90%EA%B8%B0%EC%88%A0%EC%97%B0%EA%B5%AC%EC%9B%90&search_cpny_id=00008805&pageIndex=1&is_recent_equip_list=E",
     specs: [
       { section: "입력축", rows: [{ label: "모터 회전 속도 범위", value: "2 ~ 4,200 min⁻¹" },{ label: "토크센서 토크 범위", value: "2 N·m" },{ label: "토크센서 정확도", value: "0.05 % F.S." },{ label: "엔코더 분해능", value: "1.44 arc.sec" },{ label: "엔코더 시스템 정확도", value: "±2.4 arc.sec" }] },
       { section: "출력축", rows: [{ label: "모터 회전 속도 범위", value: "2 ~ 100 min⁻¹" },{ label: "토크센서 토크 범위", value: "100 N·m" },{ label: "토크센서 정확도", value: "0.05 % F.S." },{ label: "엔코더 분해능", value: "0.14 arc.sec" },{ label: "엔코더 시스템 정확도", value: "±1.4 arc.sec" }] },
@@ -123,7 +123,7 @@ export const DEFAULT_EQUIPMENT = [
     uses: "히스테리시스곡선을 이용한 백래시, 로스트모션, 토크 강성 측정\n각도 전달 오차 및 속도비(감속비) 측정\n무부하 러닝 토크 및 기동·증속기동 토크 측정\n효율 측정",
   },
   {
-    id: 7, cat: "로봇", name: "6자유도 로봇 머니플레이터 성능 측정 시스템", image: "/images/equipment/robot-6dof-manipulator.jpg", youtube: "",
+    id: 7, cat: "로봇", name: "6자유도 로봇 머니플레이터 성능 측정 시스템", image: "/images/equipment/robot-6dof-manipulator.jpg", youtube: "", itube: "https://www.itube.or.kr/aplct/equipSrch/sharingView.do?g_menu_id=MNID210100&equip_root=use&equip_no=EPN0069146&search_value=6%EC%9E%90%EC%9C%A0%EB%8F%84&search_etube_no=&search_equip_class_cd_1=&search_equip_class_cd_2=&search_equip_class_cd_3=&search_purpose_cd_1=&search_purpose_cd_2=&search_idle_cd=&search_postlist=%EA%B2%BD%EA%B8%B0%EB%8F%84&search_postlist_2=&search_cpny_nm=%ED%95%9C%EA%B5%AD%EC%A0%84%EC%9E%90%EA%B8%B0%EC%88%A0%EC%97%B0%EA%B5%AC%EC%9B%90&search_cpny_id=00008805&pageIndex=1&is_recent_equip_list=E",
     specs: [
       { section: "Laser Tracker (AT960-MR)", rows: [{ label: "Angle Accuracy", value: "±15 μm + 6 μm/m" },{ label: "Distance Accuracy", value: "0.5 μm/m" },{ label: "데이터 출력", value: "1,000 point/sec" },{ label: "측정 거리", value: "40 m (Red Ring Reflector 사용 시)" },{ label: "측정 범위", value: "수평각 360°, 수직각 ±145°" }] },
       { section: "Red Ring Reflector (3축; X, Y, Z)", rows: [{ label: "크기", value: "지름 1.5 inch, 0.5 inch" },{ label: "Acceptance Angle", value: "±30 °" }] },
@@ -132,7 +132,7 @@ export const DEFAULT_EQUIPMENT = [
     uses: "KS B ISO 9283 분석 SW 지원\n포즈/거리 정확도 및 반복 정밀도 측정\n측정 Point(X,Y,Z) 간 거리 및 다양한 로봇의 Tool 변위 측정\n로봇 Tool 위치 캘리브레이션",
   },
   {
-    id: 8, cat: "로봇", name: "모바일 로봇의 구동부품 진동 측정 장비", image: "/images/equipment/robot-mobile-vibration.jpg", youtube: "",
+    id: 8, cat: "로봇", name: "모바일 로봇의 구동부품 진동 측정 장비", image: "/images/equipment/robot-mobile-vibration.jpg", youtube: "", itube: "https://www.itube.or.kr/aplct/equipSrch/sharingView.do?g_menu_id=MNID210100&equip_root=use&equip_no=EPN0242238&search_value=%EB%AA%A8%EB%B0%94%EC%9D%BC&search_etube_no=&search_equip_class_cd_1=&search_equip_class_cd_2=&search_equip_class_cd_3=&search_purpose_cd_1=&search_purpose_cd_2=&search_idle_cd=&search_postlist=%EA%B2%BD%EA%B8%B0%EB%8F%84&search_postlist_2=&search_cpny_nm=%ED%95%9C%EA%B5%AD%EC%A0%84%EC%9E%90%EA%B8%B0%EC%88%A0%EC%97%B0%EA%B5%AC%EC%9B%90&search_cpny_id=00008805&pageIndex=1&is_recent_equip_list=E",
     specs: [
       { section: "고속 카메라 및 듀얼 고속 카메라", rows: [{ label: "Frame Rate", value: "기본 120 fps (최대 1,300 fps, 최소 해상도 조건)" },{ label: "주파수 범위", value: "기본 60 Hz, 최대 650 Hz" },{ label: "최소 측정 범위", value: "0.25 μm @ 1 m (50 mm 렌즈 사용 시, 최대 밝기 조건)" },{ label: "XY-axis", value: "0.25 μm @ 1 m (50 mm 렌즈 사용 시)//0.125 μm (근거리 초점 시)" },{ label: "Z-axis", value: "15.24 μm @ 1 m (50 mm 렌즈 사용 시)" },{ label: "통신 인터페이스", value: "USB 3.0" }] },
       { section: "렌즈", rows: [{ label: "초점 거리", value: "6 / 12.5 / 25 / 50 / 100 mm" }] },
@@ -141,7 +141,7 @@ export const DEFAULT_EQUIPMENT = [
     uses: "로봇 구동부, 샤프트, 베어링, 감속기 등 회전체의 진동 분석\n구조물(프레임, 링크 등) 변형 및 거동 모드 분석\n시험 장비의 정합성 검증 및 실증 환경 진동 특성 평가",
   },
   {
-    id: 9, cat: "테스트베드", name: "자율주행센서 성능평가용 주행 환경 테스트베드", image: "/images/equipment/testbed-autonomous-driving.jpg", youtube: "",
+    id: 9, cat: "테스트베드", name: "자율주행센서 성능평가용 주행 환경 테스트베드", image: "/images/equipment/testbed-autonomous-driving.jpg", youtube: "", itube: "https://www.itube.or.kr/aplct/equipSrch/sharingView.do?g_menu_id=MNID210100&equip_root=use&equip_no=EPN0200956&search_value=%ED%85%8C%EC%8A%A4%ED%8A%B8%EB%B2%A0%EB%93%9C&search_etube_no=&search_equip_class_cd_1=&search_equip_class_cd_2=&search_equip_class_cd_3=&search_purpose_cd_1=&search_purpose_cd_2=&search_idle_cd=&search_postlist=%EA%B2%BD%EA%B8%B0%EB%8F%84&search_postlist_2=&search_cpny_nm=%ED%95%9C%EA%B5%AD%EC%A0%84%EC%9E%90%EA%B8%B0%EC%88%A0%EC%97%B0%EA%B5%AC%EC%9B%90&search_cpny_id=00008805&pageIndex=1&is_recent_equip_list=E",
     specs: [
       { section: "카메라", rows: [{ label: "구성", value: "모션캡처 카메라 16대" },{ label: "Sampling Rate", value: "200 Hz 이상" },{ label: "추적 대상", value: "최대 2대의 이동 로봇 동시 위치 자세(6DoF) 추적 가능" }] },
       { section: "환경", rows: [{ label: "시험 구역 크기", value: "가로 6 m, 세로 12 m" },{ label: "조도 조건", value: "50 ~ 1,000 Lux" },{ label: "온도 조건", value: "20 ± 2 ℃" },{ label: "바닥 환경", value: "무광 타일 마감 (광반사 최소화 및 센서 오차 저감 설계)" }] },
@@ -150,7 +150,7 @@ export const DEFAULT_EQUIPMENT = [
     uses: "다양한 환경 조건을 재현하여 자율주행 로봇의 성능 평가\n정적·동적 장애물 회피 시나리오를 통해 센서 인식 및 제어 알고리즘 성능 검증",
   },
   {
-    id: 10, cat: "테스트베드", name: "생활지원 서비스로봇 테스트베드", image: "/images/equipment/testbed-service-robot.jpg", youtube: "",
+    id: 10, cat: "테스트베드", name: "생활지원 서비스로봇의 복합작업//성능 평가 환경 시스템", image: "/images/equipment/testbed-service-robot.jpg", youtube: "", itube: "https://www.itube.or.kr/aplct/equipSrch/sharingView.do?g_menu_id=MNID210100&equip_root=use&equip_no=EPN0248174&search_value=%EC%83%9D%ED%99%9C%EC%A7%80%EC%9B%90&search_etube_no=&search_equip_class_cd_1=&search_equip_class_cd_2=&search_equip_class_cd_3=&search_purpose_cd_1=&search_purpose_cd_2=&search_idle_cd=&search_postlist=%EA%B2%BD%EA%B8%B0%EB%8F%84&search_postlist_2=&search_cpny_nm=%ED%95%9C%EA%B5%AD%EC%A0%84%EC%9E%90%EA%B8%B0%EC%88%A0%EC%97%B0%EA%B5%AC%EC%9B%90&search_cpny_id=00008805&pageIndex=1&is_recent_equip_list=E",
     specs: [
       { section: "환경", rows: [{ label: "면적", value: "약 24평 (약 80 m²)" },{ label: "조도", value: "10 ~ 1,000 Lux" },{ label: "온습도", value: "실내 환경 조건 유지" },{ label: "공간", value: "실제 가정집과 유사한 인테리어 및 동선 설계" }] },
       { section: "구성요소", rows: [{ label: "실 구획", value: "거실, 부엌, 안방, 서재, 현관, 화장실, 팬트리, 세탁실, 드레스룸//총 9개" },{ label: "비품 배치", value: "각 공간 용도에 맞는 가구, 가전, 생활소품 등" },{ label: "카메라", value: "천정 고정식 고정밀 로봇 위치 추적 카메라 16대,//사각지대 보완용 이동식 영상 데이터 수집 카메라 20대" },{ label: "데이터 수집 인프라", value: "영상, 위치, 음성, 환경 센서 데이터 동기화 수집 및 저장" }] },

@@ -67,7 +67,7 @@ export default function EquipmentPage({ location }) {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
               <div>
                 <span style={{ background: "#dbeafe", color: "#1d4ed8", fontSize: 13, padding: "2px 8px", borderRadius: 10 }}>{eqModal.cat}</span>
-                <h3 style={{ fontSize: 17, fontWeight: 700, color: "#1e3a5f", margin: "8px 0 0", lineHeight: 1.4 }}>{renderName(eqModal.name)}</h3>
+                <h3 style={{ fontSize: 17, fontWeight: 700, color: "#1e3a5f", margin: "8px 0 0", lineHeight: 1.4 }}>{eqModal.name.replace(/\/\//g, " ")}</h3>
               </div>
               <button onClick={() => setEqModal(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8" }}><X size={20} /></button>
             </div>
@@ -82,8 +82,8 @@ export default function EquipmentPage({ location }) {
                 <div key={i} style={{ fontSize: 12, color: "#334155", padding: "6px 0", borderBottom: "0.5px solid #f1f5f9" }}>• {u}</div>
               ))}
             </div>
-            {eqModal.youtube && (
-              <a href={eqModal.youtube} target="_blank" rel="noopener noreferrer" style={{ ...btn(), marginTop: 20, justifyContent: "center", textDecoration: "none", display: "flex" }}>
+            {eqModal.itube && (
+              <a href={eqModal.itube} target="_blank" rel="noopener noreferrer" style={{ ...btn(), marginTop: 20, justifyContent: "center", textDecoration: "none", display: "flex" }}>
                 i-Tube 바로가기 →
               </a>
             )}
