@@ -10,7 +10,13 @@ import NoticePage from "./pages/NoticePage";
 import FaqPage from "./pages/FaqPage";
 
 export default function App() {
-  const [pageIdx, setPageIdx] = useState(0);
+  const getInitialPage = () => {
+    const path = window.location.pathname.replace(/^\//, "");
+    const idx = PAGES.findIndex(p => p.slug === path);
+    return idx >= 0 ? idx : 0;
+  };
+
+  const [pageIdx, setPageIdx] = useState(getInitialPage);
   const topRef = useRef(null);
 
   const nav = (i) => {
