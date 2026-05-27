@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Building2, Info, LogIn, LogOut, Check, X, ChevronDown, ChevronUp, RefreshCw } from "lucide-react";
+import { Building2, Info, LogIn, LogOut, Check, X, ChevronDown, ChevronUp, RefreshCw, Trash2 } from "lucide-react";
 import { DEFAULT_ROOMS } from "../data/defaults";
 import PageHeader from "../components/PageHeader";
 import { supabase } from "../lib/supabase";
@@ -109,6 +109,12 @@ export default function ReservationPage() {
       setForm(EMPTY_FORM);
     }
     setSubmitting(false);
+  };
+
+  const deleteReservation = async (id, name) => {
+    if (!window.confirm(`"${name}" 신청 내역을 삭제하시겠습니까?`)) return;
+    await supabase.from("reservations").delete().eq("id", id);
+    await fetchReservations();
   };
 
   const updateStatus = async (id, status) => {
@@ -319,6 +325,10 @@ export default function ReservationPage() {
                         <button onClick={() => updateStatus(r.id, "rejected")} disabled={updatingId === r.id}
                           style={{ display: "flex", alignItems: "center", gap: 4, background: "#ef4444", color: "#fff", border: "none", borderRadius: 6, padding: "8px 16px", cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: "inherit" }}>
                           <X size={13} /> 거절
+                        </button>
+                        <button onClick={() => deleteReservation(r.id, r.name)}
+                          style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "1px solid #e2e8f0", color: "#94a3b8", borderRadius: 6, padding: "8px 12px", cursor: "pointer", fontSize: 13, fontFamily: "inherit", marginLeft: "auto" }}>
+                          <Trash2 size={13} /> 삭제
                         </button>
                       </div>
                     </div>
