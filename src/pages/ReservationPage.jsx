@@ -276,11 +276,12 @@ export default function ReservationPage() {
               <div key={day} onClick={() => dayRes.length > 0 && setSelectedDay(isSelected ? null : dateStr)}
                 style={{ minHeight: 58, borderRadius: 8, padding: "6px 4px",
                   cursor: dayRes.length > 0 ? "pointer" : "default",
-                  background: isSelected ? "#eff6ff" : isToday ? "#f0fdf4" : "transparent",
-                  border: isSelected ? "1px solid #bfdbfe" : isToday ? "1px solid #bbf7d0" : "1px solid transparent" }}>
+                  background: isSelected ? "#eff6ff" : "transparent",
+                  border: isSelected ? "1px solid #bfdbfe" : isToday ? "2px solid #1e3a5f" : "1px solid transparent" }}>
                 <div style={{ textAlign: "center", fontSize: 13, marginBottom: 3,
                   fontWeight: isToday ? 700 : 400,
-                  color: dow === 0 ? "#ef4444" : dow === 6 ? "#3b82f6" : isToday ? "#15803d" : "#334155" }}>
+                  color: dow === 0 ? "#ef4444" : dow === 6 ? "#3b82f6" : isToday ? "#1e3a5f" : "#334155",
+                  fontWeight: isToday ? 700 : 400 }}>
                   {day}
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
