@@ -102,15 +102,18 @@ export default function AboutPage({ nav, site, location }) {
         <SectionHeader title="오시는 길" />
         <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 28 }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, alignItems: "center" }}>
-            <div style={{ width: "100%", height: 200, borderRadius: 8, overflow: "hidden", flexShrink: 0, position: "relative" }}>
-              {location.mapImage
-                ? <img src={location.mapImage} alt="오시는 길 약도" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }} />
-                : null}
-              <div style={{ display: location.mapImage ? "none" : "flex", width: "100%", height: "100%", background: "#f1f5f9", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14 }}>
-                <MapPin size={32} color="#94a3b8" />
-                <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>아래 버튼을 눌러 지도를 확인하세요.</p>
-              </div>
-              <a href={location.mapLink} target="_blank" rel="noopener noreferrer" style={{ position: "absolute", bottom: 0, left: 0, right: 0, display: "block", background: "rgba(254,229,0,0.92)", color: "#191919", padding: "8px 0", textAlign: "center", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>카카오맵에서 보기</a>
+            <div style={{ width: "100%", height: 280, borderRadius: 8, overflow: "hidden", flexShrink: 0, position: "relative" }}>
+              <iframe
+                src="https://maps.google.com/maps?q=경기도+부천시+원미구+평천로+655&output=embed&hl=ko&z=17"
+                width="100%"
+                height="100%"
+                style={{ border: 0, display: "block" }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="오시는 길"
+              />
+              <a href="https://maps.google.com/?q=경기도+부천시+원미구+평천로+655" target="_blank" rel="noopener noreferrer" style={{ position: "absolute", bottom: 0, left: 0, right: 0, display: "block", background: "rgba(66,133,244,0.9)", color: "#fff", padding: "8px 0", textAlign: "center", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>Google Maps에서 보기</a>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "18px max-content 1fr", columnGap: 10, rowGap: 22, alignItems: "start", textAlign: "left", paddingLeft: 16 }}>
               {[[<MapPin size={15} key="pin" />, "주소", location.address], [<Mail size={15} key="mail" />, "이메일", location.email], [<Globe size={15} key="globe" />, "웹사이트", location.website]].flatMap(([icon, label, val], i) => [
