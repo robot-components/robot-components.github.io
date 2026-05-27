@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Building2, Info, LogIn, LogOut, Check, X, ChevronDown, ChevronUp, RefreshCw, Trash2 } from "lucide-react";
+import { Building2, Info, LogIn, LogOut, Check, X, ChevronDown, ChevronUp, RefreshCw, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { DEFAULT_ROOMS } from "../data/defaults";
 import PageHeader from "../components/PageHeader";
 import { supabase } from "../lib/supabase";
@@ -24,6 +24,9 @@ const EMPTY_FORM = {
   name: "", affiliation: "", phone: "", email: "",
   date: "", start_time: "", end_time: "", room: "", purpose: "",
 };
+
+const MONTH_NAMES = ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"];
+const DAY_NAMES = ["일","월","화","수","목","금","토"];
 
 const inputStyle = {
   border: "1px solid #e2e8f0", borderRadius: 8,
@@ -50,6 +53,10 @@ export default function ReservationPage() {
   const [updatingId, setUpdatingId] = useState(null);
   const [adminNote, setAdminNote] = useState({});
 
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [calendarReservations, setCalendarReservations] = useState([]);
+
   const fetchReservations = useCallback(async () => {
     setLoadingRes(true);
     const { data, error } = await supabase
@@ -59,6 +66,24 @@ export default function ReservationPage() {
     if (!error) setReservations(data || []);
     setLoadingRes(false);
   }, []);
+
+  const fetchCalendarData = useCallback(async () => {
+    const y = currentDate.getFullYear();
+    const m = currentDate.getMonth();
+    const firstDay = `${y}-${String(m + 1).padStart(2, "0")}-01`;
+    const lastDay = `${y}-${String(m + 1).padStart(2, "0")}-${new Date(y, m + 1, 0).getDate()}`;
+    const { data } = await supabase
+      .from("reservations")
+      .select("id, date, start_time, end_time, room, status")
+      .in("status", ["pending", "approved"])
+      .gte("date", firstDay)
+      .lte("date", lastDay);
+    setCalendarReservations(data || []);
+  }, [currentDate]);
+
+  useEffect(() => {
+    fetchCalendarData();
+  }, [fetchCalendarData]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -131,6 +156,16 @@ export default function ReservationPage() {
 
   const today = new Date().toISOString().split("T")[0];
 
+  const calYear = currentDate.getFullYear();
+  const calMonth = currentDate.getMonth();
+  const firstDayOfMonth = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const reservationsByDate = calendarReservations.reduce((acc, r) => {
+    if (!acc[r.date]) acc[r.date] = [];
+    acc[r.date].push(r);
+    return acc;
+  }, {});
+
   return (
     <div>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24 }}>
@@ -200,6 +235,100 @@ export default function ReservationPage() {
             </li>
           ))}
         </ul>
+      </div>
+
+      {/* 예약 현황 달력 */}
+      <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 24, marginBottom: 28 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+          <div style={{ fontWeight: 700, fontSize: 15, color: "#1e3a5f" }}>예약 현황</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <button onClick={() => { setCurrentDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1)); setSelectedDay(null); }}
+              style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 4, display: "flex" }}>
+              <ChevronLeft size={16} color="#64748b" />
+            </button>
+            <span style={{ fontSize: 14, fontWeight: 600, color: "#1e3a5f", minWidth: 80, textAlign: "center" }}>
+              {calYear}년 {MONTH_NAMES[calMonth]}
+            </span>
+            <button onClick={() => { setCurrentDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1)); setSelectedDay(null); }}
+              style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 4, display: "flex" }}>
+              <ChevronRight size={16} color="#64748b" />
+            </button>
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", marginBottom: 4 }}>
+          {DAY_NAMES.map((d, i) => (
+            <div key={d} style={{ textAlign: "center", fontSize: 12, fontWeight: 600, padding: "4px 0",
+              color: i === 0 ? "#ef4444" : i === 6 ? "#3b82f6" : "#94a3b8" }}>{d}</div>
+          ))}
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 2 }}>
+          {Array.from({ length: firstDayOfMonth }).map((_, i) => <div key={`e${i}`} />)}
+          {Array.from({ length: daysInMonth }).map((_, i) => {
+            const day = i + 1;
+            const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+            const dayRes = reservationsByDate[dateStr] || [];
+            const isToday = dateStr === today;
+            const isSelected = selectedDay === dateStr;
+            const dow = (firstDayOfMonth + i) % 7;
+            return (
+              <div key={day} onClick={() => dayRes.length > 0 && setSelectedDay(isSelected ? null : dateStr)}
+                style={{ minHeight: 58, borderRadius: 8, padding: "6px 4px",
+                  cursor: dayRes.length > 0 ? "pointer" : "default",
+                  background: isSelected ? "#eff6ff" : isToday ? "#f0fdf4" : "transparent",
+                  border: isSelected ? "1px solid #bfdbfe" : isToday ? "1px solid #bbf7d0" : "1px solid transparent" }}>
+                <div style={{ textAlign: "center", fontSize: 13, marginBottom: 3,
+                  fontWeight: isToday ? 700 : 400,
+                  color: dow === 0 ? "#ef4444" : dow === 6 ? "#3b82f6" : isToday ? "#15803d" : "#334155" }}>
+                  {day}
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  {dayRes.slice(0, 2).map(r => (
+                    <div key={r.id} style={{ fontSize: 10, textAlign: "center", borderRadius: 3, padding: "1px 3px",
+                      background: r.status === "approved" ? "#dcfce7" : "#fef3c7",
+                      color: r.status === "approved" ? "#15803d" : "#92400e" }}>
+                      {r.start_time}
+                    </div>
+                  ))}
+                  {dayRes.length > 2 && <div style={{ fontSize: 10, color: "#94a3b8", textAlign: "center" }}>+{dayRes.length - 2}</div>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div style={{ display: "flex", gap: 14, marginTop: 12, justifyContent: "flex-end" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "#64748b" }}>
+            <div style={{ width: 10, height: 10, borderRadius: 2, background: "#dcfce7", border: "1px solid #bbf7d0" }} /> 승인
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "#64748b" }}>
+            <div style={{ width: 10, height: 10, borderRadius: 2, background: "#fef3c7", border: "1px solid #fde68a" }} /> 대기중
+          </div>
+        </div>
+
+        {selectedDay && reservationsByDate[selectedDay] && (
+          <div style={{ marginTop: 14, padding: "14px 16px", background: "#f8fafc", borderRadius: 8, border: "1px solid #e2e8f0" }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#1e3a5f", marginBottom: 10 }}>
+              {selectedDay.replace(/-/g, ".")} 예약 현황
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+              {[...reservationsByDate[selectedDay]]
+                .sort((a, b) => a.start_time.localeCompare(b.start_time))
+                .map(r => (
+                  <div key={r.id} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
+                    <span style={{ color: "#475569", fontWeight: 500 }}>{r.start_time} ~ {r.end_time}</span>
+                    <span style={{ color: "#64748b" }}>{r.room}</span>
+                    <span style={{ fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 4,
+                      background: r.status === "approved" ? "#dcfce7" : "#fef3c7",
+                      color: r.status === "approved" ? "#15803d" : "#92400e" }}>
+                      {STATUS_LABEL[r.status]}
+                    </span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 예약 신청 폼 (비로그인 상태) */}
