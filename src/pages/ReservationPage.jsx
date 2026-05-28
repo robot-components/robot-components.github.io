@@ -1,14 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { Building2, Info, LogIn, LogOut, Check, X, ChevronDown, ChevronUp, RefreshCw, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
-import emailjs from "@emailjs/browser";
 import { DEFAULT_ROOMS } from "../data/defaults";
 import PageHeader from "../components/PageHeader";
 import { supabase } from "../lib/supabase";
 
-const EJS_SERVICE = "service_sd1uezd";
-const EJS_TEMPLATE_ADMIN = "template_hlztsyi";
-const EJS_TEMPLATE_USER = "template_fkwmm3k";
-const EJS_PUBLIC_KEY = "oEpEkDBkXHEjaUadn";
+const sendEmail = (type, data) =>
+  supabase.functions.invoke("send-email", { body: { type, data } }).catch(() => {});
 
 const NOTES = [
   "예약 신청 후 담당자 확인을 거쳐 이메일로 승인 여부를 안내드립니다.",
@@ -136,12 +133,7 @@ export default function ReservationPage() {
     if (error) {
       setFormError("신청 중 오류가 발생했습니다. 다시 시도해 주세요.");
     } else {
-      emailjs.send(EJS_SERVICE, EJS_TEMPLATE_ADMIN, {
-        name: form.name, affiliation: form.affiliation,
-        phone: form.phone, email: form.email,
-        date: form.date, start_time: form.start_time,
-        end_time: form.end_time, room: form.room, purpose: form.purpose,
-      }, { publicKey: EJS_PUBLIC_KEY }).catch(() => {});
+      sendEmail("new_reservation", form);
       setSubmitted(true);
       setForm(EMPTY_FORM);
     }
@@ -159,7 +151,7 @@ export default function ReservationPage() {
     const reservation = reservations.find(r => r.id === id);
     const note = adminNote[id] !== undefined ? adminNote[id] : (reservation?.admin_note || "");
     await supabase.from("reservations").update({ status, admin_note: note }).eq("id", id);
-    emailjs.send(EJS_SERVICE, EJS_TEMPLATE_USER, {
+    sendEmail("reservation_result", {
       to_email: reservation.email,
       name: reservation.name,
       status_label: status === "approved" ? "승인" : "거절",
@@ -167,8 +159,8 @@ export default function ReservationPage() {
       start_time: reservation.start_time,
       end_time: reservation.end_time,
       room: reservation.room,
-      admin_note: note ? `■ 관리자 메모: ${note}` : "",
-    }, { publicKey: EJS_PUBLIC_KEY }).catch(() => {});
+      admin_note: note,
+    });
     await fetchReservations();
     setUpdatingId(null);
   };
