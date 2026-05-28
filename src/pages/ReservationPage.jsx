@@ -5,7 +5,7 @@ import PageHeader from "../components/PageHeader";
 import { supabase } from "../lib/supabase";
 
 const sendEmail = (type, data) =>
-  supabase.functions.invoke("send-email", { body: { type, data } }).catch(() => {});
+  supabase.functions.invoke("dynamic-function", { body: { type, data } }).catch(() => {});
 
 const NOTES = [
   "예약 신청 후 담당자 확인을 거쳐 이메일로 승인 여부를 안내드립니다.",
