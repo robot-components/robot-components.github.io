@@ -223,7 +223,7 @@ export default function NoticePage({ adminUser }) {
             <div style={{ background: "#fff", padding: "40px 20px", textAlign: "center", color: "#94a3b8", fontSize: 14 }}>등록된 공지사항이 없습니다.</div>
           )}
           {filtered.map((n, idx) => (
-            <div key={n.id} style={{ background: "#fff", borderBottom: idx < filtered.length - 1 ? "1px solid #f1f5f9" : "none", padding: "13px 18px", display: "flex", alignItems: "center", gap: 10 }}>
+            <div key={n.id} style={{ background: n.pinned ? "#f0f9ff" : "#fff", borderBottom: idx < filtered.length - 1 ? "1px solid #f1f5f9" : "none", padding: "13px 18px", display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1, cursor: "pointer", minWidth: 0 }} onClick={() => setDetail(n)}>
                 <span style={catStyle(n.cat, cats)}>{n.cat}</span>
                 <span style={{ fontSize: 14, fontWeight: 500, color: "#1e293b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{n.title}</span>
