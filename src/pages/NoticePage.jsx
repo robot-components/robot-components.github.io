@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Plus, Pencil, Trash2, ChevronUp, ChevronDown, X, Paperclip } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Paperclip, GripVertical } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import PageHeader from "../components/PageHeader";
 
@@ -29,6 +29,8 @@ export default function NoticePage({ adminUser }) {
   const [editForm, setEditForm] = useState(null);
   const [pendingFiles, setPendingFiles] = useState([]);
   const [saving, setSaving] = useState(false);
+  const [dragIdx, setDragIdx] = useState(null);
+  const [dragOverIdx, setDragOverIdx] = useState(null);
   const fileInputRef = useRef(null);
 
   useEffect(() => { fetchNotices(); }, []);
@@ -82,24 +84,43 @@ export default function NoticePage({ adminUser }) {
     fetchNotices();
   };
 
-  const handleMove = async (id, dir) => {
-    const sorted = [...notices].sort((a, b) => (a.order_idx ?? 0) - (b.order_idx ?? 0));
-    const i = sorted.findIndex(n => n.id === id);
-    const j = dir === "up" ? i - 1 : i + 1;
-    if (j < 0 || j >= sorted.length) return;
-    const oi = sorted[i].order_idx ?? i;
-    const oj = sorted[j].order_idx ?? j;
-    await supabase.from("notices").update({ order_idx: oj }).eq("id", sorted[i].id);
-    await supabase.from("notices").update({ order_idx: oi }).eq("id", sorted[j].id);
+  // 드래그 앤 드롭
+  const handleDragStart = (e, idx) => {
+    setDragIdx(idx);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragOver = (e, idx) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDragOverIdx(idx);
+  };
+
+  const handleDrop = async (e, dropIdx) => {
+    e.preventDefault();
+    if (dragIdx === null || dragIdx === dropIdx) {
+      setDragIdx(null);
+      setDragOverIdx(null);
+      return;
+    }
+    const newOrder = [...sorted];
+    const [moved] = newOrder.splice(dragIdx, 1);
+    newOrder.splice(dropIdx, 0, moved);
+    await Promise.all(newOrder.map((item, i) =>
+      supabase.from("notices").update({ order_idx: i }).eq("id", item.id)
+    ));
+    setDragIdx(null);
+    setDragOverIdx(null);
     fetchNotices();
   };
 
-  const removeExistingFile = (idx) => {
-    setEditForm(f => ({ ...f, files: f.files.filter((_, i) => i !== idx) }));
+  const handleDragEnd = () => {
+    setDragIdx(null);
+    setDragOverIdx(null);
   };
-  const removePendingFile = (idx) => {
-    setPendingFiles(fs => fs.filter((_, i) => i !== idx));
-  };
+
+  const removeExistingFile = (idx) => setEditForm(f => ({ ...f, files: f.files.filter((_, i) => i !== idx) }));
+  const removePendingFile = (idx) => setPendingFiles(fs => fs.filter((_, i) => i !== idx));
 
   const openEdit = (notice = null) => {
     setEditForm(notice ? { id: notice.id, title: notice.title, cat: notice.cat, body: notice.body || "", pinned: notice.pinned || false, files: notice.files || [] } : { ...EMPTY_FORM });
@@ -112,6 +133,7 @@ export default function NoticePage({ adminUser }) {
     return (a.order_idx ?? 0) - (b.order_idx ?? 0);
   });
   const filtered = catFilter === "전체" ? sorted : sorted.filter(n => n.cat === catFilter);
+  const canDrag = adminUser && catFilter === "전체";
 
   return (
     <div>
@@ -140,19 +162,14 @@ export default function NoticePage({ adminUser }) {
             <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "#1e3a5f" }}>{editForm.id ? "공지 편집" : "새 공지 작성"}</h3>
             <button onClick={() => { setEditForm(null); setPendingFiles([]); }} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8" }}><X size={18} /></button>
           </div>
-
           <div style={{ display: "grid", gridTemplateColumns: "1fr 160px", gap: 10, marginBottom: 10 }}>
             <input placeholder="제목" value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} style={iStyle} />
             <input placeholder="카테고리" value={editForm.cat} onChange={e => setEditForm(f => ({ ...f, cat: e.target.value }))} style={iStyle} />
           </div>
           <textarea placeholder="내용" value={editForm.body} onChange={e => setEditForm(f => ({ ...f, body: e.target.value }))}
             style={{ ...iStyle, height: 140, resize: "vertical", marginBottom: 10 }} />
-
-          {/* 첨부파일 영역 */}
           <div style={{ border: "1px solid #e2e8f0", borderRadius: 8, padding: 12, marginBottom: 10, background: "#f8fafc" }}>
             <div style={{ fontSize: 12, color: "#64748b", fontWeight: 600, marginBottom: 8 }}>첨부파일</div>
-
-            {/* 기존 첨부파일 */}
             {editForm.files?.map((f, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, background: "#fff", border: "1px solid #e2e8f0", borderRadius: 6, padding: "6px 10px" }}>
                 <Paperclip size={12} color="#64748b" />
@@ -160,8 +177,6 @@ export default function NoticePage({ adminUser }) {
                 <button onClick={() => removeExistingFile(i)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", padding: 0 }}><X size={13} /></button>
               </div>
             ))}
-
-            {/* 새로 선택한 파일 */}
             {pendingFiles.map((f, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 6, padding: "6px 10px" }}>
                 <Paperclip size={12} color="#3b82f6" />
@@ -169,8 +184,6 @@ export default function NoticePage({ adminUser }) {
                 <button onClick={() => removePendingFile(i)} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", padding: 0 }}><X size={13} /></button>
               </div>
             ))}
-
-            {/* 파일 선택 버튼 */}
             <input ref={fileInputRef} type="file" multiple style={{ display: "none" }}
               onChange={e => setPendingFiles(fs => [...fs, ...Array.from(e.target.files)])} />
             <button onClick={() => fileInputRef.current?.click()}
@@ -178,7 +191,6 @@ export default function NoticePage({ adminUser }) {
               + 파일 추가
             </button>
           </div>
-
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "#475569", cursor: "pointer" }}>
               <input type="checkbox" checked={editForm.pinned} onChange={e => setEditForm(f => ({ ...f, pinned: e.target.checked }))} />
@@ -186,8 +198,7 @@ export default function NoticePage({ adminUser }) {
             </label>
             <div style={{ display: "flex", gap: 8 }}>
               <button onClick={() => { setEditForm(null); setPendingFiles([]); }} style={{ ...btnSm(), padding: "7px 16px" }}>취소</button>
-              <button onClick={handleSave} disabled={saving}
-                style={{ ...btnSm("primary"), padding: "7px 18px", fontSize: 13 }}>
+              <button onClick={handleSave} disabled={saving} style={{ ...btnSm("primary"), padding: "7px 18px", fontSize: 13 }}>
                 {saving ? "저장 중..." : "저장"}
               </button>
             </div>
@@ -210,7 +221,7 @@ export default function NoticePage({ adminUser }) {
               <div style={{ fontSize: 12, color: "#64748b", fontWeight: 600, marginBottom: 10 }}>첨부파일</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {detail.files.map((f, i) => (
-                  <a key={i} href={f.url} download target="_blank" rel="noopener noreferrer"
+                  <a key={i} href={f.url} target="_blank" rel="noopener noreferrer"
                     style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#eff6ff", border: "1px solid #bfdbfe", color: "#1d4ed8", padding: "9px 16px", borderRadius: 8, textDecoration: "none", fontSize: 13, fontWeight: 500, width: "fit-content" }}>
                     <Paperclip size={13} /> {f.name}
                   </a>
@@ -226,7 +237,26 @@ export default function NoticePage({ adminUser }) {
             <div style={{ background: "#fff", padding: "40px 20px", textAlign: "center", color: "#94a3b8", fontSize: 14 }}>등록된 공지사항이 없습니다.</div>
           )}
           {filtered.map((n, idx) => (
-            <div key={n.id} style={{ background: n.pinned ? "#dbeafe" : "#fff", borderBottom: idx < filtered.length - 1 ? "1px solid #f1f5f9" : "none", padding: "13px 18px", display: "flex", alignItems: "center", gap: 10 }}>
+            <div
+              key={n.id}
+              draggable={canDrag}
+              onDragStart={canDrag ? e => handleDragStart(e, idx) : undefined}
+              onDragOver={canDrag ? e => handleDragOver(e, idx) : undefined}
+              onDrop={canDrag ? e => handleDrop(e, idx) : undefined}
+              onDragEnd={canDrag ? handleDragEnd : undefined}
+              style={{
+                background: n.pinned ? "#dbeafe" : "#fff",
+                borderBottom: idx < filtered.length - 1 ? "1px solid #f1f5f9" : "none",
+                borderTop: dragOverIdx === idx && dragIdx !== idx ? "2px solid #3b82f6" : "2px solid transparent",
+                padding: "11px 18px",
+                display: "flex", alignItems: "center", gap: 10,
+                opacity: dragIdx === idx ? 0.4 : 1,
+                transition: "opacity 0.15s",
+              }}
+            >
+              {canDrag && (
+                <GripVertical size={14} color="#cbd5e1" style={{ flexShrink: 0, cursor: "grab" }} />
+              )}
               <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1, cursor: "pointer", minWidth: 0 }} onClick={() => setDetail(n)}>
                 <span style={catStyle(n.cat, cats)}>{n.cat}</span>
                 <span style={{ fontSize: 14, fontWeight: 500, color: "#1e293b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{n.title}</span>
@@ -235,14 +265,8 @@ export default function NoticePage({ adminUser }) {
               <span style={{ fontSize: 12, color: "#94a3b8", flexShrink: 0 }}>{n.date}</span>
               {adminUser && (
                 <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
-                  <button onClick={() => handleMove(n.id, "up")} disabled={idx === 0} title="위로"
-                    style={{ ...btnSm(), padding: "4px 6px", opacity: idx === 0 ? 0.3 : 1 }}><ChevronUp size={13} /></button>
-                  <button onClick={() => handleMove(n.id, "down")} disabled={idx === filtered.length - 1} title="아래로"
-                    style={{ ...btnSm(), padding: "4px 6px", opacity: idx === filtered.length - 1 ? 0.3 : 1 }}><ChevronDown size={13} /></button>
-                  <button onClick={() => openEdit(n)} title="편집"
-                    style={{ ...btnSm(), padding: "4px 7px" }}><Pencil size={12} /></button>
-                  <button onClick={() => handleDelete(n.id)} title="삭제"
-                    style={{ ...btnSm("danger"), padding: "4px 7px" }}><Trash2 size={12} /></button>
+                  <button onClick={() => openEdit(n)} title="편집" style={{ ...btnSm(), padding: "4px 7px" }}><Pencil size={12} /></button>
+                  <button onClick={() => handleDelete(n.id)} title="삭제" style={{ ...btnSm("danger"), padding: "4px 7px" }}><Trash2 size={12} /></button>
                 </div>
               )}
             </div>
