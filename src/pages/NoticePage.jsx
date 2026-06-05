@@ -45,10 +45,12 @@ export default function NoticePage({ adminUser }) {
     for (const file of files) {
       const path = `${Date.now()}_${file.name}`;
       const { error } = await supabase.storage.from("notice-files").upload(path, file);
-      if (!error) {
-        const { data: { publicUrl } } = supabase.storage.from("notice-files").getPublicUrl(path);
-        results.push({ name: file.name, url: publicUrl });
+      if (error) {
+        alert(`파일 업로드 실패: ${file.name}\n${error.message}`);
+        continue;
       }
+      const { data: { publicUrl } } = supabase.storage.from("notice-files").getPublicUrl(path);
+      results.push({ name: file.name, url: publicUrl });
     }
     return results;
   };
