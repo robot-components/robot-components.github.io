@@ -197,7 +197,6 @@ export default function NoticePage({ adminUser }) {
         <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 32 }}>
           <button onClick={() => setDetail(null)} style={{ background: "none", border: "none", color: "#3b82f6", cursor: "pointer", fontSize: 13, marginBottom: 20, fontFamily: "inherit", padding: 0 }}>← 목록으로</button>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            {detail.pinned && <span style={{ fontSize: 10, color: "#1d4ed8", fontWeight: 700, border: "1px solid #bfdbfe", padding: "1px 6px", borderRadius: 4 }}>고정</span>}
             <span style={catStyle(detail.cat, cats)}>{detail.cat}</span>
           </div>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1e3a5f", margin: "0 0 6px", lineHeight: 1.4 }}>{detail.title}</h2>
@@ -224,9 +223,8 @@ export default function NoticePage({ adminUser }) {
             <div style={{ background: "#fff", padding: "40px 20px", textAlign: "center", color: "#94a3b8", fontSize: 14 }}>등록된 공지사항이 없습니다.</div>
           )}
           {filtered.map((n, idx) => (
-            <div key={n.id} style={{ background: n.pinned ? "#f0f9ff" : "#fff", borderBottom: idx < filtered.length - 1 ? "1px solid #f1f5f9" : "none", padding: "13px 18px", display: "flex", alignItems: "center", gap: 10 }}>
+            <div key={n.id} style={{ background: "#fff", borderBottom: idx < filtered.length - 1 ? "1px solid #f1f5f9" : "none", padding: "13px 18px", display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1, cursor: "pointer", minWidth: 0 }} onClick={() => setDetail(n)}>
-                {n.pinned && <span style={{ fontSize: 10, color: "#1d4ed8", fontWeight: 700, border: "1px solid #bfdbfe", padding: "1px 6px", borderRadius: 4, flexShrink: 0 }}>고정</span>}
                 <span style={catStyle(n.cat, cats)}>{n.cat}</span>
                 <span style={{ fontSize: 14, fontWeight: 500, color: "#1e293b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{n.title}</span>
                 {n.files?.length > 0 && <Paperclip size={12} color="#94a3b8" style={{ flexShrink: 0 }} />}
