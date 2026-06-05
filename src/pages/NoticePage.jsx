@@ -43,7 +43,8 @@ export default function NoticePage({ adminUser }) {
   const uploadPendingFiles = async (files) => {
     const results = [];
     for (const file of files) {
-      const path = `${Date.now()}_${file.name}`;
+      const ext = file.name.split(".").pop();
+      const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
       const { error } = await supabase.storage.from("notice-files").upload(path, file);
       if (error) {
         alert(`파일 업로드 실패: ${file.name}\n${error.message}`);
