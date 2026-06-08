@@ -24,18 +24,20 @@ const ab = (v = "default") => ({
 export default function KolasPage({ location, adminUser }) {
   const [summary, setSummary] = useState(DEFAULT_SITE.kolasSummary);
   const [items, setItems] = useState(DEFAULT_KOLAS);
-  const [ed, setEd] = useState(null); // { sec: 'summary'|'item', itemId, data }
+  const [contact, setContact] = useState(KOLAS_CONTACT);
+  const [ed, setEd] = useState(null); // { sec: 'summary'|'item'|'contact', itemId, data }
   const [saving, setSaving] = useState(false);
 
   useEffect(() => { loadSettings(); }, []);
 
   const loadSettings = async () => {
     const { data } = await supabase.from("site_settings").select("*")
-      .in("key", ["kolas_summary", "kolas_items"]);
+      .in("key", ["kolas_summary", "kolas_items", "kolas_contact"]);
     if (!data) return;
     const m = Object.fromEntries(data.map(r => [r.key, r.value]));
     if (m.kolas_summary?.text) setSummary(m.kolas_summary.text);
     if (m.kolas_items?.items) setItems(m.kolas_items.items);
+    if (m.kolas_contact) setContact(m.kolas_contact);
   };
 
   const saveKey = async (key, value) => {
@@ -154,13 +156,34 @@ export default function KolasPage({ location, adminUser }) {
       </div>
 
       {/* 문의하기 */}
-      <div style={{ background: "#eff6ff", borderRadius: 12, padding: "20px 24px", display: "flex", alignItems: "flex-start", gap: 14, marginTop: 32, border: "1px solid #bfdbfe" }}>
-        <Mail size={20} color="#3b82f6" style={{ flexShrink: 0, marginTop: 2 }} />
-        <div>
-          <div style={{ fontWeight: 700, fontSize: 14, color: "#1e3a5f", marginBottom: 4 }}>{KOLAS_CONTACT.title}</div>
-          <div style={{ fontSize: 13, color: "#475569", lineHeight: 1.7 }}>{KOLAS_CONTACT.desc}</div>
-          <div style={{ fontSize: 13, color: "#3b82f6", fontWeight: 500, marginTop: 4 }}>{location.email}</div>
-        </div>
+      <div style={{ marginTop: 32, position: "relative" }}>
+        {adminUser && (
+          <div style={{ position: "absolute", top: 12, right: 12, zIndex: 1 }}>
+            <button onClick={() => openEd("contact", null, { ...contact, email: contact.email || location.email })} style={ab()}>
+              <Pencil size={12} /> 편집
+            </button>
+          </div>
+        )}
+        {isEd("contact") ? (
+          <div style={EP}>
+            <div style={{ display: "grid", gap: 8 }}>
+              <input placeholder="제목" value={ed.data.title || ""} onChange={e => patch({ title: e.target.value })} style={{ ...IS, width: "100%" }} />
+              <textarea placeholder="설명" value={ed.data.desc || ""} onChange={e => patch({ desc: e.target.value })}
+                style={{ ...IS, width: "100%", height: 70, resize: "vertical" }} />
+              <input placeholder="이메일" value={ed.data.email || ""} onChange={e => patch({ email: e.target.value })} style={{ ...IS, width: "100%" }} />
+            </div>
+            <SaveRow onSave={() => saveKey("kolas_contact", ed.data)} />
+          </div>
+        ) : (
+          <div style={{ background: "#eff6ff", borderRadius: 12, padding: "20px 24px", display: "flex", alignItems: "flex-start", gap: 14, border: "1px solid #bfdbfe" }}>
+            <Mail size={20} color="#3b82f6" style={{ flexShrink: 0, marginTop: 2 }} />
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 14, color: "#1e3a5f", marginBottom: 4 }}>{contact.title}</div>
+              <div style={{ fontSize: 13, color: "#475569", lineHeight: 1.7 }}>{contact.desc}</div>
+              <div style={{ fontSize: 13, color: "#3b82f6", fontWeight: 500, marginTop: 4 }}>{contact.email || location.email}</div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
