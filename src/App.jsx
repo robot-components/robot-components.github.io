@@ -103,7 +103,7 @@ export default function App() {
           <PageWrapper pageKey={pageIdx}>
             {pageIdx === 0 && <AboutPage nav={nav} adminUser={adminUser} />}
             {pageIdx === 1 && <KolasPage location={DEFAULT_LOCATION} adminUser={adminUser} />}
-            {pageIdx === 2 && <EquipmentPage location={DEFAULT_LOCATION} />}
+            {pageIdx === 2 && <EquipmentPage location={DEFAULT_LOCATION} adminUser={adminUser} />}
             {pageIdx === 3 && <ReservationPage adminUser={adminUser} />}
             {pageIdx === 4 && <NoticePage adminUser={adminUser} />}
             {pageIdx === 5 && <FaqPage adminUser={adminUser} location={DEFAULT_LOCATION} />}
