@@ -102,7 +102,7 @@ export default function App() {
         <div id="content-wrapper" style={{ maxWidth: 1126, margin: "0 auto", boxSizing: "border-box", padding: "40px 32px 80px" }}>
           <PageWrapper pageKey={pageIdx}>
             {pageIdx === 0 && <AboutPage nav={nav} adminUser={adminUser} />}
-            {pageIdx === 1 && <KolasPage location={DEFAULT_LOCATION} />}
+            {pageIdx === 1 && <KolasPage location={DEFAULT_LOCATION} adminUser={adminUser} />}
             {pageIdx === 2 && <EquipmentPage location={DEFAULT_LOCATION} />}
             {pageIdx === 3 && <ReservationPage adminUser={adminUser} />}
             {pageIdx === 4 && <NoticePage adminUser={adminUser} />}
