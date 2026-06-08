@@ -6,7 +6,7 @@ import PageHeader from "../components/PageHeader";
 import CatFilter from "../components/CatFilter";
 
 const FAQ_HEADER = { label: "FAQ", title: "자주 묻는 질문 (FAQ)" };
-const FAQ_CONTACT = { title: "문의하기", desc: "기타 문의사항은 아래 이메일로 문의해 주시기 바랍니다." };
+const DEFAULT_FAQ_CONTACT = { title: "문의하기", desc: "기타 문의사항은 아래 이메일로 문의해 주시기 바랍니다.", email: "" };
 
 const iStyle = { border: "1px solid #e2e8f0", borderRadius: 8, padding: "9px 12px", fontSize: 14, width: "100%", outline: "none", fontFamily: "inherit" };
 const btnSm = (variant = "default") => ({
@@ -26,7 +26,12 @@ export default function FaqPage({ adminUser, location }) {
   const [editForm, setEditForm] = useState(null);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => { fetchFaqs(); }, []);
+  const [contact, setContact] = useState(DEFAULT_FAQ_CONTACT);
+  const [contactEd, setContactEd] = useState(false);
+  const [contactData, setContactData] = useState(DEFAULT_FAQ_CONTACT);
+  const [contactSaving, setContactSaving] = useState(false);
+
+  useEffect(() => { fetchFaqs(); loadContact(); }, []);
 
   const fetchFaqs = async () => {
     setLoading(true);
@@ -60,6 +65,19 @@ export default function FaqPage({ adminUser, location }) {
     await supabase.from("faqs").delete().eq("id", id);
     if (openFaq === id) setOpenFaq(null);
     fetchFaqs();
+  };
+
+  const loadContact = async () => {
+    const { data } = await supabase.from("site_settings").select("value").eq("key", "faq_contact").single();
+    if (data?.value) setContact(data.value);
+  };
+
+  const saveContact = async () => {
+    setContactSaving(true);
+    await supabase.from("site_settings").upsert({ key: "faq_contact", value: contactData });
+    setContact(contactData);
+    setContactSaving(false);
+    setContactEd(false);
   };
 
   const handleMove = async (id, dir) => {
@@ -153,16 +171,39 @@ export default function FaqPage({ adminUser, location }) {
       </div>
 
       {/* 문의하기 */}
-      {location && (
-        <div style={{ background: "#eff6ff", borderRadius: 12, padding: "20px 24px", display: "flex", alignItems: "flex-start", gap: 14, marginTop: 32, border: "1px solid #bfdbfe" }}>
-          <Mail size={20} color="#3b82f6" style={{ flexShrink: 0, marginTop: 2 }} />
-          <div>
-            <div style={{ fontWeight: 700, fontSize: 14, color: "#1e3a5f", marginBottom: 4 }}>{FAQ_CONTACT.title}</div>
-            <div style={{ fontSize: 13, color: "#475569", lineHeight: 1.7 }}>{FAQ_CONTACT.desc}</div>
-            <div style={{ fontSize: 13, color: "#3b82f6", fontWeight: 500, marginTop: 4 }}>{location.email}</div>
+      <div style={{ marginTop: 32, position: "relative" }}>
+        {adminUser && !contactEd && (
+          <button onClick={() => { setContactData({ ...contact, email: contact.email || (location?.email ?? "") }); setContactEd(true); }}
+            style={{ position: "absolute", top: 12, right: 12, zIndex: 1, background: "#f1f5f9", color: "#475569", border: "none", borderRadius: 6, padding: "5px 12px", cursor: "pointer", fontSize: 12, fontFamily: "inherit", display: "inline-flex", alignItems: "center", gap: 4 }}>
+            <Pencil size={12} /> 편집
+          </button>
+        )}
+        {contactEd ? (
+          <div style={{ background: "#f0f9ff", border: "1px solid #bfdbfe", borderRadius: 12, padding: 20 }}>
+            <div style={{ display: "grid", gap: 8 }}>
+              <input placeholder="제목" value={contactData.title} onChange={e => setContactData(d => ({ ...d, title: e.target.value }))} style={iStyle} />
+              <textarea placeholder="설명" value={contactData.desc} onChange={e => setContactData(d => ({ ...d, desc: e.target.value }))}
+                style={{ ...iStyle, height: 70, resize: "vertical" }} />
+              <input placeholder="이메일" value={contactData.email} onChange={e => setContactData(d => ({ ...d, email: e.target.value }))} style={iStyle} />
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 14 }}>
+              <button onClick={() => setContactEd(false)} style={{ ...btnSm(), padding: "7px 16px" }}>취소</button>
+              <button onClick={saveContact} disabled={contactSaving} style={{ ...btnSm("primary"), padding: "7px 18px", fontSize: 13 }}>
+                {contactSaving ? "저장 중..." : "저장"}
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        ) : (
+          <div style={{ background: "#eff6ff", borderRadius: 12, padding: "20px 24px", display: "flex", alignItems: "flex-start", gap: 14, border: "1px solid #bfdbfe" }}>
+            <Mail size={20} color="#3b82f6" style={{ flexShrink: 0, marginTop: 2 }} />
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 14, color: "#1e3a5f", marginBottom: 4 }}>{contact.title}</div>
+              <div style={{ fontSize: 13, color: "#475569", lineHeight: 1.7 }}>{contact.desc}</div>
+              <div style={{ fontSize: 13, color: "#3b82f6", fontWeight: 500, marginTop: 4 }}>{contact.email || location?.email}</div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

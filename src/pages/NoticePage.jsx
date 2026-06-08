@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { Plus, Pencil, Trash2, X, Paperclip, GripVertical } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Paperclip, GripVertical, Mail } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import PageHeader from "../components/PageHeader";
 
 const NOTICE_HEADER = { label: "공지사항", title: "공지사항" };
+const DEFAULT_NOTICE_CONTACT = { title: "문의하기", desc: "공지사항 관련 문의는 아래 이메일로 문의해 주시기 바랍니다.", email: "" };
 
 const CAT_COLORS = ["#dbeafe,#1d4ed8","#dcfce7,#166534","#f3e8ff,#7e22ce","#fef3c7,#92400e","#fee2e2,#991b1b","#f1f5f9,#475569"];
 const catStyle = (cat, cats) => {
@@ -33,7 +34,12 @@ export default function NoticePage({ adminUser }) {
   const [dragOverIdx, setDragOverIdx] = useState(null);
   const fileInputRef = useRef(null);
 
-  useEffect(() => { fetchNotices(); }, []);
+  const [contact, setContact] = useState(DEFAULT_NOTICE_CONTACT);
+  const [contactEd, setContactEd] = useState(false);
+  const [contactData, setContactData] = useState(DEFAULT_NOTICE_CONTACT);
+  const [contactSaving, setContactSaving] = useState(false);
+
+  useEffect(() => { fetchNotices(); loadContact(); }, []);
 
   const fetchNotices = async () => {
     setLoading(true);
@@ -117,6 +123,19 @@ export default function NoticePage({ adminUser }) {
   const handleDragEnd = () => {
     setDragIdx(null);
     setDragOverIdx(null);
+  };
+
+  const loadContact = async () => {
+    const { data } = await supabase.from("site_settings").select("value").eq("key", "notice_contact").single();
+    if (data?.value) setContact(data.value);
+  };
+
+  const saveContact = async () => {
+    setContactSaving(true);
+    await supabase.from("site_settings").upsert({ key: "notice_contact", value: contactData });
+    setContact(contactData);
+    setContactSaving(false);
+    setContactEd(false);
   };
 
   const removeExistingFile = (idx) => setEditForm(f => ({ ...f, files: f.files.filter((_, i) => i !== idx) }));
@@ -273,6 +292,40 @@ export default function NoticePage({ adminUser }) {
           ))}
         </div>
       )}
+      {/* 문의하기 */}
+      <div style={{ marginTop: 32, position: "relative" }}>
+        {adminUser && !contactEd && (
+          <button onClick={() => { setContactData({ ...contact }); setContactEd(true); }}
+            style={{ position: "absolute", top: 12, right: 12, zIndex: 1, background: "#f1f5f9", color: "#475569", border: "none", borderRadius: 6, padding: "5px 12px", cursor: "pointer", fontSize: 12, fontFamily: "inherit", display: "inline-flex", alignItems: "center", gap: 4 }}>
+            <Pencil size={12} /> 편집
+          </button>
+        )}
+        {contactEd ? (
+          <div style={{ background: "#f0f9ff", border: "1px solid #bfdbfe", borderRadius: 12, padding: 20 }}>
+            <div style={{ display: "grid", gap: 8 }}>
+              <input placeholder="제목" value={contactData.title} onChange={e => setContactData(d => ({ ...d, title: e.target.value }))} style={{ ...iStyle, fontSize: 13 }} />
+              <textarea placeholder="설명" value={contactData.desc} onChange={e => setContactData(d => ({ ...d, desc: e.target.value }))}
+                style={{ ...iStyle, fontSize: 13, height: 70, resize: "vertical" }} />
+              <input placeholder="이메일" value={contactData.email} onChange={e => setContactData(d => ({ ...d, email: e.target.value }))} style={{ ...iStyle, fontSize: 13 }} />
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 14 }}>
+              <button onClick={() => setContactEd(false)} style={{ ...btnSm(), padding: "7px 16px" }}>취소</button>
+              <button onClick={saveContact} disabled={contactSaving} style={{ ...btnSm("primary"), padding: "7px 18px", fontSize: 13 }}>
+                {contactSaving ? "저장 중..." : "저장"}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div style={{ background: "#eff6ff", borderRadius: 12, padding: "20px 24px", display: "flex", alignItems: "flex-start", gap: 14, border: "1px solid #bfdbfe" }}>
+            <Mail size={20} color="#3b82f6" style={{ flexShrink: 0, marginTop: 2 }} />
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 14, color: "#1e3a5f", marginBottom: 4 }}>{contact.title}</div>
+              <div style={{ fontSize: 13, color: "#475569", lineHeight: 1.7 }}>{contact.desc}</div>
+              {contact.email && <div style={{ fontSize: 13, color: "#3b82f6", fontWeight: 500, marginTop: 4 }}>{contact.email}</div>}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
