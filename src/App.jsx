@@ -101,7 +101,7 @@ export default function App() {
       <main style={{ flex: 1, width: "100%" }}>
         <div id="content-wrapper" style={{ maxWidth: 1126, margin: "0 auto", boxSizing: "border-box", padding: "40px 32px 80px" }}>
           <PageWrapper pageKey={pageIdx}>
-            {pageIdx === 0 && <AboutPage nav={nav} site={DEFAULT_SITE} location={DEFAULT_LOCATION} />}
+            {pageIdx === 0 && <AboutPage nav={nav} adminUser={adminUser} />}
             {pageIdx === 1 && <KolasPage location={DEFAULT_LOCATION} />}
             {pageIdx === 2 && <EquipmentPage location={DEFAULT_LOCATION} />}
             {pageIdx === 3 && <ReservationPage adminUser={adminUser} />}
