@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Building2, Info, Check, X, ChevronDown, ChevronUp, RefreshCw, Trash2, ChevronLeft, ChevronRight, Pencil, Plus } from "lucide-react";
+import { Building2, Info, Check, X, ChevronDown, ChevronUp, RefreshCw, Trash2, ChevronLeft, ChevronRight, Pencil, Plus, GripVertical } from "lucide-react";
 import { DEFAULT_ROOMS } from "../data/defaults";
 import PageHeader from "../components/PageHeader";
 import { supabase } from "../lib/supabase";
@@ -75,6 +75,25 @@ export default function ReservationPage({ adminUser }) {
 
   // 회의실 편집
   const [roomEd, setRoomEd] = useState(null); // { id: room.id|'new', data: {...} }
+
+  // 회의실 드래그 앤 드롭
+  const [dragIdx, setDragIdx] = useState(null);
+  const [dragOverIdx, setDragOverIdx] = useState(null);
+
+  const handleRoomDragStart = (idx) => setDragIdx(idx);
+  const handleRoomDragOver = (e, idx) => { e.preventDefault(); setDragOverIdx(idx); };
+  const handleRoomDrop = async (e, idx) => {
+    e.preventDefault();
+    if (dragIdx === null || dragIdx === idx) { setDragIdx(null); setDragOverIdx(null); return; }
+    const reordered = [...rooms];
+    const [moved] = reordered.splice(dragIdx, 1);
+    reordered.splice(idx, 0, moved);
+    setRooms(reordered);
+    setDragIdx(null);
+    setDragOverIdx(null);
+    await saveKey("reservation_rooms", { items: reordered });
+  };
+  const handleRoomDragEnd = () => { setDragIdx(null); setDragOverIdx(null); };
 
   // 유의사항 편집
   const [notesEd, setNotesEd] = useState(false);
@@ -252,7 +271,7 @@ export default function ReservationPage({ adminUser }) {
         )}
 
         <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fill,minmax(210px,1fr))" }}>
-          {rooms.map((room) => roomEd?.id === room.id ? (
+          {rooms.map((room, idx) => roomEd?.id === room.id ? (
             <div key={room.id} style={EP}>
               <div style={{ display: "grid", gap: 8 }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 80px", gap: 8 }}>
@@ -267,17 +286,31 @@ export default function ReservationPage({ adminUser }) {
               </div>
             </div>
           ) : (
-            <div key={room.id} style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 20, position: "relative" }}>
+            <div key={room.id}
+              draggable={!!adminUser}
+              onDragStart={() => handleRoomDragStart(idx)}
+              onDragOver={e => handleRoomDragOver(e, idx)}
+              onDrop={e => handleRoomDrop(e, idx)}
+              onDragEnd={handleRoomDragEnd}
+              style={{ background: "#fff", borderRadius: 12, padding: 20, position: "relative",
+                cursor: adminUser ? "grab" : "default",
+                border: dragOverIdx === idx && dragIdx !== idx ? "2px solid #3b82f6" : "1px solid #e2e8f0",
+                opacity: dragIdx === idx ? 0.5 : 1, transition: "opacity 0.15s" }}>
               {adminUser && (
-                <div style={{ position: "absolute", top: 10, right: 10, display: "flex", gap: 4 }}>
-                  <button onClick={() => setRoomEd({ id: room.id, data: { ...room } })} style={{ ...ab(), padding: "3px 7px" }}><Pencil size={11} /></button>
-                  <button onClick={() => delRoom(room.id)} style={{ ...ab("danger"), padding: "3px 7px" }}><Trash2 size={11} /></button>
-                </div>
+                <>
+                  <div style={{ position: "absolute", top: "50%", left: 8, transform: "translateY(-50%)", color: "#cbd5e1", pointerEvents: "none" }}>
+                    <GripVertical size={14} />
+                  </div>
+                  <div style={{ position: "absolute", top: 10, right: 10, display: "flex", gap: 4 }}>
+                    <button onClick={e => { e.stopPropagation(); setRoomEd({ id: room.id, data: { ...room } }); }} style={{ ...ab(), padding: "3px 7px" }}><Pencil size={11} /></button>
+                    <button onClick={e => { e.stopPropagation(); delRoom(room.id); }} style={{ ...ab("danger"), padding: "3px 7px" }}><Trash2 size={11} /></button>
+                  </div>
+                </>
               )}
-              <div style={{ color: "#3b82f6", marginBottom: 8 }}><Building2 size={20} /></div>
-              <div style={{ fontWeight: 700, fontSize: 15, color: "#1e293b", marginBottom: 5 }}>{room.name}</div>
-              <div style={{ fontSize: 12, color: "#64748b", marginBottom: 10 }}>수용 인원: {room.capacity}명</div>
-              <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+              <div style={{ color: "#3b82f6", marginBottom: 8, paddingLeft: adminUser ? 14 : 0 }}><Building2 size={20} /></div>
+              <div style={{ fontWeight: 700, fontSize: 15, color: "#1e293b", marginBottom: 5, paddingLeft: adminUser ? 14 : 0 }}>{room.name}</div>
+              <div style={{ fontSize: 12, color: "#64748b", marginBottom: 10, paddingLeft: adminUser ? 14 : 0 }}>수용 인원: {room.capacity}명</div>
+              <div style={{ display: "flex", gap: 4, flexWrap: "wrap", paddingLeft: adminUser ? 14 : 0 }}>
                 {String(room.facilities || "").split(",").map((f, i) => (
                   <span key={i} style={{ background: "#f1f5f9", color: "#475569", fontSize: 11, padding: "2px 6px", borderRadius: 4 }}>{f.trim()}</span>
                 ))}
