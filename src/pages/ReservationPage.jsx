@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Building2, Info, LogIn, LogOut, Check, X, ChevronDown, ChevronUp, RefreshCw, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Building2, Info, Check, X, ChevronDown, ChevronUp, RefreshCw, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { DEFAULT_ROOMS } from "../data/defaults";
 import PageHeader from "../components/PageHeader";
 import { supabase } from "../lib/supabase";
@@ -37,17 +37,11 @@ const inputStyle = {
   width: "100%", boxSizing: "border-box", background: "#fff",
 };
 
-export default function ReservationPage() {
+export default function ReservationPage({ adminUser }) {
   const [form, setForm] = useState(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [formError, setFormError] = useState("");
-
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
-  const [adminEmail, setAdminEmail] = useState("");
-  const [adminPassword, setAdminPassword] = useState("");
-  const [adminUser, setAdminUser] = useState(null);
-  const [loginError, setLoginError] = useState("");
 
   const [reservations, setReservations] = useState([]);
   const [loadingRes, setLoadingRes] = useState(false);
@@ -89,37 +83,9 @@ export default function ReservationPage() {
   }, [fetchCalendarData]);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        setAdminUser(session.user);
-        fetchReservations();
-      }
-    });
-  }, [fetchReservations]);
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoginError("");
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: adminEmail,
-      password: adminPassword,
-    });
-    if (error) {
-      setLoginError("이메일 또는 비밀번호가 올바르지 않습니다.");
-    } else {
-      setAdminUser(data.user);
-      setShowAdminLogin(false);
-      setAdminEmail("");
-      setAdminPassword("");
-      fetchReservations();
-    }
-  };
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setAdminUser(null);
-    setReservations([]);
-  };
+    if (adminUser) fetchReservations();
+    else setReservations([]);
+  }, [adminUser, fetchReservations]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -183,41 +149,7 @@ export default function ReservationPage() {
 
   return (
     <div>
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24 }}>
-        <PageHeader label="회의실 예약" title="회의실 예약" sub="" />
-        <div style={{ paddingTop: 4 }}>
-          {adminUser ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 12, color: "#64748b" }}>{adminUser.email}</span>
-              <button onClick={handleLogout} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "1px solid #e2e8f0", borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 12, color: "#64748b", fontFamily: "inherit" }}>
-                <LogOut size={12} /> 로그아웃
-              </button>
-            </div>
-          ) : (
-            <button onClick={() => setShowAdminLogin(v => !v)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "1px solid #e2e8f0", borderRadius: 6, padding: "6px 10px", cursor: "pointer", fontSize: 12, color: "#64748b", fontFamily: "inherit" }}>
-              <LogIn size={12} /> 관리자 로그인
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* 관리자 로그인 폼 */}
-      {showAdminLogin && !adminUser && (
-        <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 12, padding: 20, marginBottom: 24 }}>
-          <form onSubmit={handleLogin} style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "flex-end" }}>
-            <input type="email" placeholder="관리자 이메일" value={adminEmail}
-              onChange={e => setAdminEmail(e.target.value)} required
-              style={{ ...inputStyle, flex: 1, minWidth: 160 }} />
-            <input type="password" placeholder="비밀번호" value={adminPassword}
-              onChange={e => setAdminPassword(e.target.value)} required
-              style={{ ...inputStyle, flex: 1, minWidth: 120 }} />
-            <button type="submit" style={{ background: "#1e3a5f", color: "#fff", border: "none", borderRadius: 8, padding: "10px 18px", cursor: "pointer", fontSize: 13, fontFamily: "inherit", whiteSpace: "nowrap" }}>
-              로그인
-            </button>
-          </form>
-          {loginError && <p style={{ fontSize: 12, color: "#ef4444", margin: "8px 0 0" }}>{loginError}</p>}
-        </div>
-      )}
+      <PageHeader label="회의실 예약" title="회의실 예약" sub="" />
 
       {/* 회의실 안내 */}
       <div style={{ marginBottom: 28 }}>

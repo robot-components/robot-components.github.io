@@ -89,8 +89,8 @@ export default function App() {
               </button>
             ) : (
               <button onClick={() => { setLoginErr(""); setShowAdminLogin(true); }}
-                style={{ background: "transparent", border: "none", color: "rgba(148,163,184,0.4)", cursor: "pointer", padding: "5px", borderRadius: 6, display: "flex", alignItems: "center" }}>
-                <Lock size={14} />
+                style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: "#94a3b8", cursor: "pointer", padding: "5px 10px", borderRadius: 6, display: "flex", alignItems: "center", gap: 5, fontSize: 12, fontFamily: "inherit" }}>
+                <Lock size={13} /> 관리자
               </button>
             )}
           </div>
@@ -104,7 +104,7 @@ export default function App() {
             {pageIdx === 0 && <AboutPage nav={nav} site={DEFAULT_SITE} location={DEFAULT_LOCATION} />}
             {pageIdx === 1 && <KolasPage location={DEFAULT_LOCATION} />}
             {pageIdx === 2 && <EquipmentPage location={DEFAULT_LOCATION} />}
-            {pageIdx === 3 && <ReservationPage />}
+            {pageIdx === 3 && <ReservationPage adminUser={adminUser} />}
             {pageIdx === 4 && <NoticePage adminUser={adminUser} />}
             {pageIdx === 5 && <FaqPage adminUser={adminUser} location={DEFAULT_LOCATION} />}
           </PageWrapper>
