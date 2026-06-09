@@ -68,8 +68,8 @@ export default function FaqPage({ adminUser, location }) {
   };
 
   const loadContact = async () => {
-    const { data } = await supabase.from("site_settings").select("value").eq("key", "faq_contact").single();
-    if (data?.value) setContact(data.value);
+    const { data } = await supabase.from("site_settings").select("value").eq("key", "faq_contact").limit(1);
+    if (data?.[0]?.value) setContact(data[0].value);
   };
 
   const saveContact = async () => {
