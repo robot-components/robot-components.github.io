@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Mail, ChevronDown, ChevronUp, Plus, Pencil, Trash2, X } from "lucide-react";
+import { Mail, ChevronDown, ChevronUp, Plus, Pencil, Trash2, X, GripVertical } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { DEFAULT_FAQS, DEFAULT_FAQ_CATS } from "../data/defaults";
 import PageHeader from "../components/PageHeader";
@@ -80,21 +80,37 @@ export default function FaqPage({ adminUser, location }) {
     setContactEd(false);
   };
 
-  const handleMove = async (id, dir) => {
-    const sorted = [...faqs].sort((a, b) => (a.order_idx ?? 0) - (b.order_idx ?? 0));
-    const i = sorted.findIndex(f => f.id === id);
-    const j = dir === "up" ? i - 1 : i + 1;
-    if (j < 0 || j >= sorted.length) return;
-    const oi = sorted[i].order_idx ?? i;
-    const oj = sorted[j].order_idx ?? j;
-    await supabase.from("faqs").update({ order_idx: oj }).eq("id", sorted[i].id);
-    await supabase.from("faqs").update({ order_idx: oi }).eq("id", sorted[j].id);
+  const [dragIdx, setDragIdx] = useState(null);
+  const [dragOverIdx, setDragOverIdx] = useState(null);
+
+  const handleDragStart = (e, idx) => {
+    setDragIdx(idx);
+    e.dataTransfer.effectAllowed = "move";
+  };
+  const handleDragOver = (e, idx) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDragOverIdx(idx);
+  };
+  const handleDrop = async (e, dropIdx) => {
+    e.preventDefault();
+    if (dragIdx === null || dragIdx === dropIdx) { setDragIdx(null); setDragOverIdx(null); return; }
+    const newOrder = [...sortedFiltered];
+    const [moved] = newOrder.splice(dragIdx, 1);
+    newOrder.splice(dropIdx, 0, moved);
+    await Promise.all(newOrder.map((item, i) =>
+      supabase.from("faqs").update({ order_idx: i }).eq("id", item.id)
+    ));
+    setDragIdx(null);
+    setDragOverIdx(null);
     fetchFaqs();
   };
+  const handleDragEnd = () => { setDragIdx(null); setDragOverIdx(null); };
 
   const cats = [...new Set(faqs.map(f => f.cat).filter(Boolean))];
   const filtered = catFilter === "전체" ? faqs : faqs.filter(f => f.cat === catFilter);
   const sortedFiltered = [...filtered].sort((a, b) => (a.order_idx ?? 0) - (b.order_idx ?? 0));
+  const canDrag = adminUser && useDB && catFilter === "전체";
 
   return (
     <div>
@@ -140,8 +156,19 @@ export default function FaqPage({ adminUser, location }) {
           <div style={{ background: "#fff", padding: "40px 20px", textAlign: "center", color: "#94a3b8", fontSize: 14 }}>등록된 FAQ가 없습니다.</div>
         )}
         {sortedFiltered.map((f, idx) => (
-          <div key={f.id} style={{ background: "#fff", borderBottom: idx < sortedFiltered.length - 1 ? "1px solid #f1f5f9" : "none" }}>
+          <div key={f.id}
+            draggable={canDrag}
+            onDragStart={canDrag ? e => handleDragStart(e, idx) : undefined}
+            onDragOver={canDrag ? e => handleDragOver(e, idx) : undefined}
+            onDrop={canDrag ? e => handleDrop(e, idx) : undefined}
+            onDragEnd={canDrag ? handleDragEnd : undefined}
+            style={{ background: "#fff", borderBottom: idx < sortedFiltered.length - 1 ? "1px solid #f1f5f9" : "none",
+              borderTop: dragOverIdx === idx && dragIdx !== idx ? "2px solid #3b82f6" : "2px solid transparent",
+              opacity: dragIdx === idx ? 0.4 : 1, transition: "opacity 0.15s" }}>
             <div style={{ display: "flex", alignItems: "center", padding: "4px 8px 4px 0" }}>
+              {canDrag && (
+                <GripVertical size={14} color="#cbd5e1" style={{ flexShrink: 0, cursor: "grab", marginLeft: 8 }} />
+              )}
               <button onClick={() => setOpenFaq(openFaq === f.id ? null : f.id)}
                 style={{ flex: 1, background: "none", border: "none", padding: "12px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", textAlign: "left", fontFamily: "inherit", gap: 10 }}>
                 <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
@@ -152,10 +179,6 @@ export default function FaqPage({ adminUser, location }) {
               </button>
               {adminUser && useDB && (
                 <div style={{ display: "flex", gap: 4, paddingRight: 8, flexShrink: 0 }}>
-                  <button onClick={() => handleMove(f.id, "up")} disabled={idx === 0} title="위로"
-                    style={{ ...btnSm(), padding: "4px 6px", opacity: idx === 0 ? 0.3 : 1 }}><ChevronUp size={13} /></button>
-                  <button onClick={() => handleMove(f.id, "down")} disabled={idx === sortedFiltered.length - 1} title="아래로"
-                    style={{ ...btnSm(), padding: "4px 6px", opacity: idx === sortedFiltered.length - 1 ? 0.3 : 1 }}><ChevronDown size={13} /></button>
                   <button onClick={() => setEditForm({ id: f.id, q: f.q, a: f.a, cat: f.cat })} title="편집"
                     style={{ ...btnSm(), padding: "4px 7px" }}><Pencil size={12} /></button>
                   <button onClick={() => handleDelete(f.id)} title="삭제"
