@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { PAGES } from "../data/pages";
+import useIsMobile from "../hooks/useIsMobile";
 
 const SUBTITLE = "국내 로봇산업 경쟁력 강화를 위한 원스톱 지원체계 구축";
 const LINE = "1px solid rgba(255,255,255,0.75)";
 const HERO_IMG_LEFT = "14%";
 
-
 export default function LandingPage({ nav }) {
+  const isMobile = useIsMobile();
   const [typed, setTyped] = useState("");
   const [hovered, setHovered] = useState(null);
 
@@ -37,70 +38,121 @@ export default function LandingPage({ nav }) {
     }}>
 
       {/* 히어로 */}
-      <div style={{ flex: 1, display: "flex", position: "relative" }}>
-        <img
-          src="/images/hero-bg.png?v=2"
-          alt=""
-          style={{
-            position: "absolute",
-            top: 0,
+      {isMobile ? (
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+          {/* 이미지 (상단) */}
+          <div style={{ flex: "0 0 52%", position: "relative" }}>
+            <img
+              src="/images/hero-bg.png?v=2"
+              alt=""
+              style={{ width: "100%", height: "100%", objectFit: "contain", objectPosition: "center center", display: "block" }}
+            />
+            <div style={{
+              position: "absolute", bottom: 0, left: 0, right: 0, height: "45%",
+              background: "linear-gradient(to bottom, rgba(6,13,26,0) 0%, rgba(6,13,26,1) 100%)",
+              pointerEvents: "none",
+            }} />
+          </div>
+          {/* 텍스트 (하단) */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 28px 12px" }}>
+            <h1 style={{
+              fontFamily: "'Black Han Sans', sans-serif",
+              fontSize: "clamp(34px, 9vw, 52px)",
+              fontWeight: 400,
+              color: "#fff",
+              margin: "0 0 18px",
+              lineHeight: 1.2,
+            }}>
+              로봇융합부품지원센터<br />
+              <span style={{ color: "#3b82f6" }}>RTAC</span>
+            </h1>
+            <p style={{
+              fontFamily: "'Noto Sans KR', sans-serif",
+              fontSize: 13,
+              color: "#e2e8f0",
+              margin: 0,
+              lineHeight: 2,
+              minHeight: "2em",
+            }}>
+              {typed}
+              <span style={{
+                display: "inline-block",
+                width: 2,
+                height: "1em",
+                background: "#3b82f6",
+                marginLeft: 2,
+                verticalAlign: "middle",
+                opacity: typed.length < SUBTITLE.length ? 1 : 0,
+              }} />
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div style={{ flex: 1, display: "flex", position: "relative" }}>
+          <img
+            src="/images/hero-bg.png?v=2"
+            alt=""
+            style={{
+              position: "absolute", top: 0,
+              left: HERO_IMG_LEFT,
+              width: `${100 - parseInt(HERO_IMG_LEFT)}%`,
+              height: "100%",
+              objectFit: "contain",
+              objectPosition: "center center",
+              display: "block",
+            }}
+          />
+          <div style={{
+            position: "absolute", top: 0,
             left: HERO_IMG_LEFT,
             width: `${100 - parseInt(HERO_IMG_LEFT)}%`,
             height: "100%",
-            objectFit: "contain",
-            objectPosition: "center center",
-            display: "block",
-          }}
-        />
-        <div style={{
-          position: "absolute",
-          top: 0,
-          left: HERO_IMG_LEFT,
-          width: `${100 - parseInt(HERO_IMG_LEFT)}%`,
-          height: "100%",
-          background: "linear-gradient(to right, rgba(6,13,26,1) 0%, rgba(6,13,26,0.55) 16%, rgba(6,13,26,0) 38%)",
-          pointerEvents: "none",
-          zIndex: 1,
-        }} />
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 64px", position: "relative", zIndex: 2 }}>
-
-          <h1 style={{
-            fontFamily: "'Black Han Sans', sans-serif",
-            fontSize: "clamp(44px, 6vw, 82px)",
-            fontWeight: 400,
-            color: "#fff",
-            margin: "0 0 28px",
-            lineHeight: 1.15,
-          }}>
-            로봇융합부품지원센터<br />
-            <span style={{ color: "#3b82f6" }}>RTAC</span>
-          </h1>
-
-          <p style={{
-            fontFamily: "'Noto Sans KR', sans-serif",
-            fontSize: 15,
-            color: "#e2e8f0",
-            margin: 0,
-            lineHeight: 2,
-            minHeight: "2em",
-          }}>
-            {typed}
-            <span style={{
-              display: "inline-block",
-              width: 2,
-              height: "1em",
-              background: "#3b82f6",
-              marginLeft: 2,
-              verticalAlign: "middle",
-              opacity: typed.length < SUBTITLE.length ? 1 : 0,
-            }} />
-          </p>
+            background: "linear-gradient(to right, rgba(6,13,26,1) 0%, rgba(6,13,26,0.55) 16%, rgba(6,13,26,0) 38%)",
+            pointerEvents: "none",
+            zIndex: 1,
+          }} />
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 64px", position: "relative", zIndex: 2 }}>
+            <h1 style={{
+              fontFamily: "'Black Han Sans', sans-serif",
+              fontSize: "clamp(44px, 6vw, 82px)",
+              fontWeight: 400,
+              color: "#fff",
+              margin: "0 0 28px",
+              lineHeight: 1.15,
+            }}>
+              로봇융합부품지원센터<br />
+              <span style={{ color: "#3b82f6" }}>RTAC</span>
+            </h1>
+            <p style={{
+              fontFamily: "'Noto Sans KR', sans-serif",
+              fontSize: 15,
+              color: "#e2e8f0",
+              margin: 0,
+              lineHeight: 2,
+              minHeight: "2em",
+            }}>
+              {typed}
+              <span style={{
+                display: "inline-block",
+                width: 2,
+                height: "1em",
+                background: "#3b82f6",
+                marginLeft: 2,
+                verticalAlign: "middle",
+                opacity: typed.length < SUBTITLE.length ? 1 : 0,
+              }} />
+            </p>
+          </div>
         </div>
-
-      </div>
+      )}
 
       {/* 하단 메뉴 바 */}
-      <div style={{ borderTop: LINE, display: "flex", flexShrink: 0 }}>
+      <div style={{
+        borderTop: LINE,
+        display: isMobile ? "grid" : "flex",
+        gridTemplateColumns: isMobile ? "repeat(3, 1fr)" : undefined,
+        flexShrink: 0,
+      }}>
         {PAGES.map((page, i) => (
           <div
             key={i}
@@ -112,12 +164,15 @@ export default function LandingPage({ nav }) {
             onKeyDown={e => e.key === "Enter" && nav(i)}
             style={{
               flex: 1,
-              padding: "20px 16px",
+              padding: isMobile ? "13px 4px" : "20px 16px",
               background: hovered === i ? "rgba(255,255,255,0.12)" : "transparent",
-              borderRight: i < PAGES.length - 1 ? LINE : "none",
+              borderRight: isMobile
+                ? (i % 3 !== 2 ? LINE : "none")
+                : (i < PAGES.length - 1 ? LINE : "none"),
+              borderBottom: isMobile && i < 3 ? LINE : "none",
               cursor: "pointer",
               fontFamily: "'IBM Plex Mono', monospace",
-              fontSize: 15,
+              fontSize: isMobile ? 10 : 15,
               color: "#fff",
               letterSpacing: "0.04em",
               whiteSpace: "nowrap",
