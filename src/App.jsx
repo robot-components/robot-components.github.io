@@ -162,7 +162,7 @@ export default function App() {
           <PageWrapper pageKey={pageIdx}>
             {pageIdx === -1 && <LandingPage nav={nav} />}
             {pageIdx === 0 && <AboutPage nav={nav} />}
-            {pageIdx === 1 && <KolasPage adminUser={adminUser} />}
+            {pageIdx === 1 && <KolasPage />}
             {pageIdx === 2 && <EquipmentPage adminUser={adminUser} />}
             {pageIdx === 3 && <ReservationPage adminUser={adminUser} />}
             {pageIdx === 4 && <NoticePage adminUser={adminUser} />}
