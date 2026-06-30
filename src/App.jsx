@@ -232,7 +232,8 @@ export default function App() {
         .kolas-code-input::placeholder { color: rgba(255,255,255,0.75); }
         body { margin: 0; }
         * { box-sizing: border-box; }
-        input, select, textarea { font-family: inherit; }
+        input, select, textarea { font-family: inherit; color: #1e3a5f; }
+        input::placeholder, textarea::placeholder { color: #94a3b8; }
         .process-center { text-align: center; }
         @media (max-width: 700px) {
           #main-nav { display: none !important; }

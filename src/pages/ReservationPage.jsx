@@ -29,7 +29,7 @@ const IS = {
   border: "1px solid #e2e8f0", borderRadius: 8,
   padding: "10px 14px", fontSize: 14, outline: "none",
   width: "100%", boxSizing: "border-box", background: "#fff",
-  color: "#334155", fontFamily: "inherit",
+  color: "#1e3a5f", fontFamily: "inherit",
 };
 const ab = (v = "default") => ({
   background: v === "danger" ? "#fee2e2" : v === "primary" ? "#3b82f6" : "#f1f5f9",
