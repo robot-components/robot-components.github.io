@@ -1,18 +1,3 @@
-export const DEFAULT_HERO = {
-  title: "로봇융합부품지원센터",
-  sub: "국내 로봇산업 경쟁력 강화를 위한 원스톱 지원체계",
-  badges: "산업혁신기반구축사업,생활지원을 위한 서비스로봇 부품 기술지원 기반구축",
-  btn1Label: "보유 장비 목록 →",
-  btn1Page: 2,
-  btn2Label: "회의실 예약",
-  btn2Page: 3,
-};
-
-export const DEFAULT_INTRO = {
-  text: "로봇융합부품지원센터는 국내 로봇산업 경쟁력 강화를 위해 로봇부품 산업의 기반 조성 및 장비 구축 등 중소 로봇부품기업의 역량 강화를 위한 원스톱 지원체계 구축을 목표로 다음과 같은 사업을 수행하고 있습니다.",
-};
-
-export const SUPPORT_COLORS = ["#1e3a5f","#2d5986","#3b82f6","#0f766e","#7c3aed","#b45309"];
 
 export const DEFAULT_SUPPORT = [
   { id: 1, title: "종합지원센터", color: "#1e3a5f", items: ["중소 로봇부품기업 전주기적 지원","시스템-부품 기업 네트워크 구축 지원","로봇부품기업 제품의 국내·외 마케팅 지원"] },
@@ -25,7 +10,7 @@ export const DEFAULT_WORKS = [
     id: 1, num: "01", title: "신뢰성 평가 인증을 통한 로봇부품 상용화 지원", page: 1, pageLabel: "KOLAS 인정 규격 안내 →",
     blocks: [
       { type: "section", text: "KOLAS 인정기관 구축" },
-      { type: "bullet", text: "로봇부품의 신뢰성 확보를 위해 기업에 요구되는 관련 규격(KS, IEC, ISO 등)을 지원하는 구동기 분야 및 머니퓰레이팅 로봇 성능 시험 분야 KOLAS 인정기관 구축" },
+      { type: "bullet", text: "로봇부품의 신뢰성 확보를 위해 기업에 요구되는 관련 규격(KS, IEC, ISO 등)을 지원하는\n구동기 분야 및 머니퓰레이팅 로봇 성능 시험 분야 KOLAS 인정기관 구축" },
       { type: "section", text: "기술 개발 컨설팅" },
       { type: "bullet", text: "기업의 기술 개발 시 애로 기술 해결을 위한 기술 자문" },
       { type: "section", text: "시험성적서 발급" },
@@ -57,7 +42,7 @@ export const DEFAULT_PROCESS = [
 ];
 
 export const DEFAULT_LOCATION = {
-  address: "경기도 부천시 원미구 평천로 655 (약대동)\n부천테크노파크 4단지 401동 1402-1호",
+  address: "경기도 부천시 원미구 평천로 655 부천테크노파크 4단지 401동 1402-1호",
   email: "helprobot@keti.re.kr",
   website: "www.helprobot.re.kr",
   mapImage: "/images/location/rtac-map/rtac-map-v2.jpg",
@@ -170,12 +155,4 @@ export const DEFAULT_ROOMS = [
   { id: 1, name: "중회의실", capacity: 10, facilities: "모니터, 화상회의 시스템" },
 ];
 
-export const DEFAULT_NOTICE_CATS = [];
-
-export const DEFAULT_NOTICES = [];
-
-export const DEFAULT_FAQ_CATS = [];
-
 export const DEFAULT_FAQS = [];
-
-export const DEFAULT_EQ_CATS = ["액추에이터","감속기","로봇","테스트베드"];

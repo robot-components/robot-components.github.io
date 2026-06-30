@@ -21,6 +21,8 @@ export default function App() {
   };
 
   const [pageIdx, setPageIdx] = useState(getInitialPage);
+  const [hoveredNav, setHoveredNav] = useState(null);
+  const [hoveredLogo, setHoveredLogo] = useState(false);
   const topRef = useRef(null);
 
   const [adminUser, setAdminUser] = useState(null);
@@ -67,79 +69,115 @@ export default function App() {
     topRef.current?.scrollIntoView({ behavior: "instant" });
   };
 
-  const iStyle = { border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, padding: "10px 14px", fontSize: 14, width: "100%", boxSizing: "border-box", fontFamily: "inherit", outline: "none", background: "#0d1829", color: "#f1f5f9" };
+  const iStyle = { border: "1px solid #e2e8f0", borderRadius: 8, padding: "10px 14px", fontSize: 14, width: "100%", boxSizing: "border-box", fontFamily: "inherit", outline: "none", background: "#fff", color: "#334155" };
 
   return (
-    <div ref={topRef} style={{ fontFamily: "'Noto Sans KR', sans-serif", minHeight: "100vh", background: pageIdx === -1 ? "#060d1a" : "#f0f4f8", display: "flex", flexDirection: "column" }}>
-      <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <div ref={topRef} style={{ fontFamily: "'Noto Sans KR', sans-serif", minHeight: "100vh", background: pageIdx === -1 ? "#060d1a" : "#fff", display: "flex", flexDirection: "column" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&family=IBM+Plex+Mono:wght@400;500;600&family=Nanum+Gothic+Coding&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet" />
 
       {/* 헤더 */}
-      {pageIdx !== -1 && <header style={{ background: "#060d1a", borderBottom: "1px solid rgba(255,255,255,0.1)", position: "sticky", top: 0, zIndex: 50, boxShadow: "0 1px 8px rgba(0,0,0,0.15)" }}>
-        <div style={{ maxWidth: 1126, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 62, gap: 16 }}>
-          <div onClick={() => nav(-1)} style={{ cursor: "pointer", flexShrink: 0 }}>
-            <div style={{ color: "#fff", fontWeight: 700, fontSize: 15, textAlign: "left" }}>{DEFAULT_SITE.centerName}</div>
-            <div style={{ color: "#64748b", fontSize: 11, textAlign: "left" }}>{DEFAULT_SITE.centerNameEn}</div>
+      {pageIdx !== -1 && (
+        <header style={{ background: "#fff", position: "sticky", top: 0, zIndex: 50 }}>
+          <div style={{ width: "100%", boxSizing: "border-box", padding: "0 clamp(24px, calc((100vw - 800px) / 2), 600px)", display: "flex", alignItems: "center", height: 72 }}>
+
+            {/* 왼쪽: 로고 */}
+            <div onClick={() => nav(-1)}
+              onMouseEnter={() => setHoveredLogo(true)}
+              onMouseLeave={() => setHoveredLogo(false)}
+              style={{ cursor: "pointer", marginRight: "auto", display: "flex", alignItems: "center", gap: 16 }}>
+              {/* 로고 아이콘: 계단형 — 각 바 x 범위 비겹침, 하단 좌(길)→상단 우(짧) */}
+              <svg width="43" height="26" viewBox="0 0 42 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0"  y="18" width="18" height="4" fill="#060d1a"/>
+                <rect x="19" y="10" width="14" height="4" fill="#060d1a"/>
+                <rect x="34" y="2"  width="8"  height="4" fill="#060d1a"/>
+              </svg>
+              <div style={{ position: "relative" }}>
+                <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#060d1a", fontSize: 26, lineHeight: "normal", paddingTop: 4, opacity: hoveredLogo ? 0 : 1, transition: "opacity 0.2s", whiteSpace: "nowrap" }}>로봇융합부품지원센터</div>
+                <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#060d1a", fontSize: 26, lineHeight: "normal", paddingTop: 4, position: "absolute", top: "50%", left: 0, transform: "translateY(-50%)", opacity: hoveredLogo ? 1 : 0, transition: "opacity 0.2s", whiteSpace: "nowrap" }}>Robot Test and Approval Center</div>
+              </div>
+            </div>
+
+            {/* 오른쪽: 인덱스 + ADMIN */}
+            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+              {PAGES.map((p, i) => {
+                const isActive = pageIdx === i;
+                const isHover = hoveredNav === i;
+                return (
+                  <button key={i} onClick={() => nav(i)}
+                    onMouseEnter={() => setHoveredNav(i)}
+                    onMouseLeave={() => setHoveredNav(null)}
+                    style={{
+                      border: "none", padding: "11px 18px", borderRadius: 4, cursor: "pointer",
+                      fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, fontWeight: 700,
+                      letterSpacing: "0.07em", whiteSpace: "nowrap", textTransform: "uppercase",
+                      lineHeight: 1, display: "flex", alignItems: "center",
+                      transition: "all 0.08s",
+                      background: isActive
+                        ? "linear-gradient(180deg, #4ade80 0%, #22c55e 45%, #16a34a 100%)"
+                        : isHover
+                        ? "linear-gradient(180deg, #fef08a 0%, #facc15 45%, #ca8a04 100%)"
+                        : "linear-gradient(180deg, #f9fafb 0%, #e5e7eb 50%, #d1d5db 100%)",
+                      color: isActive ? "#fff" : isHover ? "#713f12" : "#374151",
+                      boxShadow: isActive
+                        ? "inset 0 3px 6px rgba(0,0,0,0.2), 0 1px 0 #15803d"
+                        : isHover
+                        ? "0 4px 0 #a16207, inset 0 1px 0 rgba(255,255,255,0.7)"
+                        : "0 4px 0 #9ca3af, inset 0 1px 0 rgba(255,255,255,0.95)",
+                      transform: isActive ? "translateY(3px)" : isHover ? "translateY(1px)" : "translateY(0)",
+                    }}>
+                    {p.label}
+                  </button>
+                );
+              })}
+              {adminUser ? (
+                <button onClick={handleAdminLogout} style={{
+                  border: "none", padding: "11px 14px", borderRadius: 4, cursor: "pointer",
+                  fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, fontWeight: 700,
+                  letterSpacing: "0.07em", lineHeight: 1, display: "flex", alignItems: "center", gap: 5,
+                  background: "linear-gradient(180deg, #fca5a5 0%, #ef4444 45%, #b91c1c 100%)",
+                  color: "#fff", boxShadow: "0 4px 0 #991b1b, inset 0 1px 0 rgba(255,255,255,0.35)",
+                }}>
+                  <LogOut size={12} /> LOGOUT
+                </button>
+              ) : (
+                <button onClick={() => { setLoginErr(""); setShowAdminLogin(true); }} style={{
+                  border: "none", padding: "11px 14px", borderRadius: 4, cursor: "pointer",
+                  fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, fontWeight: 700,
+                  letterSpacing: "0.07em", lineHeight: 1, display: "flex", alignItems: "center", gap: 5,
+                  background: "linear-gradient(180deg, #fca5a5 0%, #ef4444 45%, #b91c1c 100%)",
+                  color: "#fff", boxShadow: "0 4px 0 #991b1b, inset 0 1px 0 rgba(255,255,255,0.35)",
+                }}>
+                  <Lock size={12} /> ADMIN
+                </button>
+              )}
+            </div>
+
           </div>
-          <nav style={{ display: "flex", gap: 2 }}>
-            {PAGES.map((p, i) => (
-              <button key={i} onClick={() => nav(i)}
-                style={{ background: pageIdx === i ? "rgba(255,255,255,0.12)" : "transparent", color: pageIdx === i ? "#fff" : "#94a3b8", border: "none", padding: "8px 11px", borderRadius: 6, cursor: "pointer", fontSize: 13, fontFamily: "inherit", borderBottom: pageIdx === i ? "2px solid #60a5fa" : "2px solid transparent", whiteSpace: "nowrap" }}>
-                {p.label}
-              </button>
-            ))}
-          </nav>
-          <div style={{ flexShrink: 0 }}>
-            {adminUser ? (
-              <button onClick={handleAdminLogout}
-                style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: "#94a3b8", cursor: "pointer", fontSize: 12, fontFamily: "inherit", padding: "5px 10px", borderRadius: 6, display: "flex", alignItems: "center", gap: 4 }}>
-                <LogOut size={12} /> 로그아웃
-              </button>
-            ) : (
-              <button onClick={() => { setLoginErr(""); setShowAdminLogin(true); }}
-                style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: "#94a3b8", cursor: "pointer", padding: "5px 10px", borderRadius: 6, display: "flex", alignItems: "center", gap: 5, fontSize: 12, fontFamily: "inherit" }}>
-                <Lock size={13} /> 관리자
-              </button>
-            )}
-          </div>
-        </div>
-      </header>}
+        </header>
+      )}
 
       {/* 메인 */}
       <main style={{ flex: 1, width: "100%" }}>
-        <div id="content-wrapper" style={{ maxWidth: pageIdx === -1 ? "100%" : 1126, margin: "0 auto", boxSizing: "border-box", padding: pageIdx === -1 ? 0 : "40px 32px 80px" }}>
+        <div id="content-wrapper" style={{ boxSizing: "border-box", padding: pageIdx === -1 ? 0 : "120px clamp(24px, calc((100vw - 800px) / 2), 600px) 80px", width: "100%" }}>
           <PageWrapper pageKey={pageIdx}>
             {pageIdx === -1 && <LandingPage nav={nav} />}
-            {pageIdx === 0 && <AboutPage nav={nav} adminUser={adminUser} />}
-            {pageIdx === 1 && <KolasPage location={DEFAULT_LOCATION} adminUser={adminUser} />}
-            {pageIdx === 2 && <EquipmentPage location={DEFAULT_LOCATION} adminUser={adminUser} />}
+            {pageIdx === 0 && <AboutPage nav={nav} />}
+            {pageIdx === 1 && <KolasPage adminUser={adminUser} />}
+            {pageIdx === 2 && <EquipmentPage adminUser={adminUser} />}
             {pageIdx === 3 && <ReservationPage adminUser={adminUser} />}
             {pageIdx === 4 && <NoticePage adminUser={adminUser} />}
-            {pageIdx === 5 && <FaqPage adminUser={adminUser} location={DEFAULT_LOCATION} />}
+            {pageIdx === 5 && <FaqPage adminUser={adminUser} />}
           </PageWrapper>
         </div>
       </main>
-
-      {/* 푸터 */}
-      {pageIdx !== -1 && <footer style={{ background: "#060d1a", borderTop: "1px solid rgba(255,255,255,0.1)", padding: "32px 0" }}>
-        <div style={{ maxWidth: 1126, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: "0 32px", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16 }}>
-          <div>
-            <div style={{ color: "#fff", fontWeight: 700, fontSize: 15, marginBottom: 8 }}>{DEFAULT_SITE.centerName} (RTAC)</div>
-            <div style={{ fontSize: 12, lineHeight: 2, color: "#64748b" }}>
-              {DEFAULT_LOCATION.address.replace("\n", " ")}<br />
-              {DEFAULT_LOCATION.email} · {DEFAULT_LOCATION.website}
-            </div>
-          </div>
-          <div style={{ fontSize: 12, color: "#64748b", alignSelf: "flex-end" }}>Korea Electronics Technology Institute (KETI)</div>
-        </div>
-      </footer>}
 
       {/* 관리자 로그인 모달 */}
       {showAdminLogin && (
         <div onClick={() => setShowAdminLogin(false)}
           style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.65)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div onClick={e => e.stopPropagation()}
-            style={{ background: "#0d1829", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 16, padding: 28, width: 320, boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}>
-            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#f1f5f9", margin: "0 0 20px" }}>관리자 로그인</h3>
+            style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16, padding: 28, width: 320, boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#1e3a5f", margin: "0 0 20px" }}>관리자 로그인</h3>
             <input type="email" placeholder="이메일" value={adminEmail} onChange={e => setAdminEmail(e.target.value)}
               style={{ ...iStyle, marginBottom: 10 }} />
             <input type="password" placeholder="비밀번호" value={adminPw} onChange={e => setAdminPw(e.target.value)}
@@ -155,6 +193,43 @@ export default function App() {
       )}
 
       <style>{`
+        @font-face {
+          font-family: 'KERISKEDU Line';
+          src: url('/fonts/KERISKEDU_Line.ttf') format('truetype');
+          font-weight: normal;
+          font-style: normal;
+        }
+        @font-face {
+          font-family: 'Giants Inline';
+          src: url('/fonts/Giants-Inline.ttf') format('truetype');
+          font-weight: normal;
+          font-style: normal;
+        }
+        @font-face {
+          font-family: 'Giants Bold';
+          src: url('/fonts/Giants-Bold.ttf') format('truetype');
+          font-weight: normal;
+          font-style: normal;
+        }
+        @font-face {
+          font-family: 'A2G 7Bold';
+          src: url('/fonts/A2G-7Bold.ttf') format('truetype');
+          font-weight: normal;
+          font-style: normal;
+        }
+        @font-face {
+          font-family: 'Giants Regular';
+          src: url('/fonts/Giants-Regular.ttf') format('truetype');
+          font-weight: normal;
+          font-style: normal;
+        }
+        @font-face {
+          font-family: 'KoPubWorld Dotum Bold';
+          src: url('/fonts/KoPubWorld-Dotum-Bold.otf') format('opentype');
+          font-weight: normal;
+          font-style: normal;
+        }
+        .kolas-code-input::placeholder { color: rgba(255,255,255,0.75); }
         body { margin: 0; }
         * { box-sizing: border-box; }
         input, select, textarea { font-family: inherit; }

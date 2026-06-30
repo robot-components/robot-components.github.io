@@ -3,6 +3,7 @@ import { PAGES } from "../data/pages";
 
 const SUBTITLE = "국내 로봇산업 경쟁력 강화를 위한 원스톱 지원체계 구축";
 const LINE = "1px solid rgba(255,255,255,0.75)";
+const HERO_IMG_LEFT = "14%";
 
 
 export default function LandingPage({ nav }) {
@@ -36,8 +37,32 @@ export default function LandingPage({ nav }) {
     }}>
 
       {/* 히어로 */}
-      <div style={{ flex: 1, display: "flex" }}>
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 64px" }}>
+      <div style={{ flex: 1, display: "flex", position: "relative" }}>
+        <img
+          src="/images/hero-bg.png?v=2"
+          alt=""
+          style={{
+            position: "absolute",
+            top: 0,
+            left: HERO_IMG_LEFT,
+            width: `${100 - parseInt(HERO_IMG_LEFT)}%`,
+            height: "100%",
+            objectFit: "contain",
+            objectPosition: "center center",
+            display: "block",
+          }}
+        />
+        <div style={{
+          position: "absolute",
+          top: 0,
+          left: HERO_IMG_LEFT,
+          width: `${100 - parseInt(HERO_IMG_LEFT)}%`,
+          height: "100%",
+          background: "linear-gradient(to right, rgba(6,13,26,1) 0%, rgba(6,13,26,0.55) 16%, rgba(6,13,26,0) 38%)",
+          pointerEvents: "none",
+          zIndex: 1,
+        }} />
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 64px", position: "relative", zIndex: 2 }}>
 
           <h1 style={{
             fontFamily: "'Black Han Sans', sans-serif",
@@ -47,10 +72,8 @@ export default function LandingPage({ nav }) {
             margin: "0 0 28px",
             lineHeight: 1.15,
           }}>
-            로봇융합부품<br />
-            <span style={{
-              color: "#3b82f6",
-            }}>지원센터</span>
+            로봇융합부품지원센터<br />
+            <span style={{ color: "#3b82f6" }}>RTAC</span>
           </h1>
 
           <p style={{
@@ -74,35 +97,10 @@ export default function LandingPage({ nav }) {
           </p>
         </div>
 
-        {/* 오른쪽: 이미지 자리 */}
-        <div style={{
-          width: "48%",
-          flexShrink: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}>
-          <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "rgba(255,255,255,0.1)", letterSpacing: "0.1em" }}>IMAGE</span>
-        </div>
       </div>
 
       {/* 하단 메뉴 바 */}
       <div style={{ borderTop: LINE, display: "flex", flexShrink: 0 }}>
-        <div style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          padding: "20px 28px",
-          flexShrink: 0,
-          gap: 3,
-          borderRight: LINE,
-        }}>
-          <span style={{ fontFamily: "'Black Han Sans', sans-serif", fontSize: 15, color: "#fff", letterSpacing: "0.06em", lineHeight: 1 }}>RTAC</span>
-          <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 9, color: "rgba(255,255,255,0.45)", letterSpacing: "0.06em", whiteSpace: "nowrap", lineHeight: 1 }}>
-            Robot Test and Approval Center
-          </span>
-        </div>
-
         {PAGES.map((page, i) => (
           <div
             key={i}

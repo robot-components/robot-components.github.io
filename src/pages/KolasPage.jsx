@@ -1,66 +1,51 @@
 import { useState, useEffect } from "react";
-import { Mail, Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, Trash2, GripVertical, X, Check } from "lucide-react";
 import { supabase } from "../lib/supabase";
-import { DEFAULT_KOLAS, DEFAULT_SITE } from "../data/defaults";
-import PageHeader from "../components/PageHeader";
+import { DEFAULT_KOLAS } from "../data/defaults";
 
-const KOLAS_HEADER = { label: "KOLAS", title: "KOLAS 인정 규격 안내" };
-const KOLAS_CONTACT = { title: "문의하기", desc: "공인 시험성적서 발급 및 시험평가 관련 문의사항은 아래 이메일로 문의해 주시기 바랍니다." };
-
-const IS = {
-  border: "1px solid #e2e8f0", borderRadius: 8, padding: "9px 12px",
-  fontSize: 13, outline: "none", fontFamily: "inherit", boxSizing: "border-box",
-};
-const EP = {
-  background: "#f0f9ff", border: "1px solid #bfdbfe", borderRadius: 12, padding: 20,
-};
 const ab = (v = "default") => ({
-  background: v === "danger" ? "#fee2e2" : v === "primary" ? "#1e3a5f" : "#f1f5f9",
+  background: v === "danger" ? "#fee2e2" : v === "primary" ? "#3b82f6" : "#f1f5f9",
   color: v === "danger" ? "#991b1b" : v === "primary" ? "#fff" : "#475569",
   border: "none", borderRadius: 6, padding: "5px 12px", cursor: "pointer",
   fontSize: 12, fontFamily: "inherit", display: "inline-flex", alignItems: "center", gap: 4, whiteSpace: "nowrap",
 });
 
-export default function KolasPage({ location, adminUser }) {
-  const [summary, setSummary] = useState(DEFAULT_SITE.kolasSummary);
+export default function KolasPage({ adminUser }) {
   const [items, setItems] = useState(DEFAULT_KOLAS);
-  const [contact, setContact] = useState(KOLAS_CONTACT);
-  const [ed, setEd] = useState(null); // { sec: 'summary'|'item'|'contact', itemId, data }
+  const [ed, setEd] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [dragIdx, setDragIdx] = useState(null);
+  const [dragOverIdx, setDragOverIdx] = useState(null);
 
   useEffect(() => { loadSettings(); }, []);
 
   const loadSettings = async () => {
-    const { data } = await supabase.from("site_settings").select("*")
-      .in("key", ["kolas_summary", "kolas_items", "kolas_contact"]);
-    if (!data) return;
-    const m = Object.fromEntries(data.map(r => [r.key, r.value]));
-    if (m.kolas_summary?.text) setSummary(m.kolas_summary.text);
-    if (m.kolas_items?.items) setItems(m.kolas_items.items);
-    if (m.kolas_contact) setContact(m.kolas_contact);
+    const { data, error } = await supabase.from("site_settings").select("value").eq("key", "kolas_items").limit(1);
+    if (error) { console.error(error); return; }
+    if (data?.[0]?.value?.items) setItems(data[0].value.items);
   };
 
   const saveKey = async (key, value) => {
     setSaving(true);
-    await supabase.from("site_settings").upsert({ key, value });
-    setSaving(false);
-    setEd(null);
-    loadSettings();
+    try {
+      const { error } = await supabase.from("site_settings").upsert({ key, value });
+      if (error) throw error;
+      setEd(null);
+      await loadSettings();
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const openEd = (sec, itemId = null, data = null) =>
-    setEd({ sec, itemId, data: data ? JSON.parse(JSON.stringify(data)) : {} });
-
-  const isEd = (sec, itemId) =>
-    ed?.sec === sec && (itemId === undefined ? true : ed?.itemId === itemId);
-
+  const openEd = (itemId, data) => setEd({ itemId, data: JSON.parse(JSON.stringify(data)) });
+  const isEd = (itemId) => ed?.itemId === itemId;
   const patch = (p) => setEd(e => ({ ...e, data: { ...e.data, ...p } }));
 
   const saveItem = async (itemId) => {
     const d = { ...ed.data };
     const newItems = itemId === "new"
       ? [...items, { ...d, id: Date.now() }]
-      : items.map(it => it.id === itemId ? { ...d } : it);
+      : items.map(it => it.id === itemId ? d : it);
     await saveKey("kolas_items", { items: newItems });
   };
 
@@ -69,121 +54,121 @@ export default function KolasPage({ location, adminUser }) {
     await saveKey("kolas_items", { items: items.filter(it => it.id !== id) });
   };
 
-  const SaveRow = ({ onSave }) => (
-    <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 14 }}>
-      <button onClick={() => setEd(null)} style={ab()}>취소</button>
-      <button onClick={onSave} disabled={saving} style={ab("primary")}>{saving ? "저장 중..." : "저장"}</button>
-    </div>
-  );
+  const handleDragStart = (e, idx) => { setDragIdx(idx); e.dataTransfer.effectAllowed = "move"; };
+  const handleDragOver = (e, idx) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; setDragOverIdx(idx); };
+  const handleDragEnd = () => { setDragIdx(null); setDragOverIdx(null); };
+  const handleDrop = async (e, dropIdx) => {
+    e.preventDefault();
+    if (dragIdx === null || dragIdx === dropIdx) { setDragIdx(null); setDragOverIdx(null); return; }
+    const newOrder = [...items];
+    const [moved] = newOrder.splice(dragIdx, 1);
+    newOrder.splice(dropIdx, 0, moved);
+    setItems(newOrder);
+    setDragIdx(null);
+    setDragOverIdx(null);
+    await supabase.from("site_settings").upsert({ key: "kolas_items", value: { items: newOrder } });
+  };
 
-  const ItemForm = ({ itemId }) => (
-    <div style={EP}>
-      <div style={{ display: "grid", gap: 8 }}>
-        <input placeholder="규격 코드 (예: KS B ISO 9283)" value={ed.data.code || ""} onChange={e => patch({ code: e.target.value })} style={{ ...IS, width: "100%" }} />
-        <input placeholder="규격명" value={ed.data.title || ""} onChange={e => patch({ title: e.target.value })} style={{ ...IS, width: "100%" }} />
-        <textarea placeholder="설명" value={ed.data.desc || ""} onChange={e => patch({ desc: e.target.value })}
-          style={{ ...IS, width: "100%", height: 80, resize: "vertical" }} />
+  const CardForm = ({ itemId }) => (
+    <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #bfdbfe", padding: "60px 30px 48px", position: "relative", textAlign: "center" }}>
+      <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 4 }}>
+        <button onClick={() => setEd(null)} style={{ ...ab(), padding: "4px 7px" }}><X size={12} /></button>
+        <button onClick={() => saveItem(itemId)} disabled={saving}
+          style={{ background: "#dcfce7", color: "#15803d", border: "none", borderRadius: 6, padding: "4px 7px", cursor: "pointer", display: "inline-flex", alignItems: "center" }}>
+          <Check size={12} />
+        </button>
       </div>
-      <SaveRow onSave={() => saveItem(itemId)} />
+      <div style={{ marginBottom: 40 }}>
+        <input
+          placeholder="규격 코드"
+          value={ed.data.code || ""}
+          onChange={e => patch({ code: e.target.value })}
+          className="kolas-code-input"
+          style={{
+            background: "#3b82f6", color: "#fff", borderRadius: 6,
+            padding: "10px 20px", fontSize: 18,
+            fontFamily: "'Giants Regular', sans-serif", fontWeight: 400, lineHeight: 1,
+            border: "none", outline: "none", textAlign: "center", minWidth: 140,
+          }}
+        />
+      </div>
+      <input
+        placeholder="규격명"
+        value={ed.data.title || ""}
+        onChange={e => patch({ title: e.target.value })}
+        style={{
+          display: "block", width: "100%", fontSize: 15, fontWeight: 700, color: "#1e3a5f",
+          border: "none", borderBottom: "1px solid #e2e8f0", outline: "none",
+          textAlign: "center", background: "transparent", lineHeight: 1.5,
+          padding: "4px 0", marginBottom: 16, fontFamily: "inherit", boxSizing: "border-box",
+        }}
+      />
+      <textarea
+        placeholder="설명"
+        value={ed.data.desc || ""}
+        onChange={e => patch({ desc: e.target.value })}
+        style={{
+          display: "block", width: "100%", fontSize: 13, color: "#475569", lineHeight: 1.7,
+          border: "none", borderBottom: "1px solid #e2e8f0", outline: "none",
+          textAlign: "center", background: "transparent", resize: "none",
+          height: 80, fontFamily: "inherit", boxSizing: "border-box",
+        }}
+      />
     </div>
   );
 
   return (
     <div>
-      <PageHeader label={KOLAS_HEADER.label} title={KOLAS_HEADER.title} />
-
-      {/* KOLAS 개요 */}
-      <div style={{ marginBottom: 24 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-          <span style={{ fontSize: 13, fontWeight: 600, color: "#64748b" }}>KOLAS 개요</span>
-          {adminUser && (
-            <button onClick={() => openEd("summary", null, { text: summary })} style={ab()}>
-              <Pencil size={12} /> 편집
-            </button>
-          )}
-        </div>
-        {isEd("summary") ? (
-          <div style={EP}>
-            <textarea value={ed.data.text || ""} onChange={e => patch({ text: e.target.value })}
-              style={{ ...IS, width: "100%", height: 100, resize: "vertical" }} />
-            <SaveRow onSave={() => saveKey("kolas_summary", { text: ed.data.text })} />
-          </div>
-        ) : (
-          <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: "18px 22px", fontSize: 14, color: "#475569", lineHeight: 1.9 }}>
-            {summary}
-          </div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 42 }}>
+        <div style={{ fontFamily: "'KoPubWorld Dotum Bold', sans-serif", fontSize: 26, fontWeight: 400, color: "#d1d5db", lineHeight: 1 }}>KOLAS 인정 규격</div>
+        {adminUser && !isEd("new") && (
+          <button onClick={() => openEd("new", { code: "", title: "", desc: "" })} style={ab()}>
+            <Plus size={12} /> 규격 추가
+          </button>
         )}
       </div>
 
-      {/* 규격 목록 */}
-      <div style={{ marginBottom: 32 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-          <span style={{ fontSize: 13, fontWeight: 600, color: "#64748b" }}>규격 목록</span>
-          {adminUser && (
-            <button onClick={() => openEd("item", "new", { code: "", title: "", desc: "" })} style={ab()}>
-              <Plus size={12} /> 규격 추가
-            </button>
-          )}
-        </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
+        {isEd("new") && <CardForm itemId="new" />}
 
-        {isEd("item", "new") && (
-          <div style={{ marginBottom: 14 }}>
-            <ItemForm itemId="new" />
-          </div>
-        )}
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          {items.map((k) => isEd("item", k.id) ? (
-            <ItemForm key={k.id} itemId={k.id} />
-          ) : (
-            <div key={k.id} style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0", padding: 22, position: "relative" }}>
-              {adminUser && (
-                <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 4 }}>
-                  <button onClick={() => openEd("item", k.id, { ...k })} style={ab()}><Pencil size={11} /></button>
-                  <button onClick={() => delItem(k.id)} style={ab("danger")}><Trash2 size={11} /></button>
-                </div>
-              )}
-              <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-                <div style={{ background: "#1e3a5f", color: "#fff", borderRadius: 8, padding: "8px 16px", fontSize: 12, fontWeight: 700, whiteSpace: "nowrap", flexShrink: 0, width: 175, textAlign: "center" }}>{k.code}</div>
-                <div style={{ flex: 1, paddingRight: adminUser ? 80 : 0 }}>
-                  <h3 style={{ fontSize: 15, fontWeight: 700, color: "#1e3a5f", margin: "0 0 6px" }}>{k.title}</h3>
-                  <p style={{ fontSize: 13, color: "#475569", margin: 0, lineHeight: 1.7 }}>{k.desc}</p>
-                </div>
+        {items.map((k, idx) => isEd(k.id) ? (
+          <CardForm key={k.id} itemId={k.id} />
+        ) : (
+          <div key={k.id}
+            draggable={!!adminUser}
+            onDragStart={adminUser ? e => handleDragStart(e, idx) : undefined}
+            onDragOver={adminUser ? e => handleDragOver(e, idx) : undefined}
+            onDrop={adminUser ? e => handleDrop(e, idx) : undefined}
+            onDragEnd={adminUser ? handleDragEnd : undefined}
+            style={{
+              background: "#fff", borderRadius: 12, padding: "100px 30px", position: "relative", textAlign: "center",
+              border: dragOverIdx === idx && dragIdx !== idx ? "2px solid #3b82f6" : "1px solid #e2e8f0",
+              opacity: dragIdx === idx ? 0.4 : 1,
+              transition: "opacity 0.15s",
+              cursor: adminUser ? "grab" : "default",
+            }}>
+            {adminUser && (
+              <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 4 }}>
+                <button onClick={() => openEd(k.id, { ...k })} style={{ ...ab(), padding: "4px 7px" }} onMouseDown={e => e.stopPropagation()}><Pencil size={11} /></button>
+                <button onClick={() => delItem(k.id)} style={{ ...ab("danger"), padding: "4px 7px" }} onMouseDown={e => e.stopPropagation()}><Trash2 size={11} /></button>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 문의하기 */}
-      <div style={{ marginTop: 32, position: "relative" }}>
-        {adminUser && (
-          <div style={{ position: "absolute", top: 12, right: 12, zIndex: 1 }}>
-            <button onClick={() => openEd("contact", null, { ...contact, email: contact.email || location.email })} style={ab()}>
-              <Pencil size={12} /> 편집
-            </button>
+            )}
+            {adminUser && (
+              <div style={{ position: "absolute", top: 14, left: 14 }}>
+                <GripVertical size={14} color="#cbd5e1" />
+              </div>
+            )}
+            <div style={{ display: "inline-block", background: "#3b82f6", color: "#fff", borderRadius: 6, padding: "10px 20px", fontSize: 18, fontFamily: "'Giants Regular', sans-serif", fontWeight: 400, lineHeight: 1, marginBottom: 40 }}>{k.code}</div>
+            <h3 style={{ fontSize: 15, fontWeight: 700, color: "#1e3a5f", lineHeight: 1.5, margin: "0 0 14px" }}>{k.title}</h3>
+            {k.desc && (
+              <div>
+                {k.desc.split("\n").filter(l => l.trim()).map((line, li, arr) => (
+                  <div key={li} style={{ fontSize: 13, color: "#475569", lineHeight: 1.7, marginBottom: li < arr.length - 1 ? 8 : 0 }}>{line}</div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-        {isEd("contact") ? (
-          <div style={EP}>
-            <div style={{ display: "grid", gap: 8 }}>
-              <input placeholder="제목" value={ed.data.title || ""} onChange={e => patch({ title: e.target.value })} style={{ ...IS, width: "100%" }} />
-              <textarea placeholder="설명" value={ed.data.desc || ""} onChange={e => patch({ desc: e.target.value })}
-                style={{ ...IS, width: "100%", height: 70, resize: "vertical" }} />
-              <input placeholder="이메일" value={ed.data.email || ""} onChange={e => patch({ email: e.target.value })} style={{ ...IS, width: "100%" }} />
-            </div>
-            <SaveRow onSave={() => saveKey("kolas_contact", ed.data)} />
-          </div>
-        ) : (
-          <div style={{ background: "#eff6ff", borderRadius: 12, padding: "20px 24px", display: "flex", alignItems: "flex-start", gap: 14, border: "1px solid #bfdbfe" }}>
-            <Mail size={20} color="#3b82f6" style={{ flexShrink: 0, marginTop: 2 }} />
-            <div>
-              <div style={{ fontWeight: 700, fontSize: 14, color: "#1e3a5f", marginBottom: 4 }}>{contact.title}</div>
-              <div style={{ fontSize: 13, color: "#475569", lineHeight: 1.7 }}>{contact.desc}</div>
-              <div style={{ fontSize: 13, color: "#3b82f6", fontWeight: 500, marginTop: 4 }}>{contact.email || location.email}</div>
-            </div>
-          </div>
-        )}
+        ))}
       </div>
     </div>
   );
