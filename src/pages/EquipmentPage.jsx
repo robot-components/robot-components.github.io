@@ -26,6 +26,7 @@ const ActuatorIcon = ({ size = 18, color = "currentColor", strokeWidth = 1.5 }) 
 const CAT_ICONS = [ActuatorIcon, Settings, Bot, Box];
 import { supabase } from "../lib/supabase";
 import { DEFAULT_EQUIPMENT } from "../data/defaults";
+import useIsMobile from "../hooks/useIsMobile";
 
 const IS = {
   border: "1px solid #e2e8f0", borderRadius: 8, padding: "9px 12px",
@@ -42,6 +43,7 @@ const renderName = (n) =>
   n.split("//").map((p, i, a) => <span key={i}>{p}{i < a.length - 1 && <br />}</span>);
 
 export default function EquipmentPage({ adminUser }) {
+  const isMobile = useIsMobile();
   const [equipment, setEquipment] = useState(DEFAULT_EQUIPMENT);
   const [editData, setEditData] = useState(null);
   const [dragId, setDragId] = useState(null);
@@ -183,7 +185,7 @@ export default function EquipmentPage({ adminUser }) {
   };
 
   const renderGrid = (items) => (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px 28px" }}>
+    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: isMobile ? "16px 16px" : "24px 28px" }}>
       {items.map(eq => isEdit(eq.id)
         ? <CardForm key={eq.id} onSave={saveEdit} />
         : <EquipCard key={eq.id} eq={eq} />
@@ -203,7 +205,7 @@ export default function EquipmentPage({ adminUser }) {
       </div>
 
       {isAdd && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px 28px", marginBottom: 52 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(3, 1fr)", gap: isMobile ? "16px 16px" : "24px 28px", marginBottom: 52 }}>
           <CardForm onSave={saveAdd} />
         </div>
       )}

@@ -98,7 +98,7 @@ export default function App() {
             </div>
 
             {/* 오른쪽: 인덱스 + ADMIN */}
-            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            <div id="main-nav" style={{ display: "flex", gap: 6, alignItems: "center" }}>
               {PAGES.map((p, i) => {
                 const isActive = pageIdx === i;
                 const isHover = hoveredNav === i;
@@ -235,7 +235,7 @@ export default function App() {
         input, select, textarea { font-family: inherit; }
         .process-center { text-align: center; }
         @media (max-width: 700px) {
-          nav { display: none !important; }
+          #main-nav { display: none !important; }
           #content-wrapper { padding: 24px 16px 60px !important; }
         }
       `}</style>

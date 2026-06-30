@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Building2, Check, X, ChevronDown, ChevronUp, RefreshCw, Trash2, ChevronLeft, ChevronRight, Pencil } from "lucide-react";
 import { DEFAULT_ROOMS } from "../data/defaults";
 import { supabase } from "../lib/supabase";
+import useIsMobile from "../hooks/useIsMobile";
 
 const sendEmail = (type, data) =>
   supabase.functions.invoke("dynamic-function", { body: { type, data } }).catch(() => {});
@@ -36,6 +37,7 @@ const ab = (v = "default") => ({
   fontSize: 12, fontFamily: "inherit", display: "inline-flex", alignItems: "center", gap: 4, whiteSpace: "nowrap",
 });
 export default function ReservationPage({ adminUser }) {
+  const isMobile = useIsMobile();
   const [form, setForm] = useState(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -190,7 +192,7 @@ export default function ReservationPage({ adminUser }) {
         <div style={{ fontWeight: 700, fontSize: 15, color: "#1e3a5f" }}>회의실 예약 현황</div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, marginBottom: 28, alignItems: "stretch" }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 28, marginBottom: 28, alignItems: isMobile ? "start" : "stretch" }}>
 
       {/* 왼쪽: 회의실 카드 */}
       <div>
@@ -354,7 +356,7 @@ export default function ReservationPage({ adminUser }) {
           <div style={{ marginBottom: 28 }}>
             <div style={{ fontWeight: 700, fontSize: 15, color: "#1e3a5f", marginBottom: 20 }}>예약 신청</div>
             <form onSubmit={handleSubmit}>
-              <div style={{ display: "grid", gap: 12, gridTemplateColumns: "1fr 1fr", marginBottom: 12 }}>
+              <div style={{ display: "grid", gap: 12, gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", marginBottom: 12 }}>
                 <input style={IS} placeholder="신청자 이름 *" value={form.name}
                   onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
                 <input style={IS} placeholder="소속 / 기관명 *" value={form.affiliation}
@@ -364,7 +366,7 @@ export default function ReservationPage({ adminUser }) {
                 <input style={IS} type="email" placeholder="이메일 *" value={form.email}
                   onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required />
               </div>
-              <div style={{ display: "grid", gap: 12, gridTemplateColumns: "1fr 1fr 1fr", marginBottom: 12 }}>
+              <div style={{ display: "grid", gap: 12, gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", marginBottom: 12 }}>
                 <input style={IS} type="date" value={form.date} min={today}
                   onChange={e => setForm(f => ({ ...f, date: e.target.value }))} required />
                 <select style={IS} value={form.start_time}

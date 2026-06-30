@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Pencil, Plus, Trash2, GripVertical, X, Check } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { DEFAULT_KOLAS } from "../data/defaults";
+import useIsMobile from "../hooks/useIsMobile";
 
 const ab = (v = "default") => ({
   background: v === "danger" ? "#fee2e2" : v === "primary" ? "#3b82f6" : "#f1f5f9",
@@ -11,6 +12,7 @@ const ab = (v = "default") => ({
 });
 
 export default function KolasPage({ adminUser }) {
+  const isMobile = useIsMobile();
   const [items, setItems] = useState(DEFAULT_KOLAS);
   const [ed, setEd] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -128,7 +130,7 @@ export default function KolasPage({ adminUser }) {
         )}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 24 }}>
         {isEd("new") && <CardForm itemId="new" />}
 
         {items.map((k, idx) => isEd(k.id) ? (

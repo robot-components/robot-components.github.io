@@ -1,9 +1,11 @@
 import { ChevronRight, Building2, Settings, ShieldCheck } from "lucide-react";
 import { DEFAULT_SUPPORT, DEFAULT_WORKS, DEFAULT_PROCESS, DEFAULT_LOCATION } from "../data/defaults";
+import useIsMobile from "../hooks/useIsMobile";
 
 const SUPPORT_ICONS = [Building2, Settings, ShieldCheck];
 
 export default function AboutPage({ nav }) {
+  const isMobile = useIsMobile();
   const support = DEFAULT_SUPPORT;
   const works = DEFAULT_WORKS;
   const proc = DEFAULT_PROCESS;
@@ -13,13 +15,13 @@ export default function AboutPage({ nav }) {
     <div>
       {/* 지원구조 */}
       <div style={{ marginBottom: 100 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 56, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "180px 1fr", gap: isMobile ? 24 : 56, alignItems: "start" }}>
 
           <div style={{ paddingTop: 6 }}>
             <div style={{ fontFamily: "'KoPubWorld Dotum Bold', sans-serif", fontSize: 26, fontWeight: 400, color: "#d1d5db", lineHeight: 1 }}>지원구조</div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 32 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: isMobile ? 24 : 32 }}>
             {support.map((s, i) => (
               <div key={s.id}>
                 <div style={{ marginBottom: 14, color: "#3b82f6" }}>
@@ -72,17 +74,17 @@ export default function AboutPage({ nav }) {
         <div style={{ marginBottom: 42 }}>
           <div style={{ fontFamily: "'KoPubWorld Dotum Bold', sans-serif", fontSize: 26, fontWeight: 400, color: "#d1d5db", lineHeight: 1 }}>시험평가지원 프로세스</div>
         </div>
-        <div style={{ display: "flex", alignItems: "stretch" }}>
+        <div style={{ display: "flex", alignItems: isMobile ? "flex-start" : "stretch", flexDirection: isMobile ? "column" : "row", gap: isMobile ? 16 : 0 }}>
           {proc.map((s, i) => (
             <div key={s.id} style={{ display: "flex", alignItems: "center", flex: 1 }}>
-              <div style={{ flex: 1, padding: "4px 6px", textAlign: "center" }}>
+              <div style={{ flex: 1, padding: "4px 6px", textAlign: isMobile ? "left" : "center" }}>
                 <div style={{ fontFamily: "'Giants Regular', sans-serif", fontSize: 15, color: "#3b82f6", lineHeight: 1, marginBottom: 14 }}>STEP {+s.step}</div>
                 <div style={{ fontSize: 15, color: "#1e3a5f", fontWeight: 700, lineHeight: 1.7, marginBottom: 14 }}>{s.title}</div>
                 <div>{s.desc.split("\n").filter(l => l.trim()).map((line, li) => (
                   <div key={li} style={{ fontSize: 13, color: "#475569", lineHeight: 1.7, marginBottom: 8 }}>{line}</div>
                 ))}</div>
               </div>
-              {i < proc.length - 1 && <ChevronRight size={13} color="#94a3b8" style={{ flexShrink: 0 }} />}
+              {!isMobile && i < proc.length - 1 && <ChevronRight size={13} color="#94a3b8" style={{ flexShrink: 0 }} />}
             </div>
           ))}
         </div>
@@ -90,12 +92,12 @@ export default function AboutPage({ nav }) {
 
       {/* 오시는 길 */}
       <div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1px 0.8fr", gap: "0 48px", alignItems: "start" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 56, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1px 0.8fr", gap: isMobile ? 40 : "0 48px", alignItems: "start" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "180px 1fr", gap: isMobile ? 16 : 56, alignItems: "start" }}>
             <div>
               <div style={{ fontFamily: "'KoPubWorld Dotum Bold', sans-serif", fontSize: 26, fontWeight: 400, color: "#d1d5db", lineHeight: 1 }}>오시는 길</div>
             </div>
-            <div style={{ display: "flex", alignItems: "center", minHeight: 220 }}>
+            <div style={{ display: "flex", alignItems: "center", minHeight: isMobile ? "auto" : 220 }}>
             <div>
               <div style={{ fontSize: 15, color: "#1e3a5f", fontWeight: 700, lineHeight: 1, marginBottom: 14 }}>주소</div>
               {(loc.address ? loc.address.split("\n") : []).filter(l => l.trim()).map((line, i) => (
@@ -107,7 +109,7 @@ export default function AboutPage({ nav }) {
             </div>
             </div>
           </div>
-          <div style={{ background: "#e2e8f0", alignSelf: "stretch" }} />
+          {!isMobile && <div style={{ background: "#e2e8f0", alignSelf: "stretch" }} />}
           <div style={{ width: "100%", height: 220, borderRadius: 8, overflow: "hidden", position: "relative" }}>
             <iframe
               src="https://maps.google.com/maps?q=경기도+부천시+원미구+평천로+655&output=embed&hl=ko&z=17"
