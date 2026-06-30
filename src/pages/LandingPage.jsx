@@ -40,20 +40,6 @@ export default function LandingPage({ nav }) {
       {/* 히어로 */}
       {isMobile ? (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-          {/* 이미지 (상단) */}
-          <div style={{ flex: "0 0 52%", position: "relative" }}>
-            <img
-              src="/images/hero-bg.png?v=2"
-              alt=""
-              style={{ width: "100%", height: "100%", objectFit: "contain", objectPosition: "center center", display: "block" }}
-            />
-            <div style={{
-              position: "absolute", bottom: 0, left: 0, right: 0, height: "45%",
-              background: "linear-gradient(to bottom, rgba(6,13,26,0) 0%, rgba(6,13,26,1) 100%)",
-              pointerEvents: "none",
-            }} />
-          </div>
-          {/* 텍스트 (하단) */}
           <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 28px 12px" }}>
             <h1 style={{
               fontFamily: "'Black Han Sans', sans-serif",
