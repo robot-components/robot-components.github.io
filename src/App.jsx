@@ -24,6 +24,12 @@ export default function App() {
   const [hoveredNav, setHoveredNav] = useState(null);
   const [hoveredLogo, setHoveredLogo] = useState(false);
   const topRef = useRef(null);
+  const [isSmall, setIsSmall] = useState(() => window.innerWidth > 700 && window.innerWidth <= 1100);
+  useEffect(() => {
+    const h = () => setIsSmall(window.innerWidth > 700 && window.innerWidth <= 1100);
+    window.addEventListener("resize", h);
+    return () => window.removeEventListener("resize", h);
+  }, []);
 
   const [adminUser, setAdminUser] = useState(null);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
@@ -84,21 +90,21 @@ export default function App() {
             <div onClick={() => nav(-1)}
               onMouseEnter={() => setHoveredLogo(true)}
               onMouseLeave={() => setHoveredLogo(false)}
-              style={{ cursor: "pointer", marginRight: "auto", display: "flex", alignItems: "center", gap: 16 }}>
+              style={{ cursor: "pointer", marginRight: "auto", display: "flex", alignItems: "center", gap: 16, overflow: "hidden", minWidth: 0 }}>
               {/* 로고 아이콘: 계단형 — 각 바 x 범위 비겹침, 하단 좌(길)→상단 우(짧) */}
               <svg width="43" height="26" viewBox="0 0 42 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="0"  y="18" width="18" height="4" fill="#060d1a"/>
                 <rect x="19" y="10" width="14" height="4" fill="#060d1a"/>
                 <rect x="34" y="2"  width="8"  height="4" fill="#060d1a"/>
               </svg>
-              <div id="logo-text" style={{ position: "relative" }}>
+              {!isSmall && <div style={{ position: "relative" }}>
                 <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#060d1a", fontSize: 26, lineHeight: "normal", paddingTop: 4, opacity: hoveredLogo ? 0 : 1, transition: "opacity 0.2s", whiteSpace: "nowrap" }}>로봇융합부품지원센터</div>
                 <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#060d1a", fontSize: 26, lineHeight: "normal", paddingTop: 4, position: "absolute", top: "50%", left: 0, transform: "translateY(-50%)", opacity: hoveredLogo ? 1 : 0, transition: "opacity 0.2s", whiteSpace: "nowrap" }}>Robot Test and Approval Center</div>
-              </div>
+              </div>}
             </div>
 
             {/* 오른쪽: 인덱스 + ADMIN */}
-            <div id="main-nav" style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            <div id="main-nav" style={{ display: "flex", gap: 6, alignItems: "center", flexShrink: 0 }}>
               {PAGES.map((p, i) => {
                 const isActive = pageIdx === i;
                 const isHover = hoveredNav === i;
@@ -107,8 +113,8 @@ export default function App() {
                     onMouseEnter={() => setHoveredNav(i)}
                     onMouseLeave={() => setHoveredNav(null)}
                     style={{
-                      border: "none", padding: "11px 18px", borderRadius: 4, cursor: "pointer",
-                      fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, fontWeight: 700,
+                      border: "none", padding: isSmall ? "8px 10px" : "11px 18px", borderRadius: 4, cursor: "pointer",
+                      fontFamily: "'IBM Plex Mono', monospace", fontSize: isSmall ? 11 : 12, fontWeight: 700,
                       letterSpacing: "0.07em", whiteSpace: "nowrap", textTransform: "uppercase",
                       lineHeight: 1, display: "flex", alignItems: "center",
                       transition: "all 0.08s",
