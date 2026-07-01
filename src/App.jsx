@@ -24,9 +24,9 @@ export default function App() {
   const [hoveredNav, setHoveredNav] = useState(null);
   const [hoveredLogo, setHoveredLogo] = useState(false);
   const topRef = useRef(null);
-  const [isSmall, setIsSmall] = useState(() => window.innerWidth > 700 && window.innerWidth <= 1100);
+  const [isSmall, setIsSmall] = useState(() => window.innerWidth > 700 && window.innerWidth <= 1400);
   useEffect(() => {
-    const h = () => setIsSmall(window.innerWidth > 700 && window.innerWidth <= 1100);
+    const h = () => setIsSmall(window.innerWidth > 700 && window.innerWidth <= 1400);
     window.addEventListener("resize", h);
     return () => window.removeEventListener("resize", h);
   }, []);
@@ -113,7 +113,7 @@ export default function App() {
                     onMouseEnter={() => setHoveredNav(i)}
                     onMouseLeave={() => setHoveredNav(null)}
                     style={{
-                      border: "none", padding: isSmall ? "8px 10px" : "11px 18px", borderRadius: 4, cursor: "pointer",
+                      border: "none", padding: isSmall ? "8px 10px" : "11px 12px", borderRadius: 4, cursor: "pointer",
                       fontFamily: "'IBM Plex Mono', monospace", fontSize: isSmall ? 11 : 12, fontWeight: 700,
                       letterSpacing: "0.07em", whiteSpace: "nowrap", textTransform: "uppercase",
                       lineHeight: 1, display: "flex", alignItems: "center",
@@ -245,9 +245,8 @@ export default function App() {
           #main-nav { display: none !important; }
           #content-wrapper { padding: 24px 16px 60px !important; }
         }
-        @media (min-width: 701px) and (max-width: 1100px) {
-          #main-nav button { padding: 8px 8px !important; font-size: 11px !important; letter-spacing: 0 !important; }
-          #logo-text { display: none !important; }
+        @media (min-width: 701px) and (max-width: 1400px) {
+          #main-nav button { padding: 8px 10px !important; font-size: 11px !important; letter-spacing: 0 !important; }
         }
       `}</style>
     </div>
