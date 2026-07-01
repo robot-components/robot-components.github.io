@@ -91,7 +91,7 @@ export default function App() {
                 <rect x="19" y="10" width="14" height="4" fill="#060d1a"/>
                 <rect x="34" y="2"  width="8"  height="4" fill="#060d1a"/>
               </svg>
-              <div style={{ position: "relative" }}>
+              <div id="logo-text" style={{ position: "relative" }}>
                 <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#060d1a", fontSize: 26, lineHeight: "normal", paddingTop: 4, opacity: hoveredLogo ? 0 : 1, transition: "opacity 0.2s", whiteSpace: "nowrap" }}>로봇융합부품지원센터</div>
                 <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#060d1a", fontSize: 26, lineHeight: "normal", paddingTop: 4, position: "absolute", top: "50%", left: 0, transform: "translateY(-50%)", opacity: hoveredLogo ? 1 : 0, transition: "opacity 0.2s", whiteSpace: "nowrap" }}>Robot Test and Approval Center</div>
               </div>
@@ -238,6 +238,10 @@ export default function App() {
         @media (max-width: 700px) {
           #main-nav { display: none !important; }
           #content-wrapper { padding: 24px 16px 60px !important; }
+        }
+        @media (min-width: 701px) and (max-width: 1100px) {
+          #main-nav button { padding: 8px 8px !important; font-size: 11px !important; letter-spacing: 0 !important; }
+          #logo-text { display: none !important; }
         }
       `}</style>
     </div>

@@ -74,9 +74,9 @@ export default function AboutPage({ nav }) {
         <div style={{ marginBottom: 42 }}>
           <div style={{ fontFamily: "'KoPubWorld Dotum Bold', sans-serif", fontSize: 26, fontWeight: 400, color: "#d1d5db", lineHeight: 1 }}>시험평가지원 프로세스</div>
         </div>
-        <div style={{ display: "flex", alignItems: isMobile ? "flex-start" : "stretch", flexDirection: isMobile ? "column" : "row", gap: isMobile ? 16 : 0 }}>
+        <div style={{ display: "flex", alignItems: "flex-start", flexDirection: isMobile ? "column" : "row", flexWrap: isMobile ? undefined : "wrap", gap: isMobile ? 16 : 0 }}>
           {proc.map((s, i) => (
-            <div key={s.id} style={{ display: "flex", alignItems: "center", flex: 1 }}>
+            <div key={s.id} style={{ display: "flex", alignItems: "center", flex: "1 1 140px" }}>
               <div style={{ flex: 1, padding: "4px 6px", textAlign: isMobile ? "left" : "center" }}>
                 <div style={{ fontFamily: "'Giants Regular', sans-serif", fontSize: 15, color: "#3b82f6", lineHeight: 1, marginBottom: 14 }}>STEP {+s.step}</div>
                 <div style={{ fontSize: 15, color: "#1e3a5f", fontWeight: 700, lineHeight: 1.7, marginBottom: 14 }}>{s.title}</div>
