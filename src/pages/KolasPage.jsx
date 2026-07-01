@@ -1,15 +1,17 @@
 import { DEFAULT_KOLAS } from "../data/defaults";
 import useIsMobile from "../hooks/useIsMobile";
+import useIsSmall from "../hooks/useIsSmall";
 
 export default function KolasPage() {
   const isMobile = useIsMobile();
+  const isSmall = useIsSmall();
   const items = DEFAULT_KOLAS;
 
   return (
     <div>
       <div style={{ fontFamily: "'KoPubWorld Dotum Bold', sans-serif", fontSize: 26, fontWeight: 400, color: "#d1d5db", lineHeight: 1, marginBottom: 42 }}>KOLAS 인정 규격</div>
 
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : isSmall ? "repeat(2, 1fr)" : "repeat(3, 1fr)", gap: 24 }}>
         {items.map((k) => (
           <div key={k.id}
             style={{

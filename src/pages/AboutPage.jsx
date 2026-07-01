@@ -1,11 +1,13 @@
 import { ChevronRight, Building2, Settings, ShieldCheck } from "lucide-react";
 import { DEFAULT_SUPPORT, DEFAULT_WORKS, DEFAULT_PROCESS, DEFAULT_LOCATION } from "../data/defaults";
 import useIsMobile from "../hooks/useIsMobile";
+import useIsSmall from "../hooks/useIsSmall";
 
 const SUPPORT_ICONS = [Building2, Settings, ShieldCheck];
 
 export default function AboutPage({ nav }) {
   const isMobile = useIsMobile();
+  const isSmall = useIsSmall();
   const support = DEFAULT_SUPPORT;
   const works = DEFAULT_WORKS;
   const proc = DEFAULT_PROCESS;
@@ -21,7 +23,7 @@ export default function AboutPage({ nav }) {
             <div style={{ fontFamily: "'KoPubWorld Dotum Bold', sans-serif", fontSize: 26, fontWeight: 400, color: "#d1d5db", lineHeight: 1 }}>지원구조</div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: isMobile ? 24 : 32 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : isSmall ? "repeat(2, 1fr)" : "repeat(3, 1fr)", gap: isMobile ? 24 : 32 }}>
             {support.map((s, i) => (
               <div key={s.id}>
                 <div style={{ marginBottom: 14, color: "#3b82f6" }}>
