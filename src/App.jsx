@@ -22,7 +22,6 @@ export default function App() {
 
   const [pageIdx, setPageIdx] = useState(getInitialPage);
   const [hoveredNav, setHoveredNav] = useState(null);
-  const [hoveredLogo, setHoveredLogo] = useState(false);
   const topRef = useRef(null);
   const [isSmall, setIsSmall] = useState(() => window.innerWidth > 700 && window.innerWidth <= 1400);
   useEffect(() => {
@@ -88,18 +87,16 @@ export default function App() {
 
             {/* 왼쪽: 로고 */}
             <div onClick={() => nav(-1)}
-              onMouseEnter={() => setHoveredLogo(true)}
-              onMouseLeave={() => setHoveredLogo(false)}
-              style={{ cursor: "pointer", marginRight: "auto", display: "flex", alignItems: "center", gap: 16, overflow: "hidden", minWidth: 0 }}>
+              style={{ cursor: "pointer", marginRight: "auto", display: "flex", alignItems: "center", gap: 16, flexShrink: 1, minWidth: 0 }}>
               {/* 로고 아이콘: 계단형 — 각 바 x 범위 비겹침, 하단 좌(길)→상단 우(짧) */}
-              <svg width="43" height="26" viewBox="0 0 42 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="43" height="26" viewBox="0 0 42 25" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
                 <rect x="0"  y="18" width="18" height="4" fill="#060d1a"/>
                 <rect x="19" y="10" width="14" height="4" fill="#060d1a"/>
                 <rect x="34" y="2"  width="8"  height="4" fill="#060d1a"/>
               </svg>
-              {!isSmall && <div style={{ position: "relative" }}>
-                <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#060d1a", fontSize: 26, lineHeight: "normal", paddingTop: 4, opacity: hoveredLogo ? 0 : 1, transition: "opacity 0.2s", whiteSpace: "nowrap" }}>로봇융합부품지원센터</div>
-                <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#060d1a", fontSize: 26, lineHeight: "normal", paddingTop: 4, position: "absolute", top: "50%", left: 0, transform: "translateY(-50%)", opacity: hoveredLogo ? 1 : 0, transition: "opacity 0.2s", whiteSpace: "nowrap" }}>Robot Test and Approval Center</div>
+              {!isSmall && <div style={{ lineHeight: 1.15 }}>
+                <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#060d1a", fontSize: 22, whiteSpace: "nowrap" }}>로봇융합부품지원센터</div>
+                <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#64748b", fontSize: 11, whiteSpace: "nowrap", letterSpacing: "0.04em" }}>Robot Test and Approval Center</div>
               </div>}
             </div>
 
