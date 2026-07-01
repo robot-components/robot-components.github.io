@@ -9,14 +9,14 @@ export default function KolasPage() {
     <div>
       <div style={{ fontFamily: "'KoPubWorld Dotum Bold', sans-serif", fontSize: 26, fontWeight: 400, color: "#d1d5db", lineHeight: 1, marginBottom: 42 }}>KOLAS 인정 규격</div>
 
-      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(200px, 1fr))", gap: 24 }}>
         {items.map((k) => (
           <div key={k.id}
             style={{
-              background: "#fff", borderRadius: 12, padding: "100px 30px", position: "relative", textAlign: "center",
+              background: "#fff", borderRadius: 12, padding: "48px 28px", position: "relative", textAlign: "center",
               border: "1px solid #e2e8f0",
             }}>
-            <div style={{ display: "inline-block", background: "#3b82f6", color: "#fff", borderRadius: 6, padding: "10px 20px", fontSize: 18, fontFamily: "'Giants Regular', sans-serif", fontWeight: 400, lineHeight: 1, marginBottom: 40 }}>{k.code}</div>
+            <div style={{ display: "inline-block", background: "#3b82f6", color: "#fff", borderRadius: 6, padding: "8px 16px", fontSize: 14, fontFamily: "'Giants Regular', sans-serif", fontWeight: 400, lineHeight: 1.4, marginBottom: 28, whiteSpace: "nowrap" }}>{k.code}</div>
             <h3 style={{ fontSize: 15, fontWeight: 700, color: "#1e3a5f", lineHeight: 1.5, margin: "0 0 14px" }}>{k.title}</h3>
             {k.desc && (
               <div>
