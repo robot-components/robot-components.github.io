@@ -84,7 +84,7 @@ export default function App() {
       {/* 헤더 */}
       {pageIdx !== -1 && (
         <header style={{ background: "#fff", position: "sticky", top: 0, zIndex: 50 }}>
-          <div style={{ width: "100%", boxSizing: "border-box", padding: "0 clamp(24px, calc((100vw - 800px) / 2), 600px)", display: "flex", alignItems: "center", height: 72 }}>
+          <div style={{ width: "100%", boxSizing: "border-box", padding: "0 clamp(16px, 3vw, 80px)", display: "flex", alignItems: "center", height: 72 }}>
 
             {/* 왼쪽: 로고 */}
             <div onClick={() => nav(-1)}
@@ -99,7 +99,7 @@ export default function App() {
               </svg>
               {!isSmall && <div style={{ position: "relative", lineHeight: "normal" }}>
                 <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#060d1a", fontSize: 26, paddingTop: 4, whiteSpace: "nowrap", opacity: hoveredLogo ? 0 : 1, transition: "opacity 0.2s" }}>로봇융합부품지원센터</div>
-                <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#060d1a", fontSize: 13, position: "absolute", top: "50%", left: 0, transform: "translateY(-50%)", width: "100%", whiteSpace: "normal", wordBreak: "keep-all", textAlign: "left", lineHeight: 1.35, opacity: hoveredLogo ? 1 : 0, transition: "opacity 0.2s" }}>Robot Test and Approval Center</div>
+                <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#060d1a", fontSize: 26, paddingTop: 4, position: "absolute", top: "50%", left: 0, transform: "translateY(-50%)", whiteSpace: "nowrap", opacity: hoveredLogo ? 1 : 0, transition: "opacity 0.2s" }}>Robot Test and Approval Center</div>
               </div>}
             </div>
 
