@@ -158,11 +158,15 @@ export default function ReservationPage({ adminUser }) {
     sendEmail("reservation_result", {
       to_email: reservation.email,
       name: reservation.name,
+      affiliation: reservation.affiliation,
       status_label: status === "approved" ? "승인" : "거절",
       date: reservation.date,
       start_time: reservation.start_time,
       end_time: reservation.end_time,
       room: reservation.room,
+      purpose: reservation.purpose,
+      phone: reservation.phone,
+      email: reservation.email,
       admin_note: note,
     });
     await fetchReservations();
