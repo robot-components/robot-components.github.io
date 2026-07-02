@@ -5,7 +5,7 @@ import { supabase } from "../lib/supabase";
 import useIsMobile from "../hooks/useIsMobile";
 
 const sendEmail = (type, data) =>
-  supabase.functions.invoke("dynamic-function", { body: { type, data } }).catch(() => {});
+  supabase.functions.invoke("swift-endpoint", { body: { type, data } }).catch(() => {});
 
 
 const STATUS_LABEL = { pending: "대기중", approved: "승인", rejected: "거절" };
