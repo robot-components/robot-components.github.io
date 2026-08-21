@@ -28,6 +28,7 @@ const EMPTY_FORM = { title: "", cat: "공지", body: "", pinned: false, files: [
 export default function NoticePage({ adminUser }) {
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
   const [catFilter, setCatFilter] = useState("전체");
   const [openId, setOpenId] = useState(null);
   const [editForm, setEditForm] = useState(null);
@@ -41,7 +42,9 @@ export default function NoticePage({ adminUser }) {
 
   const fetchNotices = async () => {
     setLoading(true);
-    const { data } = await supabase.from("notices").select("*").order("order_idx").order("created_at", { ascending: false });
+    const { data, error } = await supabase.from("notices").select("*").order("order_idx").order("created_at", { ascending: false });
+    if (error) console.error("공지사항 불러오기 실패:", error);
+    setLoadError(error ? error.message : null);
     setNotices(data || []);
     setLoading(false);
   };
@@ -189,7 +192,14 @@ export default function NoticePage({ adminUser }) {
 
       <div>
         {loading && <div style={{ padding: "40px 0", textAlign: "center", color: "#94a3b8", fontSize: 14 }}>불러오는 중...</div>}
-        {!loading && filtered.length === 0 && !isNewForm && (
+        {!loading && loadError && (
+          <div style={{ padding: "24px 20px", textAlign: "center", background: "#fee2e2", color: "#991b1b", borderRadius: 8, fontSize: 13, lineHeight: 1.7 }}>
+            공지사항을 불러올 수 없습니다. 데이터베이스 연결을 확인해 주세요.
+            <div style={{ marginTop: 6, fontSize: 11, color: "#b91c1c" }}>{loadError}</div>
+            <button onClick={fetchNotices} style={{ ...btnSm(), margin: "12px auto 0" }}>다시 시도</button>
+          </div>
+        )}
+        {!loading && !loadError && filtered.length === 0 && !isNewForm && (
           <div style={{ padding: "40px 0", textAlign: "center", color: "#94a3b8", fontSize: 14 }}>등록된 공지사항이 없습니다.</div>
         )}
 

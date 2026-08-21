@@ -57,6 +57,7 @@ export default function ReservationPage({ adminUser }) {
 
   // ── CMS 상태 ──
   const [rooms, setRooms] = useState(DEFAULT_ROOMS);
+  const [settingsError, setSettingsError] = useState(null);
   const [saving, setSaving] = useState(false);
 
   // 회의실 편집
@@ -67,8 +68,10 @@ export default function ReservationPage({ adminUser }) {
   useEffect(() => { loadSettings(); }, []);
 
   const loadSettings = async () => {
-    const { data } = await supabase.from("site_settings").select("*")
+    const { data, error } = await supabase.from("site_settings").select("*")
       .in("key", ["reservation_rooms"]);
+    if (error) console.error("회의실 설정 불러오기 실패:", error);
+    setSettingsError(error ? error.message : null);
     if (!data) return;
     const m = Object.fromEntries(data.map(r => [r.key, r.value]));
     if (m.reservation_rooms?.items) setRooms(m.reservation_rooms.items);
@@ -196,6 +199,13 @@ export default function ReservationPage({ adminUser }) {
       <div style={{ marginBottom: 14 }}>
         <div style={{ fontWeight: 700, fontSize: 15, color: "#1e3a5f" }}>회의실 예약 현황</div>
       </div>
+
+      {settingsError && (
+        <div style={{ marginBottom: 14, padding: "12px 16px", background: "#fee2e2", color: "#991b1b", borderRadius: 8, fontSize: 13, lineHeight: 1.7 }}>
+          회의실 정보를 불러올 수 없어 기본값을 표시하고 있습니다. 데이터베이스 연결을 확인해 주세요.
+          <div style={{ marginTop: 4, fontSize: 11, color: "#b91c1c" }}>{settingsError}</div>
+        </div>
+      )}
 
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 28, marginBottom: 28, alignItems: isMobile ? "start" : "stretch" }}>
 
