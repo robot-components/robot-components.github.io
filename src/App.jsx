@@ -4,7 +4,6 @@ import { PAGES } from "./data/pages";
 import { DEFAULT_SITE, DEFAULT_LOCATION } from "./data/defaults";
 import { supabase } from "./lib/supabase";
 import PageWrapper from "./components/PageWrapper";
-import LandingPage from "./pages/LandingPage";
 import AboutPage from "./pages/AboutPage";
 import KolasPage from "./pages/KolasPage";
 import EquipmentPage from "./pages/EquipmentPage";
@@ -13,11 +12,12 @@ import NoticePage from "./pages/NoticePage";
 import FaqPage from "./pages/FaqPage";
 
 export default function App() {
+  // 별도 대문 없이 ABOUT US(0번)를 첫 화면으로 사용한다.
   const getInitialPage = () => {
     const path = window.location.pathname.replace(/^\//, "");
-    if (!path) return -1;
+    if (!path) return 0;
     const idx = PAGES.findIndex(p => p.slug === path);
-    return idx >= 0 ? idx : -1;
+    return idx >= 0 ? idx : 0;
   };
 
   const [pageIdx, setPageIdx] = useState(getInitialPage);
@@ -29,6 +29,15 @@ export default function App() {
     const h = () => setIsSmall(window.innerWidth > 700 && window.innerWidth <= 1400);
     window.addEventListener("resize", h);
     return () => window.removeEventListener("resize", h);
+  }, []);
+
+  // 첫 진입("/")도 ABOUT US 이므로 주소와 제목을 맞춰 준다.
+  useEffect(() => {
+    document.title = `${PAGES[pageIdx].label} | ${DEFAULT_SITE.centerName}`;
+    if (!window.location.pathname.replace(/^\//, "")) {
+      try { window.history.replaceState({}, "", `/${PAGES[pageIdx].slug}`); } catch {}
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [adminUser, setAdminUser] = useState(null);
@@ -65,108 +74,100 @@ export default function App() {
 
   const nav = (i) => {
     setPageIdx(i);
-    if (i === -1) {
-      document.title = DEFAULT_SITE.centerName;
-      try { window.history.pushState({}, "", "/"); } catch {}
-    } else {
-      document.title = `${PAGES[i].label} | ${DEFAULT_SITE.centerName}`;
-      try { window.history.pushState({}, "", `/${PAGES[i].slug}`); } catch {}
-    }
+    document.title = `${PAGES[i].label} | ${DEFAULT_SITE.centerName}`;
+    try { window.history.pushState({}, "", `/${PAGES[i].slug}`); } catch {}
     topRef.current?.scrollIntoView({ behavior: "instant" });
   };
 
   const iStyle = { border: "1px solid #e2e8f0", borderRadius: 8, padding: "10px 14px", fontSize: 14, width: "100%", boxSizing: "border-box", fontFamily: "inherit", outline: "none", background: "#fff", color: "#334155" };
 
   return (
-    <div ref={topRef} style={{ fontFamily: "'Noto Sans KR', sans-serif", minHeight: "100vh", background: pageIdx === -1 ? "#060d1a" : "#fff", display: "flex", flexDirection: "column" }}>
+    <div ref={topRef} style={{ fontFamily: "'Noto Sans KR', sans-serif", minHeight: "100vh", background: "#fff", display: "flex", flexDirection: "column" }}>
       <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&family=IBM+Plex+Mono:wght@400;500;600&family=Nanum+Gothic+Coding&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet" />
 
       {/* 헤더 */}
-      {pageIdx !== -1 && (
-        <header style={{ background: "#fff", position: "sticky", top: 0, zIndex: 50 }}>
-          <div style={{ width: "100%", boxSizing: "border-box", padding: "0 clamp(24px, calc((100vw - 800px) / 2), 600px)", display: "flex", alignItems: "center", height: 72 }}>
+      <header style={{ background: "#fff", position: "sticky", top: 0, zIndex: 50 }}>
+        <div style={{ width: "100%", boxSizing: "border-box", padding: "0 clamp(24px, calc((100vw - 800px) / 2), 600px)", display: "flex", alignItems: "center", height: 72 }}>
 
-            {/* 왼쪽: 로고 */}
-            <div onClick={() => nav(-1)}
-              onMouseEnter={() => setHoveredLogo(true)}
-              onMouseLeave={() => setHoveredLogo(false)}
-              style={{ cursor: "pointer", marginRight: "auto", display: "flex", alignItems: "center", gap: 16, flexShrink: 1, minWidth: 0 }}>
-              {/* 로고 아이콘: 계단형 — 각 바 x 범위 비겹침, 하단 좌(길)→상단 우(짧) */}
-              <svg width="43" height="26" viewBox="0 0 42 25" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
-                <rect x="0"  y="18" width="18" height="4" fill="#060d1a"/>
-                <rect x="19" y="10" width="14" height="4" fill="#060d1a"/>
-                <rect x="34" y="2"  width="8"  height="4" fill="#060d1a"/>
-              </svg>
-              {!isSmall && <div style={{ position: "relative", lineHeight: "normal" }}>
-                <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#060d1a", fontSize: 26, paddingTop: 4, whiteSpace: "nowrap", opacity: hoveredLogo ? 0 : 1, transition: "opacity 0.2s" }}>로봇융합부품지원센터</div>
-                <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#060d1a", fontSize: 26, paddingTop: 4, position: "absolute", top: "50%", left: 0, transform: "translateY(-50%)", whiteSpace: "nowrap", pointerEvents: "none", opacity: hoveredLogo ? 1 : 0, transition: "opacity 0.2s" }}>Robot Test and Approval Center</div>
-              </div>}
-            </div>
-
-            {/* 오른쪽: 인덱스 + ADMIN */}
-            <div id="main-nav" style={{ display: "flex", gap: 6, alignItems: "center", flexShrink: 0 }}>
-              {PAGES.map((p, i) => {
-                const isActive = pageIdx === i;
-                const isHover = hoveredNav === i;
-                return (
-                  <button key={i} onClick={() => nav(i)}
-                    onMouseEnter={() => setHoveredNav(i)}
-                    onMouseLeave={() => setHoveredNav(null)}
-                    style={{
-                      border: "none", padding: isSmall ? "8px 10px" : "11px 12px", borderRadius: 4, cursor: "pointer",
-                      fontFamily: "'IBM Plex Mono', monospace", fontSize: isSmall ? 11 : 12, fontWeight: 700,
-                      letterSpacing: "0.07em", whiteSpace: "nowrap", textTransform: "uppercase",
-                      lineHeight: 1, display: "flex", alignItems: "center",
-                      transition: "all 0.08s",
-                      background: isActive
-                        ? "linear-gradient(180deg, #4ade80 0%, #22c55e 45%, #16a34a 100%)"
-                        : isHover
-                        ? "linear-gradient(180deg, #fef08a 0%, #facc15 45%, #ca8a04 100%)"
-                        : "linear-gradient(180deg, #f9fafb 0%, #e5e7eb 50%, #d1d5db 100%)",
-                      color: isActive ? "#fff" : isHover ? "#713f12" : "#374151",
-                      boxShadow: isActive
-                        ? "inset 0 3px 6px rgba(0,0,0,0.2), 0 1px 0 #15803d"
-                        : isHover
-                        ? "0 4px 0 #a16207, inset 0 1px 0 rgba(255,255,255,0.7)"
-                        : "0 4px 0 #9ca3af, inset 0 1px 0 rgba(255,255,255,0.95)",
-                      transform: isActive ? "translateY(3px)" : isHover ? "translateY(1px)" : "translateY(0)",
-                    }}>
-                    {p.label}
-                  </button>
-                );
-              })}
-              {adminUser ? (
-                <button onClick={handleAdminLogout} style={{
-                  border: "none", padding: "11px 14px", borderRadius: 4, cursor: "pointer",
-                  fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, fontWeight: 700,
-                  letterSpacing: "0.07em", lineHeight: 1, display: "flex", alignItems: "center", gap: 5,
-                  background: "linear-gradient(180deg, #fca5a5 0%, #ef4444 45%, #b91c1c 100%)",
-                  color: "#fff", boxShadow: "0 4px 0 #991b1b, inset 0 1px 0 rgba(255,255,255,0.35)",
-                }}>
-                  <LogOut size={12} /> LOGOUT
-                </button>
-              ) : (
-                <button onClick={() => { setLoginErr(""); setShowAdminLogin(true); }} style={{
-                  border: "none", padding: "11px 14px", borderRadius: 4, cursor: "pointer",
-                  fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, fontWeight: 700,
-                  letterSpacing: "0.07em", lineHeight: 1, display: "flex", alignItems: "center", gap: 5,
-                  background: "linear-gradient(180deg, #fca5a5 0%, #ef4444 45%, #b91c1c 100%)",
-                  color: "#fff", boxShadow: "0 4px 0 #991b1b, inset 0 1px 0 rgba(255,255,255,0.35)",
-                }}>
-                  <Lock size={12} /> ADMIN
-                </button>
-              )}
-            </div>
-
+          {/* 왼쪽: 로고 */}
+          <div onClick={() => nav(0)}
+            onMouseEnter={() => setHoveredLogo(true)}
+            onMouseLeave={() => setHoveredLogo(false)}
+            style={{ cursor: "pointer", marginRight: "auto", display: "flex", alignItems: "center", gap: 16, flexShrink: 1, minWidth: 0 }}>
+            {/* 로고 아이콘: 계단형 — 각 바 x 범위 비겹침, 하단 좌(길)→상단 우(짧) */}
+            <svg width="43" height="26" viewBox="0 0 42 25" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+              <rect x="0"  y="18" width="18" height="4" fill="#060d1a"/>
+              <rect x="19" y="10" width="14" height="4" fill="#060d1a"/>
+              <rect x="34" y="2"  width="8"  height="4" fill="#060d1a"/>
+            </svg>
+            {!isSmall && <div style={{ position: "relative", lineHeight: "normal" }}>
+              <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#060d1a", fontSize: 26, paddingTop: 4, whiteSpace: "nowrap", opacity: hoveredLogo ? 0 : 1, transition: "opacity 0.2s" }}>로봇융합부품지원센터</div>
+              <div style={{ fontFamily: "'A2G 7Bold', sans-serif", color: "#060d1a", fontSize: 26, paddingTop: 4, position: "absolute", top: "50%", left: 0, transform: "translateY(-50%)", whiteSpace: "nowrap", pointerEvents: "none", opacity: hoveredLogo ? 1 : 0, transition: "opacity 0.2s" }}>Robot Test and Approval Center</div>
+            </div>}
           </div>
-        </header>
-      )}
+
+          {/* 오른쪽: 인덱스 + ADMIN */}
+          <div id="main-nav" style={{ display: "flex", gap: 6, alignItems: "center", flexShrink: 0 }}>
+            {PAGES.map((p, i) => {
+              const isActive = pageIdx === i;
+              const isHover = hoveredNav === i;
+              return (
+                <button key={i} onClick={() => nav(i)}
+                  onMouseEnter={() => setHoveredNav(i)}
+                  onMouseLeave={() => setHoveredNav(null)}
+                  style={{
+                    border: "none", padding: isSmall ? "8px 10px" : "11px 12px", borderRadius: 4, cursor: "pointer",
+                    fontFamily: "'IBM Plex Mono', monospace", fontSize: isSmall ? 11 : 12, fontWeight: 700,
+                    letterSpacing: "0.07em", whiteSpace: "nowrap", textTransform: "uppercase",
+                    lineHeight: 1, display: "flex", alignItems: "center",
+                    transition: "all 0.08s",
+                    background: isActive
+                      ? "linear-gradient(180deg, #4ade80 0%, #22c55e 45%, #16a34a 100%)"
+                      : isHover
+                      ? "linear-gradient(180deg, #fef08a 0%, #facc15 45%, #ca8a04 100%)"
+                      : "linear-gradient(180deg, #f9fafb 0%, #e5e7eb 50%, #d1d5db 100%)",
+                    color: isActive ? "#fff" : isHover ? "#713f12" : "#374151",
+                    boxShadow: isActive
+                      ? "inset 0 3px 6px rgba(0,0,0,0.2), 0 1px 0 #15803d"
+                      : isHover
+                      ? "0 4px 0 #a16207, inset 0 1px 0 rgba(255,255,255,0.7)"
+                      : "0 4px 0 #9ca3af, inset 0 1px 0 rgba(255,255,255,0.95)",
+                    transform: isActive ? "translateY(3px)" : isHover ? "translateY(1px)" : "translateY(0)",
+                  }}>
+                  {p.label}
+                </button>
+              );
+            })}
+            {adminUser ? (
+              <button onClick={handleAdminLogout} style={{
+                border: "none", padding: "11px 14px", borderRadius: 4, cursor: "pointer",
+                fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, fontWeight: 700,
+                letterSpacing: "0.07em", lineHeight: 1, display: "flex", alignItems: "center", gap: 5,
+                background: "linear-gradient(180deg, #fca5a5 0%, #ef4444 45%, #b91c1c 100%)",
+                color: "#fff", boxShadow: "0 4px 0 #991b1b, inset 0 1px 0 rgba(255,255,255,0.35)",
+              }}>
+                <LogOut size={12} /> LOGOUT
+              </button>
+            ) : (
+              <button onClick={() => { setLoginErr(""); setShowAdminLogin(true); }} style={{
+                border: "none", padding: "11px 14px", borderRadius: 4, cursor: "pointer",
+                fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, fontWeight: 700,
+                letterSpacing: "0.07em", lineHeight: 1, display: "flex", alignItems: "center", gap: 5,
+                background: "linear-gradient(180deg, #fca5a5 0%, #ef4444 45%, #b91c1c 100%)",
+                color: "#fff", boxShadow: "0 4px 0 #991b1b, inset 0 1px 0 rgba(255,255,255,0.35)",
+              }}>
+                <Lock size={12} /> ADMIN
+              </button>
+            )}
+          </div>
+
+        </div>
+      </header>
 
       {/* 메인 */}
       <main style={{ flex: 1, width: "100%" }}>
-        <div id="content-wrapper" style={{ boxSizing: "border-box", padding: pageIdx === -1 ? 0 : "120px clamp(24px, calc((100vw - 800px) / 2), 600px) 80px", width: "100%" }}>
+        <div id="content-wrapper" style={{ boxSizing: "border-box", padding: "120px clamp(24px, calc((100vw - 800px) / 2), 600px) 80px", width: "100%" }}>
           <PageWrapper pageKey={pageIdx}>
-            {pageIdx === -1 && <LandingPage nav={nav} />}
             {pageIdx === 0 && <AboutPage nav={nav} />}
             {pageIdx === 1 && <KolasPage />}
             {pageIdx === 2 && <EquipmentPage adminUser={adminUser} />}
