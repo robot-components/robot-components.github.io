@@ -138,7 +138,12 @@ export default function ReservationPage({ adminUser }) {
     setSubmitting(true);
     const { error } = await supabase.from("reservations").insert([form]);
     if (error) {
-      setFormError("신청 중 오류가 발생했습니다. 다시 시도해 주세요.");
+      console.error("예약 신청 실패:", error);
+      // 서버에 닿지 못한 경우(DB 정지/네트워크 단절)는 재시도해도 소용없으므로 구분해서 안내한다.
+      const unreachable = !error.code || /fetch|network/i.test(error.message || "");
+      setFormError(unreachable
+        ? "서버에 연결할 수 없어 신청이 저장되지 않았습니다. 담당자에게 연락해 주세요. (helprobot@keti.re.kr)"
+        : `신청 중 오류가 발생했습니다. 다시 시도해 주세요. (${error.message})`);
     } else {
       sendEmail("new_reservation", form);
       setSubmitted(true);
