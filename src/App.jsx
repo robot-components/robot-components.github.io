@@ -201,24 +201,6 @@ export default function App() {
 
       <style>{`
         @font-face {
-          font-family: 'KERISKEDU Line';
-          src: url('/fonts/KERISKEDU_Line.ttf') format('truetype');
-          font-weight: normal;
-          font-style: normal;
-        }
-        @font-face {
-          font-family: 'Giants Inline';
-          src: url('/fonts/Giants-Inline.ttf') format('truetype');
-          font-weight: normal;
-          font-style: normal;
-        }
-        @font-face {
-          font-family: 'Giants Bold';
-          src: url('/fonts/Giants-Bold.ttf') format('truetype');
-          font-weight: normal;
-          font-style: normal;
-        }
-        @font-face {
           font-family: 'A2G 7Bold';
           src: url('/fonts/A2G-7Bold.ttf') format('truetype');
           font-weight: normal;
