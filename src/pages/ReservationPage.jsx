@@ -41,8 +41,10 @@ export default function ReservationPage({ adminUser }) {
   const isMobile = useIsMobile();
   const [form, setForm] = useState(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(null); // null | { status, admin_note }
   const [formError, setFormError] = useState("");
+  // 선택한 날짜·회의실에 이미 잡혀 있는 예약 (신청 전 겹침 안내용)
+  const [slotTaken, setSlotTaken] = useState([]);
 
   const [reservations, setReservations] = useState([]);
   const [loadingRes, setLoadingRes] = useState(false);
@@ -123,6 +125,28 @@ export default function ReservationPage({ adminUser }) {
   }, [currentDate]);
 
   useEffect(() => { fetchCalendarData(); }, [fetchCalendarData]);
+
+  // 날짜·회의실을 고르면 그날 이미 잡힌 예약을 가져와 신청 전에 겹침을 알려 준다.
+  useEffect(() => {
+    if (!form.date || !form.room) { setSlotTaken([]); return; }
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("reservations")
+        .select("start_time, end_time")
+        .eq("date", form.date)
+        .eq("room", form.room)
+        .in("status", ["pending", "approved"])
+        .order("start_time");
+      if (!cancelled) setSlotTaken(data || []);
+    })();
+    return () => { cancelled = true; };
+  }, [form.date, form.room]);
+
+  // 겹침 판정은 DB 트리거와 같은 규칙을 쓴다: 시작 < 기존종료 AND 종료 > 기존시작
+  const overlapping = (form.start_time && form.end_time && form.end_time > form.start_time)
+    ? slotTaken.filter(r => form.start_time < r.end_time && form.end_time > r.start_time)
+    : [];
   useEffect(() => {
     if (adminUser) fetchReservations();
     else setReservations([]);
@@ -136,7 +160,9 @@ export default function ReservationPage({ adminUser }) {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase.from("reservations").insert([form]);
+    // 승인/거절은 DB 트리거가 판정한다(supabase/auto_decide_reservation.sql).
+    // 결과를 돌려받아 어떤 안내 메일을 보낼지 정한다.
+    const { data, error } = await supabase.from("reservations").insert([form]).select().single();
     if (error) {
       console.error("예약 신청 실패:", error);
       // 서버에 닿지 못한 경우(DB 정지/네트워크 단절)는 재시도해도 소용없으므로 구분해서 안내한다.
@@ -145,9 +171,31 @@ export default function ReservationPage({ adminUser }) {
         ? "서버에 연결할 수 없어 신청이 저장되지 않았습니다. 담당자에게 연락해 주세요. (helprobot@keti.re.kr)"
         : `신청 중 오류가 발생했습니다. 다시 시도해 주세요. (${error.message})`);
     } else {
-      sendEmail("new_reservation", form);
-      setSubmitted(true);
+      // 트리거가 아직 설치되지 않았다면 status 가 pending 으로 남는다.
+      // 그 경우에는 기존 방식(관리자 수동 검토)대로 동작시킨다.
+      const decided = data.status === "approved" || data.status === "rejected";
+      const approved = data.status === "approved";
+      if (decided) {
+        sendEmail("reservation_result", {
+          to_email: data.email,
+          name: data.name,
+          affiliation: data.affiliation,
+          status_label: approved ? "승인" : "거절",
+          date: data.date,
+          start_time: data.start_time,
+          end_time: data.end_time,
+          room: data.room,
+          purpose: data.purpose,
+          phone: data.phone,
+          email: data.email,
+          admin_note: data.admin_note || "",
+        });
+      }
+      // 관리자에게는 자동 승인된 건만 알린다. 자동 거절은 알릴 필요가 없다.
+      if (approved || !decided) sendEmail("new_reservation", data);
+      setSubmitted({ status: data.status, admin_note: data.admin_note || "" });
       setForm(EMPTY_FORM);
+      fetchCalendarData();
     }
     setSubmitting(false);
   };
@@ -361,17 +409,44 @@ export default function ReservationPage({ adminUser }) {
       {/* 예약 신청 폼 */}
       {!adminUser && (
         submitted ? (
-          <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 12, padding: "36px 28px", textAlign: "center", marginBottom: 28 }}>
-            <div style={{ fontSize: 36, marginBottom: 10 }}>✓</div>
-            <div style={{ fontWeight: 700, fontSize: 16, color: "#15803d", marginBottom: 8 }}>예약 신청이 완료되었습니다</div>
-            <p style={{ fontSize: 13, color: "#166534", margin: "0 0 20px", lineHeight: 1.7 }}>
-              담당자 검토 후 입력하신 이메일로 확정 여부를 안내드립니다.
-            </p>
-            <button onClick={() => setSubmitted(false)}
-              style={{ background: "#15803d", color: "#fff", border: "none", borderRadius: 8, padding: "10px 24px", cursor: "pointer", fontSize: 13, fontFamily: "inherit" }}>
-              새 예약 신청
-            </button>
-          </div>
+          submitted.status === "approved" ? (
+            <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 12, padding: "36px 28px", textAlign: "center", marginBottom: 28 }}>
+              <div style={{ fontSize: 36, marginBottom: 10 }}>✓</div>
+              <div style={{ fontWeight: 700, fontSize: 16, color: "#15803d", marginBottom: 8 }}>예약이 확정되었습니다</div>
+              <p style={{ fontSize: 13, color: "#166534", margin: "0 0 20px", lineHeight: 1.7 }}>
+                신청하신 시간에 다른 예약이 없어 바로 승인되었습니다.<br />
+                입력하신 이메일로 확정 내역을 보내드렸습니다.
+              </p>
+              <button onClick={() => setSubmitted(null)}
+                style={{ background: "#15803d", color: "#fff", border: "none", borderRadius: 8, padding: "10px 24px", cursor: "pointer", fontSize: 13, fontFamily: "inherit" }}>
+                새 예약 신청
+              </button>
+            </div>
+          ) : submitted.status !== "rejected" ? (
+            <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 12, padding: "36px 28px", textAlign: "center", marginBottom: 28 }}>
+              <div style={{ fontSize: 36, marginBottom: 10 }}>✓</div>
+              <div style={{ fontWeight: 700, fontSize: 16, color: "#15803d", marginBottom: 8 }}>예약 신청이 완료되었습니다</div>
+              <p style={{ fontSize: 13, color: "#166534", margin: "0 0 20px", lineHeight: 1.7 }}>
+                담당자 검토 후 입력하신 이메일로 확정 여부를 안내드립니다.
+              </p>
+              <button onClick={() => setSubmitted(null)}
+                style={{ background: "#15803d", color: "#fff", border: "none", borderRadius: 8, padding: "10px 24px", cursor: "pointer", fontSize: 13, fontFamily: "inherit" }}>
+                새 예약 신청
+              </button>
+            </div>
+          ) : (
+            <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 12, padding: "36px 28px", textAlign: "center", marginBottom: 28 }}>
+              <div style={{ fontSize: 36, marginBottom: 10 }}>!</div>
+              <div style={{ fontWeight: 700, fontSize: 16, color: "#b91c1c", marginBottom: 8 }}>이미 예약된 시간입니다</div>
+              <p style={{ fontSize: 13, color: "#991b1b", margin: "0 0 20px", lineHeight: 1.7 }}>
+                {submitted.admin_note || "신청하신 시간대에 이미 예약이 있어 다른 시간대로 다시 신청해 주시기 바랍니다."}
+              </p>
+              <button onClick={() => setSubmitted(null)}
+                style={{ background: "#b91c1c", color: "#fff", border: "none", borderRadius: 8, padding: "10px 24px", cursor: "pointer", fontSize: 13, fontFamily: "inherit" }}>
+                다른 시간으로 신청
+              </button>
+            </div>
+          )
         ) : (
           <div style={{ marginBottom: 28 }}>
             <div style={{ fontWeight: 700, fontSize: 15, color: "#1e3a5f", marginBottom: 20 }}>예약 신청</div>
@@ -412,10 +487,23 @@ export default function ReservationPage({ adminUser }) {
                   value={form.purpose}
                   onChange={e => setForm(f => ({ ...f, purpose: e.target.value }))} required />
               </div>
+              {form.date && form.room && slotTaken.length > 0 && (
+                <div style={{ fontSize: 12, color: "#64748b", margin: "0 0 12px", lineHeight: 1.7 }}>
+                  {form.date} {form.room} 예약 현황:{" "}
+                  {slotTaken.map(r => `${r.start_time}~${r.end_time}`).join(", ")}
+                </div>
+              )}
+              {overlapping.length > 0 && (
+                <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, padding: "12px 14px", margin: "0 0 12px", fontSize: 13, color: "#991b1b", lineHeight: 1.7 }}>
+                  선택하신 시간은 이미 예약되어 있습니다
+                  ({overlapping.map(r => `${r.start_time}~${r.end_time}`).join(", ")}).<br />
+                  다른 시간대를 선택해 주세요.
+                </div>
+              )}
               {formError && <p style={{ fontSize: 13, color: "#ef4444", margin: "0 0 12px" }}>{formError}</p>}
-              <button type="submit" disabled={submitting}
-                style={{ background: "#3b82f6", color: "#fff", border: "none", borderRadius: 8, padding: "12px 28px", fontSize: 14, fontWeight: 700, cursor: submitting ? "not-allowed" : "pointer", opacity: submitting ? 0.7 : 1, fontFamily: "inherit" }}>
-                {submitting ? "처리 중..." : "신청하기"}
+              <button type="submit" disabled={submitting || overlapping.length > 0}
+                style={{ background: overlapping.length > 0 ? "#94a3b8" : "#3b82f6", color: "#fff", border: "none", borderRadius: 8, padding: "12px 28px", fontSize: 14, fontWeight: 700, cursor: (submitting || overlapping.length > 0) ? "not-allowed" : "pointer", opacity: submitting ? 0.7 : 1, fontFamily: "inherit" }}>
+                {submitting ? "처리 중..." : overlapping.length > 0 ? "시간 변경 필요" : "신청하기"}
               </button>
             </form>
           </div>
