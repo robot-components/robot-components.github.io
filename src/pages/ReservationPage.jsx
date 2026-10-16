@@ -17,6 +17,12 @@ const TIME_OPTIONS = [
   "15:00","15:30","16:00","16:30","17:00","17:30","18:00",
 ];
 
+// 자동 거절 안내 문구. DB 트리거(supabase/auto_decide_reservation.sql)의 문구와 같게 유지한다.
+const REJECT_NOTE =
+  "신청하신 시간대에 이미 예약이 있어 자동으로 거절되었습니다. "
+  + "다른 시간대로 다시 신청해 주시기 바랍니다. "
+  + "일정 조정이 필요하시면 helprobot@keti.re.kr 로 연락 주시기 바랍니다.";
+
 const EMPTY_FORM = {
   name: "", affiliation: "", phone: "", email: "",
   date: "", start_time: "", end_time: "", room: "", purpose: "",
@@ -162,7 +168,10 @@ export default function ReservationPage({ adminUser }) {
     setSubmitting(true);
     // 승인/거절은 DB 트리거가 판정한다(supabase/auto_decide_reservation.sql).
     // 결과를 돌려받아 어떤 안내 메일을 보낼지 정한다.
-    const { data, error } = await supabase.from("reservations").insert([form]).select().single();
+    // 판정 결과만 돌려받는다. 신청 내용은 이미 form 에 있으므로 서버에서 다시 읽을 필요가 없고,
+    // 일반 방문자가 예약자 개인정보를 조회할 수 있는 통로를 만들지 않기 위해서이기도 하다.
+    const { data, error } = await supabase
+      .from("reservations").insert([form]).select("status").single();
     if (error) {
       console.error("예약 신청 실패:", error);
       // 서버에 닿지 못한 경우(DB 정지/네트워크 단절)는 재시도해도 소용없으므로 구분해서 안내한다.
@@ -177,23 +186,15 @@ export default function ReservationPage({ adminUser }) {
       const approved = data.status === "approved";
       if (decided) {
         sendEmail("reservation_result", {
-          to_email: data.email,
-          name: data.name,
-          affiliation: data.affiliation,
+          to_email: form.email,
+          ...form,
           status_label: approved ? "승인" : "거절",
-          date: data.date,
-          start_time: data.start_time,
-          end_time: data.end_time,
-          room: data.room,
-          purpose: data.purpose,
-          phone: data.phone,
-          email: data.email,
-          admin_note: data.admin_note || "",
+          admin_note: approved ? "" : REJECT_NOTE,
         });
       }
       // 관리자에게는 자동 승인된 건만 알린다. 자동 거절은 알릴 필요가 없다.
-      if (approved || !decided) sendEmail("new_reservation", data);
-      setSubmitted({ status: data.status, admin_note: data.admin_note || "" });
+      if (approved || !decided) sendEmail("new_reservation", form);
+      setSubmitted({ status: data.status });
       setForm(EMPTY_FORM);
       fetchCalendarData();
     }
@@ -439,7 +440,7 @@ export default function ReservationPage({ adminUser }) {
               <div style={{ fontSize: 36, marginBottom: 10 }}>!</div>
               <div style={{ fontWeight: 700, fontSize: 16, color: "#b91c1c", marginBottom: 8 }}>이미 예약된 시간입니다</div>
               <p style={{ fontSize: 13, color: "#991b1b", margin: "0 0 20px", lineHeight: 1.7 }}>
-                {submitted.admin_note || "신청하신 시간대에 이미 예약이 있어 다른 시간대로 다시 신청해 주시기 바랍니다."}
+                {REJECT_NOTE}
               </p>
               <button onClick={() => setSubmitted(null)}
                 style={{ background: "#b91c1c", color: "#fff", border: "none", borderRadius: 8, padding: "10px 24px", cursor: "pointer", fontSize: 13, fontFamily: "inherit" }}>
