@@ -193,7 +193,8 @@ export default function ReservationPage({ adminUser }) {
         });
       }
       // 관리자에게는 자동 승인된 건만 알린다. 자동 거절은 알릴 필요가 없다.
-      if (approved || !decided) sendEmail("new_reservation", form);
+      // status 를 함께 넘겨 메일 문구를 "자동 승인 완료"로 구분한다.
+      if (approved || !decided) sendEmail("new_reservation", { ...form, status: data.status });
       setSubmitted({ status: data.status });
       setForm(EMPTY_FORM);
       fetchCalendarData();
