@@ -8,8 +8,8 @@ const sendEmail = (type, data) =>
   supabase.functions.invoke("swift-endpoint", { body: { type, data } }).catch(() => {});
 
 
-const STATUS_LABEL = { pending: "대기중", approved: "승인", rejected: "거절" };
-const STATUS_COLOR = { pending: "#f59e0b", approved: "#10b981", rejected: "#ef4444" };
+const STATUS_LABEL = { pending: "대기중", approved: "승인", rejected: "거절", cancelled: "취소됨" };
+const STATUS_COLOR = { pending: "#f59e0b", approved: "#10b981", rejected: "#ef4444", cancelled: "#64748b" };
 
 const TIME_OPTIONS = [
   "09:00","09:30","10:00","10:30","11:00","11:30",
@@ -51,6 +51,10 @@ export default function ReservationPage({ adminUser }) {
   const [formError, setFormError] = useState("");
   // 선택한 날짜·회의실에 이미 잡혀 있는 예약 (신청 전 겹침 안내용)
   const [slotTaken, setSlotTaken] = useState([]);
+
+  // 메일의 취소 링크로 들어온 경우 (?cancel=열쇠)
+  const [cancelToken] = useState(() => new URLSearchParams(window.location.search).get("cancel"));
+  const [cancelState, setCancelState] = useState(null); // null | "working" | {ok, reason, ...}
 
   const [reservations, setReservations] = useState([]);
   const [loadingRes, setLoadingRes] = useState(false);
@@ -170,8 +174,11 @@ export default function ReservationPage({ adminUser }) {
     // 결과를 돌려받아 어떤 안내 메일을 보낼지 정한다.
     // 판정 결과만 돌려받는다. 신청 내용은 이미 form 에 있으므로 서버에서 다시 읽을 필요가 없고,
     // 일반 방문자가 예약자 개인정보를 조회할 수 있는 통로를 만들지 않기 위해서이기도 하다.
+    // 취소용 열쇠는 화면에서 만든다. DB 에 저장되지만 외부에서 조회할 수 없고,
+    // 승인 메일의 취소 링크에만 담긴다.
+    const cancelToken = crypto.randomUUID();
     const { data, error } = await supabase
-      .from("reservations").insert([form]).select("status").single();
+      .from("reservations").insert([{ ...form, cancel_token: cancelToken }]).select("status").single();
     if (error) {
       console.error("예약 신청 실패:", error);
       // 서버에 닿지 못한 경우(DB 정지/네트워크 단절)는 재시도해도 소용없으므로 구분해서 안내한다.
@@ -190,6 +197,8 @@ export default function ReservationPage({ adminUser }) {
           ...form,
           status_label: approved ? "승인" : "거절",
           admin_note: approved ? "" : REJECT_NOTE,
+          // 승인된 건에만 취소 링크를 넣는다.
+          cancel_url: approved ? `${window.location.origin}/reservation?cancel=${cancelToken}` : "",
         });
       }
       // 관리자에게는 자동 승인된 건만 알린다. 자동 거절은 알릴 필요가 없다.
@@ -200,6 +209,24 @@ export default function ReservationPage({ adminUser }) {
       fetchCalendarData();
     }
     setSubmitting(false);
+  };
+
+  // 메일의 취소 링크를 통한 본인 취소.
+  // 열쇠를 아는 사람만 실행할 수 있고, 판정과 갱신은 DB 함수가 처리한다.
+  const runCancel = async () => {
+    setCancelState("working");
+    const { data, error } = await supabase.rpc("cancel_reservation", { token: cancelToken });
+    if (error) {
+      console.error("예약 취소 실패:", error);
+      setCancelState({ ok: false, reason: "error", message: error.message });
+      return;
+    }
+    if (data?.ok && !data.already) {
+      sendEmail("reservation_cancelled", data);
+      fetchCalendarData();
+      if (adminUser) fetchReservations();
+    }
+    setCancelState(data);
   };
 
   const deleteReservation = async (id, name) => {
@@ -249,6 +276,48 @@ export default function ReservationPage({ adminUser }) {
   return (
     <div>
       <div style={{ fontFamily: "'KoPubWorld Dotum Bold', sans-serif", fontSize: 26, fontWeight: 400, color: "#d1d5db", lineHeight: 1, marginBottom: 42 }}>회의실 예약</div>
+
+      {/* ── 메일의 취소 링크로 들어온 경우 ── */}
+      {cancelToken && (
+        <div style={{ border: "1px solid #e2e8f0", borderRadius: 12, padding: "28px 24px", marginBottom: 28, background: "#fff" }}>
+          {cancelState === null || cancelState === "working" ? (
+            <>
+              <div style={{ fontWeight: 700, fontSize: 16, color: "#1e3a5f", marginBottom: 8 }}>예약을 취소하시겠습니까?</div>
+              <p style={{ fontSize: 13, color: "#475569", margin: "0 0 20px", lineHeight: 1.7 }}>
+                취소하면 해당 시간대가 다시 예약 가능해지며, 되돌릴 수 없습니다.<br />
+                다시 이용하시려면 새로 신청하셔야 합니다.
+              </p>
+              <button onClick={runCancel} disabled={cancelState === "working"}
+                style={{ background: "#ef4444", color: "#fff", border: "none", borderRadius: 8, padding: "11px 24px", fontSize: 14, fontWeight: 700, cursor: cancelState === "working" ? "not-allowed" : "pointer", opacity: cancelState === "working" ? 0.7 : 1, fontFamily: "inherit", marginRight: 8 }}>
+                {cancelState === "working" ? "취소 중..." : "예약 취소하기"}
+              </button>
+              <a href="/reservation" style={{ fontSize: 13, color: "#64748b", textDecoration: "none" }}>그대로 두기</a>
+            </>
+          ) : cancelState.ok ? (
+            <>
+              <div style={{ fontWeight: 700, fontSize: 16, color: "#1e3a5f", marginBottom: 8 }}>
+                {cancelState.already ? "이미 취소된 예약입니다" : "예약이 취소되었습니다"}
+              </div>
+              <p style={{ fontSize: 13, color: "#475569", margin: "0 0 16px", lineHeight: 1.7 }}>
+                {cancelState.date} {cancelState.start_time} ~ {cancelState.end_time} · {cancelState.room}
+              </p>
+              <a href="/reservation" style={{ fontSize: 13, color: "#3b82f6", textDecoration: "none" }}>새 예약 신청하기 →</a>
+            </>
+          ) : (
+            <>
+              <div style={{ fontWeight: 700, fontSize: 16, color: "#b91c1c", marginBottom: 8 }}>취소하지 못했습니다</div>
+              <p style={{ fontSize: 13, color: "#991b1b", margin: "0 0 16px", lineHeight: 1.7 }}>
+                {cancelState.reason === "not_found" && "취소 링크가 올바르지 않습니다. 메일의 링크를 다시 확인해 주세요."}
+                {cancelState.reason === "not_active" && "승인된 예약만 취소할 수 있습니다. 이미 처리된 예약으로 보입니다."}
+                {cancelState.reason === "invalid" && "취소 링크가 올바르지 않습니다."}
+                {cancelState.reason === "error" && "서버에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요."}
+                <br />문의: <a href="mailto:helprobot@keti.re.kr">helprobot@keti.re.kr</a>
+              </p>
+              <a href="/reservation" style={{ fontSize: 13, color: "#64748b", textDecoration: "none" }}>예약 페이지로 →</a>
+            </>
+          )}
+        </div>
+      )}
 
       {/* ── 회의실 현황 ── */}
       <div style={{ marginBottom: 14 }}>
@@ -518,7 +587,7 @@ export default function ReservationPage({ adminUser }) {
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
             <div style={{ fontWeight: 700, fontSize: 15, color: "#1e3a5f" }}>예약 신청 목록</div>
             <div style={{ display: "flex", gap: 6 }}>
-              {["all", "pending", "approved", "rejected"].map(s => (
+              {["all", "pending", "approved", "rejected", "cancelled"].map(s => (
                 <button key={s} onClick={() => setStatusFilter(s)}
                   style={{ background: statusFilter === s ? "#3b82f6" : "#f1f5f9", color: statusFilter === s ? "#fff" : "#64748b", border: "none", borderRadius: 6, padding: "5px 12px", cursor: "pointer", fontSize: 12, fontFamily: "inherit" }}>
                   {s === "all" ? `전체 (${reservations.length})` : `${STATUS_LABEL[s]} (${reservations.filter(r => r.status === s).length})`}

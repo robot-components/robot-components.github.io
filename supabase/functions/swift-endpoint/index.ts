@@ -67,6 +67,7 @@ serve(async (req) => {
   } else if (type === "reservation_result") {
     const isApproved = data.status_label === "승인";
     const note = val(data.admin_note) !== "-" ? data.admin_note : "";
+    const cancelUrl = val(data.cancel_url) !== "-" ? data.cancel_url : "";
     to = data.to_email;
     toName = data.name;
     subject = `${CENTER} 회의실 예약 신청 ${data.status_label}`;
@@ -79,6 +80,23 @@ serve(async (req) => {
         <p style="${SEC} margin-top: 16px;">[ 안내 ]</p>
         <p style="margin: 0;">${note}</p>` : `
         <p style="margin: 16px 0 0 0;">${isApproved ? "회의실 이용 관련 문의 사항은" : "관련 문의 사항은"} <a href="mailto:${ADMIN_EMAIL}">${ADMIN_EMAIL}</a>로 연락 부탁드립니다.</p>`}
+        ${cancelUrl ? `
+        <p style="${SEC} margin-top: 16px;">[ 예약 취소 ]</p>
+        <p style="margin: 0;">이용이 어려워지신 경우 아래 링크에서 직접 취소하실 수 있습니다.<br />
+        <a href="${cancelUrl}">${cancelUrl}</a></p>
+        <p style="margin: 8px 0 0 0; color: #777; font-size: 13px;">※ 이 링크는 본인 확인용입니다. 다른 사람에게 전달하지 마세요.</p>` : ""}
+      </div>`;
+
+  } else if (type === "reservation_cancelled") {
+    // 신청자가 메일의 취소 링크로 직접 취소한 경우 관리자에게 알린다.
+    to = ADMIN_EMAIL;
+    toName = "관리자";
+    subject = `${CENTER} 회의실 예약 취소`;
+    html = `
+      <div style="${STYLE}">
+        <p style="${P}">아래 회의실 예약이 신청자 본인에 의해 취소되었습니다. 해당 시간대는 다시 예약 가능합니다.</p>
+        <p style="${SEC}">[ 취소된 예약 ]</p>
+        ${infoTable(data)}
       </div>`;
 
   } else {
