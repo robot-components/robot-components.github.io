@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <script>
-    sessionStorage.setItem('spa_redirect', location.pathname);
+    // 경로만 저장하면 ?cancel=... 같은 쿼리와 #해시가 사라진다.
+    sessionStorage.setItem('spa_redirect', location.pathname + location.search + location.hash);
   </script>
   <meta http-equiv="refresh" content="0;URL='/'">
 </head>
